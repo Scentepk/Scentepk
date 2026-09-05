@@ -1,0 +1,8 @@
+# SCENTÉ Atelier Parfums — Robots Configuration
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /checkout
+
+Sitemap: https://scente.pk/sitemap.xml
