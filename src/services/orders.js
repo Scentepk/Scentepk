@@ -35,7 +35,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
 
   // 1. If Supabase is connected, execute atomic server-side RPC
   if (isSupabaseConfigured && supabase) {
-    const rpcPayload = {
+    const basePayload = {
       p_customer_full_name: customerData.fullName,
       p_customer_phone: customerData.phone,
       p_customer_email: customerData.email || null,
@@ -44,32 +44,86 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
       p_province: customerData.province,
       p_postal_code: customerData.postalCode || null,
       p_items: itemsPayload,
-      p_promo_code: promoDetails?.code || null,
     };
 
-    const { data, error } = await supabase.rpc("create_cod_order", rpcPayload);
+    let resultData = null;
+    let resultError = null;
 
-    if (error) {
-      console.error("Supabase RPC create_cod_order error:", error);
+    // If promo code was applied, attempt upgraded RPC with p_promo_code
+    if (promoDetails?.code) {
+      const promoPayload = {
+        ...basePayload,
+        p_promo_code: promoDetails.code,
+      };
+
+      const res = await supabase.rpc("create_cod_order", promoPayload);
+      if (!res.error) {
+        resultData = res.data;
+      } else {
+        console.warn("create_cod_order with p_promo_code failed:", res.error);
+        // If remote database does not have migration 009 applied yet (schema cache missing function)
+        if (
+          res.error.message?.includes("schema cache") ||
+          res.error.message?.includes("Could not find the function")
+        ) {
+          const fallbackRes = await supabase.rpc("create_cod_order", basePayload);
+          if (!fallbackRes.error) {
+            resultData = fallbackRes.data;
+            // Best-effort attach promo details
+            const discount = promoDetails.discountAmount || 0;
+            const newTotal = Math.max(0, (resultData.subtotal || 0) - discount);
+            try {
+              await supabase
+                .from("orders")
+                .update({
+                  promo_code: promoDetails.code,
+                  discount_amount: discount,
+                  discount_type: promoDetails.discountType || null,
+                  discount_value: promoDetails.discountValue || null,
+                  total: newTotal,
+                })
+                .eq("id", resultData.order_id);
+            } catch (e) {
+              console.warn("Could not patch promo to orders table:", e);
+            }
+            resultData.discount_amount = discount;
+            resultData.promo_code = promoDetails.code;
+            resultData.total = newTotal;
+          } else {
+            resultError = fallbackRes.error;
+          }
+        } else {
+          resultError = res.error;
+        }
+      }
+    } else {
+      // Normal order without promo code -> call base 8-parameter RPC directly
+      const res = await supabase.rpc("create_cod_order", basePayload);
+      resultData = res.data;
+      resultError = res.error;
+    }
+
+    if (resultError) {
+      console.error("Supabase RPC create_cod_order error:", resultError);
       // Clean, customer-friendly message if stock is insufficient
       const isStockError =
-        error.message?.includes("not available") ||
-        error.message?.includes("Insufficient stock") ||
-        error.message?.includes("stock") ||
-        error.code === "P0001";
+        resultError.message?.includes("not available") ||
+        resultError.message?.includes("Insufficient stock") ||
+        resultError.message?.includes("stock") ||
+        resultError.code === "P0001";
 
       if (isStockError) {
         throw new Error(
-          error.message?.includes("Sorry,")
-            ? error.message
+          resultError.message?.includes("Sorry,")
+            ? resultError.message
             : "Sorry, one or more items in your cart are no longer available in the requested quantity."
         );
       }
 
-      throw new Error(error.message || "Unable to place order. Please try again.");
+      throw new Error(resultError.message || "Unable to place order. Please try again.");
     }
 
-    return { data, error: null, isRemote: true };
+    return { data: resultData, error: null, isRemote: true };
   }
 
   // 2. Structured fallback / prototype order generation

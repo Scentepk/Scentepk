@@ -560,17 +560,27 @@ export default function Checkout() {
             <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
             <div className="flex-1 space-y-1">
               <span className="font-medium text-sm text-rose-300 block">{submissionError}</span>
-              <p className="text-[11px] text-rose-300/80 leading-relaxed">
-                One or more requested bottle sizes are no longer in stock. Please adjust your bag before placing your order.
-              </p>
-              <div className="pt-2">
-                <Link
-                  to="/cart"
-                  className="inline-flex items-center text-xs uppercase tracking-wider text-[#BFA27A] hover:underline font-medium"
-                >
-                  ← Return to Bag to Adjust Items
-                </Link>
-              </div>
+              {submissionError.toLowerCase().includes("stock") ||
+              submissionError.toLowerCase().includes("not available") ||
+              submissionError.toLowerCase().includes("sold out") ? (
+                <>
+                  <p className="text-[11px] text-rose-300/80 leading-relaxed">
+                    One or more requested bottle sizes are no longer in stock. Please adjust your bag before placing your order.
+                  </p>
+                  <div className="pt-2">
+                    <Link
+                      to="/cart"
+                      className="inline-flex items-center text-xs uppercase tracking-wider text-[#BFA27A] hover:underline font-medium"
+                    >
+                      ← Return to Bag to Adjust Items
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <p className="text-[11px] text-rose-300/80 leading-relaxed">
+                  Please review your details or try placing your order again.
+                </p>
+              )}
             </div>
           </motion.div>
         )}
