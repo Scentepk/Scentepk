@@ -22,6 +22,7 @@ import {
   getHeroSettings,
   saveHeroSettings,
   uploadHeroImage,
+  deleteHeroImage,
   DEFAULT_HERO_SETTINGS,
 } from "../../services/heroSettings";
 import { LUXURY_EASE } from "../../lib/animations";
@@ -138,6 +139,48 @@ export default function AdminHeroManagement() {
       setIsUploadingMobile(false);
       if (mobileFileInputRef.current) mobileFileInputRef.current.value = "";
     }
+  };
+
+  // Delete / Revert Desktop Image
+  const handleDeleteDesktopImage = async () => {
+    if (window.confirm("Are you sure you want to delete this custom hero image and restore the original SCENTÉ campaign banner?")) {
+      if (formData.storage_path) {
+        try {
+          await deleteHeroImage(formData.storage_path);
+        } catch (e) {}
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        image_url: DEFAULT_HERO_SETTINGS.image_url,
+        storage_path: null,
+      }));
+
+      setNotification({
+        type: "info",
+        message: "Custom hero image deleted. Restored default SCENTÉ banner. Click 'Save Changes' to publish.",
+      });
+    }
+  };
+
+  // Delete Mobile Image
+  const handleDeleteMobileImage = async () => {
+    if (formData.mobile_storage_path) {
+      try {
+        await deleteHeroImage(formData.mobile_storage_path);
+      } catch (e) {}
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      mobile_image_url: "",
+      mobile_storage_path: null,
+    }));
+
+    setNotification({
+      type: "info",
+      message: "Mobile portrait image deleted. Click 'Save Changes' to publish.",
+    });
   };
 
   // Save changes to Supabase & LocalStorage
@@ -359,6 +402,18 @@ export default function AdminHeroManagement() {
                     )}
                     <span>Replace Image</span>
                   </button>
+
+                  {formData.image_url !== DEFAULT_HERO_SETTINGS.image_url && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteDesktopImage}
+                      className="px-3.5 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer"
+                      title="Delete custom image and reset to original SCENTÉ banner"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Delete / Reset</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -390,6 +445,17 @@ export default function AdminHeroManagement() {
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-[#AAA49B] focus:border-[#BFA27A] focus:text-[#F2EEE7] focus:outline-none transition-colors"
                   />
                 </div>
+
+                {formData.image_url !== DEFAULT_HERO_SETTINGS.image_url && (
+                  <button
+                    type="button"
+                    onClick={handleDeleteDesktopImage}
+                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer"
+                    title="Delete custom image and restore default SCENTÉ banner"
+                  >
+                    <Trash2 className="w-4 h-4 text-rose-400" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -438,11 +504,11 @@ export default function AdminHeroManagement() {
                 {formData.mobile_image_url && (
                   <button
                     type="button"
-                    onClick={() => handleInputChange("mobile_image_url", "")}
-                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors"
-                    title="Remove mobile image"
+                    onClick={handleDeleteMobileImage}
+                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer"
+                    title="Delete mobile image and revert to desktop image"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 text-rose-400" />
                   </button>
                 )}
               </div>
