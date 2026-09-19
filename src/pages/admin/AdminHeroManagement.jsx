@@ -15,6 +15,8 @@ import {
   ArrowRight,
   Loader2,
   Trash2,
+  Plus,
+  Layers,
   HelpCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,20 +26,23 @@ import {
   uploadHeroImage,
   deleteHeroImage,
   DEFAULT_HERO_SETTINGS,
+  DEFAULT_HERO_SLIDES,
+  normalizeSingleSlide,
 } from "../../services/heroSettings";
-import { LUXURY_EASE } from "../../lib/animations";
 
 export default function AdminHeroManagement() {
   // Saved server/DB state
   const [savedSettings, setSavedSettings] = useState(DEFAULT_HERO_SETTINGS);
-  // Working draft form state (for live editing & preview)
+  // Working draft state with slides array
   const [formData, setFormData] = useState(DEFAULT_HERO_SETTINGS);
+  // Currently active slide index for editing
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingDesktop, setIsUploadingDesktop] = useState(false);
   const [isUploadingMobile, setIsUploadingMobile] = useState(false);
-  const [notification, setNotification] = useState(null); // { type: 'success' | 'error', message: string }
+  const [notification, setNotification] = useState(null); // { type, message }
 
   // Preview Mode: 'desktop' | 'mobile'
   const [previewDevice, setPreviewDevice] = useState("desktop");
@@ -51,7 +56,7 @@ export default function AdminHeroManagement() {
       setIsLoading(true);
       try {
         const { data } = await getHeroSettings();
-        if (data) {
+        if (data && Array.isArray(data.slides)) {
           setSavedSettings(data);
           setFormData(data);
         }
@@ -64,18 +69,110 @@ export default function AdminHeroManagement() {
     loadSettings();
   }, []);
 
+  // Safe active slide
+  const slides = formData.slides || [];
+  const currentSlide = slides[activeSlideIndex] || slides[0] || DEFAULT_HERO_SLIDES[0];
+
   // Check if there are unsaved changes
   const hasUnsavedChanges =
     JSON.stringify(formData) !== JSON.stringify(savedSettings);
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  // Helper to update active slide field
+  const handleActiveSlideChange = (field, value) => {
+    setFormData((prev) => {
+      const updatedSlides = [...(prev.slides || [])];
+      if (!updatedSlides[activeSlideIndex]) {
+        updatedSlides[activeSlideIndex] = { ...DEFAULT_HERO_SLIDES[0] };
+      }
+      updatedSlides[activeSlideIndex] = {
+        ...updatedSlides[activeSlideIndex],
+        [field]: value,
+      };
+      return {
+        ...prev,
+        slides: updatedSlides,
+      };
+    });
   };
 
-  // Upload Desktop Image
+  // Add a new slide to the carousel
+  const handleAddSlide = () => {
+    const newSlideNumber = slides.length + 1;
+    const newSlide = normalizeSingleSlide({
+      id: `slide-${Date.now()}`,
+      eyebrow: `SCENTÉ — EDITION 0${newSlideNumber}`,
+      badge: "EXTRAIT DE PARFUM",
+      headline_line1: "DISCOVER",
+      headline_line2: "THE",
+      headline_line3: "COLLECTION.",
+      subtitle: "Handcrafted pure perfume oils formulated in Pakistan for extraordinary endurance.",
+      cta_text: "EXPLORE FRAGRANCES",
+      cta_link: "/shop",
+      image_url: "/images/campaign/hero-campaign-main.jpg",
+      mobile_image_url: "",
+    });
+
+    setFormData((prev) => ({
+      ...prev,
+      slides: [...(prev.slides || []), newSlide],
+    }));
+
+    setActiveSlideIndex(slides.length);
+    setNotification({
+      type: "info",
+      message: `Slide 0${newSlideNumber} added. Upload your photo and click 'Save Changes' to publish.`,
+    });
+  };
+
+  // Delete an existing slide / image from the hero carousel
+  const handleDeleteSlide = async (indexToDelete, e) => {
+    e?.stopPropagation();
+
+    if (slides.length <= 1) {
+      alert("At least 1 hero banner is required. To replace this image, use the 'Replace Image' button below.");
+      return;
+    }
+
+    const targetSlide = slides[indexToDelete];
+    const confirmDelete = window.confirm(
+      `Are you sure you want to DELETE Slide 0${indexToDelete + 1} (${targetSlide.headline_line1 || "Hero"} Banner)? It will be permanently removed from your homepage carousel.`
+    );
+
+    if (!confirmDelete) return;
+
+    // If it had a Supabase storage path, clean it up
+    if (targetSlide.storage_path) {
+      try {
+        await deleteHeroImage(targetSlide.storage_path);
+      } catch (err) {}
+    }
+    if (targetSlide.mobile_storage_path) {
+      try {
+        await deleteHeroImage(targetSlide.mobile_storage_path);
+      } catch (err) {}
+    }
+
+    const updatedSlides = slides.filter((_, idx) => idx !== indexToDelete);
+
+    setFormData((prev) => ({
+      ...prev,
+      slides: updatedSlides,
+    }));
+
+    // Adjust active index
+    if (activeSlideIndex >= updatedSlides.length) {
+      setActiveSlideIndex(Math.max(0, updatedSlides.length - 1));
+    } else if (activeSlideIndex === indexToDelete) {
+      setActiveSlideIndex(Math.max(0, indexToDelete - 1));
+    }
+
+    setNotification({
+      type: "success",
+      message: `Slide 0${indexToDelete + 1} deleted! Click 'SAVE CHANGES' to update your homepage.`,
+    });
+  };
+
+  // Upload Desktop Image for active slide
   const handleDesktopImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -87,15 +184,12 @@ export default function AdminHeroManagement() {
       const { url, path, error } = await uploadHeroImage(file, "desktop");
       if (error) throw error;
 
-      setFormData((prev) => ({
-        ...prev,
-        image_url: url,
-        storage_path: path,
-      }));
+      handleActiveSlideChange("image_url", url);
+      handleActiveSlideChange("storage_path", path);
 
       setNotification({
         type: "success",
-        message: "Desktop hero image uploaded successfully. Click 'Save Changes' to publish.",
+        message: "New image uploaded! Click 'Save Changes' to publish to homepage.",
       });
     } catch (err) {
       setNotification({
@@ -108,7 +202,7 @@ export default function AdminHeroManagement() {
     }
   };
 
-  // Upload Mobile Image
+  // Upload Mobile Image for active slide
   const handleMobileImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -120,15 +214,12 @@ export default function AdminHeroManagement() {
       const { url, path, error } = await uploadHeroImage(file, "mobile");
       if (error) throw error;
 
-      setFormData((prev) => ({
-        ...prev,
-        mobile_image_url: url,
-        mobile_storage_path: path,
-      }));
+      handleActiveSlideChange("mobile_image_url", url);
+      handleActiveSlideChange("mobile_storage_path", path);
 
       setNotification({
         type: "success",
-        message: "Mobile hero image uploaded successfully. Click 'Save Changes' to publish.",
+        message: "Mobile portrait image uploaded! Click 'Save Changes' to publish.",
       });
     } catch (err) {
       setNotification({
@@ -139,48 +230,6 @@ export default function AdminHeroManagement() {
       setIsUploadingMobile(false);
       if (mobileFileInputRef.current) mobileFileInputRef.current.value = "";
     }
-  };
-
-  // Delete / Revert Desktop Image
-  const handleDeleteDesktopImage = async () => {
-    if (window.confirm("Are you sure you want to delete this custom hero image and restore the original SCENTÉ campaign banner?")) {
-      if (formData.storage_path) {
-        try {
-          await deleteHeroImage(formData.storage_path);
-        } catch (e) {}
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        image_url: DEFAULT_HERO_SETTINGS.image_url,
-        storage_path: null,
-      }));
-
-      setNotification({
-        type: "info",
-        message: "Custom hero image deleted. Restored default SCENTÉ banner. Click 'Save Changes' to publish.",
-      });
-    }
-  };
-
-  // Delete Mobile Image
-  const handleDeleteMobileImage = async () => {
-    if (formData.mobile_storage_path) {
-      try {
-        await deleteHeroImage(formData.mobile_storage_path);
-      } catch (e) {}
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      mobile_image_url: "",
-      mobile_storage_path: null,
-    }));
-
-    setNotification({
-      type: "info",
-      message: "Mobile portrait image deleted. Click 'Save Changes' to publish.",
-    });
   };
 
   // Save changes to Supabase & LocalStorage
@@ -200,10 +249,9 @@ export default function AdminHeroManagement() {
 
       setNotification({
         type: "success",
-        message: "Hero section published! Homepage has been updated in real-time.",
+        message: "Hero section published! Homepage carousel updated in real-time.",
       });
 
-      // Auto-dismiss success notification after 5s
       setTimeout(() => {
         setNotification((prev) => (prev?.type === "success" ? null : prev));
       }, 5000);
@@ -220,17 +268,19 @@ export default function AdminHeroManagement() {
   // Cancel / Revert edits to last saved state
   const handleRevert = () => {
     setFormData(savedSettings);
+    setActiveSlideIndex(0);
     setNotification({
       type: "info",
-      message: "Unsaved changes reverted to currently published configuration.",
+      message: "Unsaved changes reverted to published state.",
     });
-    setTimeout(() => setNotification(null), 3500);
+    setTimeout(() => setNotification(null), 3000);
   };
 
-  // Reset to Atelier Default
+  // Reset to Atelier Default 3 slides
   const handleResetToDefault = () => {
-    if (window.confirm("Reset hero section to SCENTÉ signature campaign default?")) {
+    if (window.confirm("Reset hero section to the original 3 SCENTÉ campaign slides?")) {
       setFormData(DEFAULT_HERO_SETTINGS);
+      setActiveSlideIndex(0);
     }
   };
 
@@ -239,20 +289,20 @@ export default function AdminHeroManagement() {
       <div className="py-24 flex flex-col items-center justify-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#BFA27A]" />
         <span className="text-xs uppercase font-sans tracking-[0.24em] text-[#AAA49B]">
-          LOADING HERO ATELIER CONFIGURATION...
+          LOADING HERO SLIDES & IMAGES...
         </span>
       </div>
     );
   }
 
   const activeDisplayImage =
-    previewDevice === "mobile" && formData.mobile_image_url
-      ? formData.mobile_image_url
-      : formData.image_url;
+    previewDevice === "mobile" && currentSlide.mobile_image_url
+      ? currentSlide.mobile_image_url
+      : currentSlide.image_url;
 
   return (
     <div className="space-y-8 pb-20">
-      {/* 1. TOP HEADER & WORKSPACE TOOLBAR */}
+      {/* 1. TOP HEADER & ACTION BUTTONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
         <div>
           <div className="flex items-center space-x-2.5 mb-1.5">
@@ -270,7 +320,7 @@ export default function AdminHeroManagement() {
             Hero Section Management
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light mt-1">
-            Curate the primary full-bleed fragrance campaign banner, typography, and direct CTA.
+            Manage, replace, or delete your existing hero carousel slides, campaign imagery, and text.
           </p>
         </div>
 
@@ -342,10 +392,113 @@ export default function AdminHeroManagement() {
         )}
       </AnimatePresence>
 
-      {/* 2. MAIN TWO-COLUMN SPLIT: FORM CONTROLS & LIVE REAL-TIME PREVIEW */}
+      {/* ===================================================================
+          2. SLIDES CAROUSEL MANAGER (LIST, SELECT, DELETE & ADD SLIDES)
+          =================================================================== */}
+      <div className="p-6 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/[0.06]">
+          <div className="flex items-center space-x-2">
+            <Layers className="w-4 h-4 text-[#BFA27A]" />
+            <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
+              Active Hero Slides ({slides.length})
+            </h2>
+          </div>
+          <span className="text-[11px] font-sans text-[#AAA49B]">
+            Click a slide to edit. Click <strong className="text-rose-400">Delete (🗑️)</strong> to permanently remove any existing image.
+          </span>
+        </div>
+
+        {/* Horizontal Carousel Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-1">
+          {slides.map((slide, idx) => {
+            const isSelected = idx === activeSlideIndex;
+            return (
+              <div
+                key={slide.id || idx}
+                onClick={() => setActiveSlideIndex(idx)}
+                className={`relative rounded-xl overflow-hidden border p-3 flex flex-col justify-between transition-all duration-300 cursor-pointer group select-none ${
+                  isSelected
+                    ? "bg-[#1C1B18] border-[#BFA27A] shadow-[0_0_20px_rgba(191,162,122,0.15)] ring-1 ring-[#BFA27A]"
+                    : "bg-[#161513] border-white/10 hover:border-white/25 hover:bg-[#1A1916]"
+                }`}
+              >
+                {/* Thumbnail Image */}
+                <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 mb-2.5">
+                  <img
+                    src={slide.image_url}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2">
+                    <span className="text-[9px] uppercase font-mono font-semibold px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#BFA27A] border border-white/10">
+                      0{idx + 1}
+                    </span>
+                  </div>
+
+                  {/* Red Delete Slide Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => handleDeleteSlide(idx, e)}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-md bg-rose-950/90 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 flex items-center justify-center transition-all shadow-md cursor-pointer group/btn"
+                    title={`Delete Slide 0${idx + 1} from Hero Carousel`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Info Text */}
+                <div className="space-y-0.5">
+                  <span className="text-[9.5px] uppercase font-sans tracking-wider text-[#BFA27A] truncate block font-medium">
+                    {slide.eyebrow || `SCENTÉ SLIDE 0${idx + 1}`}
+                  </span>
+                  <h4 className="font-serif text-sm text-[#F2EEE7] truncate">
+                    {slide.headline_line1} {slide.headline_line2}
+                  </h4>
+                </div>
+
+                {/* Selected Pill Indicator */}
+                <div className="pt-2 flex items-center justify-between text-[10px] uppercase font-sans tracking-wider">
+                  <span className={isSelected ? "text-[#BFA27A] font-semibold" : "text-[#777169]"}>
+                    {isSelected ? "● Currently Editing" : "Click to edit"}
+                  </span>
+                  {slides.length > 1 && (
+                    <span
+                      onClick={(e) => handleDeleteSlide(idx, e)}
+                      className="text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      Delete
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Add New Slide Button */}
+          <button
+            type="button"
+            onClick={handleAddSlide}
+            className="rounded-xl border border-dashed border-white/20 hover:border-[#BFA27A] bg-[#141312]/50 hover:bg-[#181714] p-6 flex flex-col items-center justify-center text-center space-y-2 text-[#AAA49B] hover:text-[#BFA27A] transition-all min-h-[160px] cursor-pointer group"
+          >
+            <div className="w-10 h-10 rounded-full border border-white/20 group-hover:border-[#BFA27A] flex items-center justify-center transition-colors">
+              <Plus className="w-5 h-5 text-[#BFA27A]" />
+            </div>
+            <span className="text-xs uppercase font-sans tracking-[0.16em] font-medium">
+              + Add New Hero Slide
+            </span>
+            <span className="text-[10px] text-[#777169]">
+              Add a new background image & copy
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* ===================================================================
+          3. MAIN TWO-COLUMN SPLIT: ACTIVE SLIDE EDITOR & LIVE REAL-TIME PREVIEW
+          =================================================================== */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         {/* ===================================================================
-            LEFT COLUMN (XL:COL-SPAN-6): FORM CONTROLS
+            LEFT COLUMN (XL:COL-SPAN-6): ACTIVE SLIDE CONTROLS
             =================================================================== */}
         <div className="xl:col-span-6 space-y-6">
           {/* SECTION A: HERO IMAGERY */}
@@ -354,7 +507,7 @@ export default function AdminHeroManagement() {
               <div className="flex items-center space-x-2">
                 <ImageIcon className="w-4 h-4 text-[#BFA27A]" />
                 <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
-                  Hero Campaign Imagery
+                  Slide 0{activeSlideIndex + 1} Image
                 </h2>
               </div>
               <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#777169]">
@@ -368,15 +521,22 @@ export default function AdminHeroManagement() {
                 <label className="text-xs font-sans font-medium uppercase tracking-[0.16em] text-[#D4CEC5]">
                   Desktop Background Image <span className="text-[#BFA27A]">*</span>
                 </label>
-                {formData.image_url !== DEFAULT_HERO_SETTINGS.image_url && (
-                  <span className="text-[10px] font-mono text-emerald-400">Custom Image Active</span>
+                {slides.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => handleDeleteSlide(activeSlideIndex, e)}
+                    className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1.5 underline cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete This Entire Slide</span>
+                  </button>
                 )}
               </div>
 
               <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#090908] group aspect-[16/8] flex items-center justify-center">
-                {formData.image_url ? (
+                {currentSlide.image_url ? (
                   <img
-                    src={formData.image_url}
+                    src={currentSlide.image_url}
                     alt="Desktop Hero Preview"
                     className="w-full h-full object-cover"
                   />
@@ -403,15 +563,15 @@ export default function AdminHeroManagement() {
                     <span>Replace Image</span>
                   </button>
 
-                  {formData.image_url !== DEFAULT_HERO_SETTINGS.image_url && (
+                  {slides.length > 1 && (
                     <button
                       type="button"
-                      onClick={handleDeleteDesktopImage}
+                      onClick={(e) => handleDeleteSlide(activeSlideIndex, e)}
                       className="px-3.5 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer"
-                      title="Delete custom image and reset to original SCENTÉ banner"
+                      title="Delete this slide from the hero section"
                     >
                       <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Delete / Reset</span>
+                      <span>Delete Slide</span>
                     </button>
                   )}
                 </div>
@@ -439,23 +599,12 @@ export default function AdminHeroManagement() {
                 <div className="flex-1 relative">
                   <input
                     type="text"
-                    value={formData.image_url}
-                    onChange={(e) => handleInputChange("image_url", e.target.value)}
+                    value={currentSlide.image_url}
+                    onChange={(e) => handleActiveSlideChange("image_url", e.target.value)}
                     placeholder="/images/campaign/hero-campaign-main.jpg or https://..."
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-[#AAA49B] focus:border-[#BFA27A] focus:text-[#F2EEE7] focus:outline-none transition-colors"
                   />
                 </div>
-
-                {formData.image_url !== DEFAULT_HERO_SETTINGS.image_url && (
-                  <button
-                    type="button"
-                    onClick={handleDeleteDesktopImage}
-                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer"
-                    title="Delete custom image and restore default SCENTÉ banner"
-                  >
-                    <Trash2 className="w-4 h-4 text-rose-400" />
-                  </button>
-                )}
               </div>
             </div>
 
@@ -465,7 +614,7 @@ export default function AdminHeroManagement() {
                 <div className="flex items-center gap-2">
                   <Smartphone className="w-3.5 h-3.5 text-[#BFA27A]" />
                   <label className="text-xs font-sans font-medium uppercase tracking-[0.16em] text-[#D4CEC5]">
-                    Mobile Image (Optional Portrait)
+                    Mobile Image (Optional Vertical)
                   </label>
                 </div>
                 <span className="text-[10px] font-sans text-[#777169]">
@@ -488,25 +637,25 @@ export default function AdminHeroManagement() {
                   className="px-4 py-2 rounded-lg bg-[#181714] hover:bg-[#201F1B] border border-white/10 text-xs font-sans text-[#F2EEE7] flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5 text-[#BFA27A]" />
-                  <span>{isUploadingMobile ? "Uploading..." : "Upload Mobile Image"}</span>
+                  <span>{isUploadingMobile ? "Uploading..." : "Upload Mobile"}</span>
                 </button>
 
                 <div className="flex-1 relative">
                   <input
                     type="text"
-                    value={formData.mobile_image_url || ""}
-                    onChange={(e) => handleInputChange("mobile_image_url", e.target.value)}
+                    value={currentSlide.mobile_image_url || ""}
+                    onChange={(e) => handleActiveSlideChange("mobile_image_url", e.target.value)}
                     placeholder="Optional vertical image URL"
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-[#AAA49B] focus:border-[#BFA27A] focus:text-[#F2EEE7] focus:outline-none transition-colors"
                   />
                 </div>
 
-                {formData.mobile_image_url && (
+                {currentSlide.mobile_image_url && (
                   <button
                     type="button"
-                    onClick={handleDeleteMobileImage}
+                    onClick={() => handleActiveSlideChange("mobile_image_url", "")}
                     className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer"
-                    title="Delete mobile image and revert to desktop image"
+                    title="Remove mobile image"
                   >
                     <Trash2 className="w-4 h-4 text-rose-400" />
                   </button>
@@ -519,7 +668,7 @@ export default function AdminHeroManagement() {
           <div className="p-6 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
               <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
-                Editorial Headline & Copy
+                Slide 0{activeSlideIndex + 1} Headline & Copy
               </h2>
               <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#BFA27A]">
                 SCENTÉ ATELIER VOICE
@@ -534,8 +683,8 @@ export default function AdminHeroManagement() {
                 </label>
                 <input
                   type="text"
-                  value={formData.eyebrow}
-                  onChange={(e) => handleInputChange("eyebrow", e.target.value)}
+                  value={currentSlide.eyebrow}
+                  onChange={(e) => handleActiveSlideChange("eyebrow", e.target.value)}
                   placeholder="e.g. SCENTÉ — BATCH 04"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
@@ -547,8 +696,8 @@ export default function AdminHeroManagement() {
                 </label>
                 <input
                   type="text"
-                  value={formData.badge}
-                  onChange={(e) => handleInputChange("badge", e.target.value)}
+                  value={currentSlide.badge}
+                  onChange={(e) => handleActiveSlideChange("badge", e.target.value)}
                   placeholder="e.g. 30% PURE PERFUME OIL"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
@@ -566,8 +715,8 @@ export default function AdminHeroManagement() {
                   <span className="text-[10px] font-mono text-[#777169] block mb-1">LINE 1</span>
                   <input
                     type="text"
-                    value={formData.headline_line1}
-                    onChange={(e) => handleInputChange("headline_line1", e.target.value)}
+                    value={currentSlide.headline_line1}
+                    onChange={(e) => handleActiveSlideChange("headline_line1", e.target.value)}
                     placeholder="FRAGRANCE"
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs uppercase font-sans font-bold text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none"
                   />
@@ -577,8 +726,8 @@ export default function AdminHeroManagement() {
                   <span className="text-[10px] font-mono text-[#777169] block mb-1">LINE 2</span>
                   <input
                     type="text"
-                    value={formData.headline_line2}
-                    onChange={(e) => handleInputChange("headline_line2", e.target.value)}
+                    value={currentSlide.headline_line2}
+                    onChange={(e) => handleActiveSlideChange("headline_line2", e.target.value)}
                     placeholder="BECOMES"
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs uppercase font-sans font-bold text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none"
                   />
@@ -588,8 +737,8 @@ export default function AdminHeroManagement() {
                   <span className="text-[10px] font-mono text-[#777169] block mb-1">LINE 3</span>
                   <input
                     type="text"
-                    value={formData.headline_line3}
-                    onChange={(e) => handleInputChange("headline_line3", e.target.value)}
+                    value={currentSlide.headline_line3}
+                    onChange={(e) => handleActiveSlideChange("headline_line3", e.target.value)}
                     placeholder="IDENTITY."
                     className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs uppercase font-sans font-bold text-[#EAE4DC] focus:border-[#BFA27A] focus:outline-none"
                   />
@@ -604,8 +753,8 @@ export default function AdminHeroManagement() {
               </label>
               <textarea
                 rows={3}
-                value={formData.subtitle}
-                onChange={(e) => handleInputChange("subtitle", e.target.value)}
+                value={currentSlide.subtitle}
+                onChange={(e) => handleActiveSlideChange("subtitle", e.target.value)}
                 placeholder="Artisanal fragrances crafted for presence, character and lasting impression."
                 className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs text-[#D4CEC5] font-light leading-relaxed focus:border-[#BFA27A] focus:outline-none resize-none transition-colors"
               />
@@ -630,8 +779,8 @@ export default function AdminHeroManagement() {
                 </label>
                 <input
                   type="text"
-                  value={formData.cta_text}
-                  onChange={(e) => handleInputChange("cta_text", e.target.value)}
+                  value={currentSlide.cta_text}
+                  onChange={(e) => handleActiveSlideChange("cta_text", e.target.value)}
                   placeholder="e.g. EXPLORE FRAGRANCES"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs text-[#F2EEE7] font-semibold uppercase tracking-wider focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
@@ -643,8 +792,8 @@ export default function AdminHeroManagement() {
                 </label>
                 <input
                   type="text"
-                  value={formData.cta_link}
-                  onChange={(e) => handleInputChange("cta_link", e.target.value)}
+                  value={currentSlide.cta_link}
+                  onChange={(e) => handleActiveSlideChange("cta_link", e.target.value)}
                   placeholder="e.g. /shop or /product/grand-soiree"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs font-mono text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
@@ -657,7 +806,7 @@ export default function AdminHeroManagement() {
                 onClick={handleResetToDefault}
                 className="text-[11px] text-[#777169] hover:text-[#BFA27A] underline transition-colors cursor-pointer"
               >
-                Reset all fields to SCENTÉ Batch 04 default
+                Reset all slides to SCENTÉ original default
               </button>
 
               <Link
@@ -683,7 +832,7 @@ export default function AdminHeroManagement() {
               <div className="flex items-center space-x-2">
                 <Eye className="w-4 h-4 text-[#BFA27A]" />
                 <span className="font-serif text-sm text-[#F2EEE7]">
-                  Interactive Live Preview
+                  Previewing Slide 0{activeSlideIndex + 1}
                 </span>
               </div>
 
@@ -742,17 +891,17 @@ export default function AdminHeroManagement() {
                   <div className="max-w-[85%] sm:max-w-[80%] space-y-2 sm:space-y-3">
                     {/* Eyebrow & Badge */}
                     <div className="flex flex-wrap items-center gap-2">
-                      {formData.eyebrow && (
+                      {currentSlide.eyebrow && (
                         <span className="text-[8px] sm:text-[9.5px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-semibold truncate max-w-full">
-                          {formData.eyebrow}
+                          {currentSlide.eyebrow}
                         </span>
                       )}
-                      {formData.eyebrow && formData.badge && (
+                      {currentSlide.eyebrow && currentSlide.badge && (
                         <span className="w-1 h-1 rounded-full bg-[#BFA27A]/60" />
                       )}
-                      {formData.badge && (
+                      {currentSlide.badge && (
                         <span className="text-[7.5px] sm:text-[8.5px] uppercase font-sans tracking-[0.14em] text-[#AAA49B] font-medium">
-                          {formData.badge}
+                          {currentSlide.badge}
                         </span>
                       )}
                     </div>
@@ -765,13 +914,13 @@ export default function AdminHeroManagement() {
                           : "text-xl sm:text-2xl lg:text-3xl"
                       }`}
                     >
-                      {formData.headline_line1} <br />
-                      {formData.headline_line2} <br />
-                      <span className="text-[#EAE4DC]">{formData.headline_line3}</span>
+                      {currentSlide.headline_line1} <br />
+                      {currentSlide.headline_line2} <br />
+                      <span className="text-[#EAE4DC]">{currentSlide.headline_line3}</span>
                     </h2>
 
                     {/* Supporting Description */}
-                    {formData.subtitle && (
+                    {currentSlide.subtitle && (
                       <p
                         className={`font-sans text-[#D4CEC5] font-light leading-relaxed line-clamp-3 ${
                           previewDevice === "mobile"
@@ -779,15 +928,15 @@ export default function AdminHeroManagement() {
                             : "text-[10.5px] sm:text-xs"
                         }`}
                       >
-                        {formData.subtitle}
+                        {currentSlide.subtitle}
                       </p>
                     )}
 
                     {/* CTA Button */}
-                    {formData.cta_text && (
+                    {currentSlide.cta_text && (
                       <div className="pt-1 sm:pt-2">
                         <div className="inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#F2EEE7] text-[#090908] text-[9.5px] sm:text-[11px] font-semibold uppercase tracking-[0.16em] shadow-lg">
-                          <span>{formData.cta_text}</span>
+                          <span>{currentSlide.cta_text}</span>
                           <ArrowRight className="w-3 h-3 ml-1.5" />
                         </div>
                       </div>
@@ -795,17 +944,17 @@ export default function AdminHeroManagement() {
                   </div>
                 </div>
 
-                {/* Minimalist Watermark in Preview */}
-                <div className="absolute bottom-2 right-3 pointer-events-none opacity-40">
+                {/* Slide index Watermark in Preview */}
+                <div className="absolute bottom-2 right-3 pointer-events-none opacity-50">
                   <span className="text-[8px] font-mono text-white tracking-widest">
-                    LIVE PREVIEW
+                    SLIDE 0{activeSlideIndex + 1} / 0{slides.length}
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="text-[11px] text-[#777169] text-center font-sans">
-              Edits update the preview above in real time. Changes are only published to your live visitors once you click <strong className="text-[#F2EEE7]">Save Changes</strong>.
+              Edits update the preview above in real time. Changes are published to live visitors when you click <strong className="text-[#F2EEE7]">Save Changes</strong>.
             </div>
           </div>
         </div>

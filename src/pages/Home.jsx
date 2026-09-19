@@ -204,21 +204,43 @@ export default function Home() {
   const heroSlides = useMemo(() => {
     if (!customHero) return HERO_SLIDES;
 
-    const dynamicFirstSlide = {
-      ...HERO_SLIDES[0],
-      eyebrow: customHero.eyebrow || HERO_SLIDES[0].eyebrow,
-      badge: customHero.badge || HERO_SLIDES[0].badge,
-      headlineLine1: customHero.headline_line1 || HERO_SLIDES[0].headlineLine1,
-      headlineLine2: customHero.headline_line2 || HERO_SLIDES[0].headlineLine2,
-      headlineLine3: customHero.headline_line3 || HERO_SLIDES[0].headlineLine3,
-      subtitle: customHero.subtitle || HERO_SLIDES[0].subtitle,
-      ctaText: customHero.cta_text || HERO_SLIDES[0].ctaText,
-      ctaLink: customHero.cta_link || HERO_SLIDES[0].ctaLink,
-      image: customHero.image_url || HERO_SLIDES[0].image,
-      mobileImage: customHero.mobile_image_url || null,
-    };
+    if (Array.isArray(customHero.slides) && customHero.slides.length > 0) {
+      return customHero.slides.map((s, idx) => ({
+        id: s.id || `slide-${idx + 1}`,
+        eyebrow: s.eyebrow || "",
+        badge: s.badge || "",
+        headlineLine1: s.headline_line1 || s.headlineLine1 || "",
+        headlineLine2: s.headline_line2 || s.headlineLine2 || "",
+        headlineLine3: s.headline_line3 || s.headlineLine3 || "",
+        subtitle: s.subtitle || "",
+        ctaText: s.cta_text || s.ctaText || "EXPLORE FRAGRANCES",
+        ctaLink: s.cta_link || s.ctaLink || "/shop",
+        image: s.image_url || s.image || "/images/campaign/hero-campaign-main.jpg",
+        mobileImage: s.mobile_image_url || s.mobileImage || null,
+        imageAlt: s.imageAlt || `SCENTÉ Artisanal Fragrance Campaign ${idx + 1}`,
+        objectPosition: s.objectPosition || "object-[78%_center] md:object-[72%_center] lg:object-center",
+        overlayGradient: s.overlayGradient || "from-[#090908]/90 via-[#090908]/50 to-transparent",
+      }));
+    }
 
-    return [dynamicFirstSlide, ...HERO_SLIDES.slice(1)];
+    if (customHero.headline_line1 || customHero.image_url) {
+      const dynamicFirstSlide = {
+        ...HERO_SLIDES[0],
+        eyebrow: customHero.eyebrow || HERO_SLIDES[0].eyebrow,
+        badge: customHero.badge || HERO_SLIDES[0].badge,
+        headlineLine1: customHero.headline_line1 || HERO_SLIDES[0].headlineLine1,
+        headlineLine2: customHero.headline_line2 || HERO_SLIDES[0].headlineLine2,
+        headlineLine3: customHero.headline_line3 || HERO_SLIDES[0].headlineLine3,
+        subtitle: customHero.subtitle || HERO_SLIDES[0].subtitle,
+        ctaText: customHero.cta_text || HERO_SLIDES[0].ctaText,
+        ctaLink: customHero.cta_link || HERO_SLIDES[0].ctaLink,
+        image: customHero.image_url || HERO_SLIDES[0].image,
+        mobileImage: customHero.mobile_image_url || null,
+      };
+      return [dynamicFirstSlide];
+    }
+
+    return HERO_SLIDES;
   }, [customHero]);
 
   // ===========================================================================
@@ -398,47 +420,51 @@ export default function Home() {
           })}
         </AnimatePresence>
 
-        {/* Minimalist Slide Controls: Hairline Desktop Arrows */}
-        <div className="absolute bottom-4 sm:bottom-6 right-6 sm:right-10 flex items-center gap-2.5 sm:gap-3 z-20 pointer-events-auto">
-          <button
-            onClick={prevSlide}
-            aria-label="Previous slide"
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
-          >
-            <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
-          </button>
-          <button
-            onClick={nextSlide}
-            aria-label="Next slide"
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
-          >
-            <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
-          </button>
-        </div>
+        {/* Minimalist Slide Controls: Hairline Desktop Arrows (Only when multiple slides exist) */}
+        {heroSlides.length > 1 && (
+          <div className="absolute bottom-4 sm:bottom-6 right-6 sm:right-10 flex items-center gap-2.5 sm:gap-3 z-20 pointer-events-auto">
+            <button
+              onClick={prevSlide}
+              aria-label="Previous slide"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next slide"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+            >
+              <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
+            </button>
+          </div>
+        )}
 
-        {/* Bottom Minimal Progress Bar & Slide Numbers */}
-        <div className="absolute bottom-4 sm:bottom-6 left-0 z-20">
-          <div className="layout-container flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-[9.5px] sm:text-xs font-sans tracking-[0.22em] text-[#AAA49B]">
-              <span className="text-[#F2EEE7] font-semibold">0{currentSlide + 1}</span>
-              <span className="opacity-40">/</span>
-              <span className="opacity-60">0{heroSlides.length}</span>
-            </div>
+        {/* Bottom Minimal Progress Bar & Slide Numbers (Only when multiple slides exist) */}
+        {heroSlides.length > 1 && (
+          <div className="absolute bottom-4 sm:bottom-6 left-0 z-20">
+            <div className="layout-container flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-[9.5px] sm:text-xs font-sans tracking-[0.22em] text-[#AAA49B]">
+                <span className="text-[#F2EEE7] font-semibold">0{currentSlide + 1}</span>
+                <span className="opacity-40">/</span>
+                <span className="opacity-60">0{heroSlides.length}</span>
+              </div>
 
-            <div className="flex items-center gap-1.5 ml-3">
-              {heroSlides.map((slide, idx) => (
-                <button
-                  key={slide.id}
-                  onClick={() => setCurrentSlide(idx)}
-                  aria-label={`Jump to slide ${idx + 1}`}
-                  className={`h-1 transition-all duration-500 rounded-full ${
-                    idx === currentSlide ? "w-8 bg-[#BFA27A]" : "w-2 bg-white/25 hover:bg-white/50"
-                  }`}
-                />
-              ))}
+              <div className="flex items-center gap-1.5 ml-3">
+                {heroSlides.map((slide, idx) => (
+                  <button
+                    key={slide.id}
+                    onClick={() => setCurrentSlide(idx)}
+                    aria-label={`Jump to slide ${idx + 1}`}
+                    className={`h-1 transition-all duration-500 rounded-full ${
+                      idx === currentSlide ? "w-8 bg-[#BFA27A]" : "w-2 bg-white/25 hover:bg-white/50"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* =======================================================================

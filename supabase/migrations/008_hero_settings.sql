@@ -18,10 +18,14 @@ CREATE TABLE IF NOT EXISTS public.hero_settings (
     mobile_image_url TEXT DEFAULT NULL,
     storage_path TEXT DEFAULT NULL,
     mobile_storage_path TEXT DEFAULT NULL,
+    slides JSONB DEFAULT NULL,
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Ensure slides column exists if table was already created
+ALTER TABLE public.hero_settings ADD COLUMN IF NOT EXISTS slides JSONB DEFAULT NULL;
 
 -- 2. ENABLE ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.hero_settings ENABLE ROW LEVEL SECURITY;
