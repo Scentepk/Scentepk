@@ -1,27 +1,135 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { PRODUCTS, BRAND_VALUES } from "../data/products";
+import { PRODUCTS } from "../data/products";
 import { getActiveProducts } from "../services/products";
-import ProductCard from "../components/ProductCard";
+import {
+  getHeroSettings,
+  HERO_UPDATE_EVENT,
+  LOCAL_STORAGE_HERO_KEY,
+} from "../services/heroSettings";
+import { useCart } from "../context/CartContext";
 import SectionHeading from "../components/SectionHeading";
-import Button from "../components/Button";
-import ScrollReveal from "../components/ScrollReveal";
-import ScrollIndicator from "../components/ScrollIndicator";
-import ParallaxImage from "../components/ParallaxImage";
-import { ArrowRight } from "lucide-react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import { LUXURY_EASE, VIEWPORT_DEFAULT } from "../lib/animations";
 import SEO from "../components/SEO";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Star,
+  Check,
+  Plus,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { LUXURY_EASE } from "../lib/animations";
+import { getOptimizedImageUrl } from "../lib/images";
+
+// =============================================================================
+// HERO SLIDES DATA — Full-Bleed High-Fashion Fragrance Campaign Banners
+// =============================================================================
+const HERO_SLIDES = [
+  {
+    id: "slide-1",
+    eyebrow: "SCENTÉ — BATCH 04",
+    headlineLine1: "FRAGRANCE",
+    headlineLine2: "BECOMES",
+    headlineLine3: "IDENTITY.",
+    subtitle: "Artisanal fragrances crafted for presence, character and lasting impression.",
+    ctaText: "EXPLORE FRAGRANCES",
+    ctaLink: "/shop",
+    badge: "30% PURE PERFUME OIL",
+    image: "/images/campaign/hero-campaign-main.jpg",
+    imageAlt: "SCENTÉ The Nocturnal Oud Artisanal Fragrance Campaign",
+    objectPosition: "object-[78%_center] md:object-[72%_center] lg:object-center",
+    overlayGradient: "from-[#090908]/90 via-[#090908]/50 to-transparent",
+  },
+  {
+    id: "slide-2",
+    eyebrow: "ATELIER EXTRAIT DE PARFUM",
+    headlineLine1: "YOUR",
+    headlineLine2: "SIGNATURE.",
+    headlineLine3: "YOUR PRESENCE.",
+    subtitle: "Cold-macerated extraits formulated to leave an indelible impression that lingers for 14+ hours.",
+    ctaText: "EXPLORE FRAGRANCES",
+    ctaLink: "/shop",
+    badge: "14+ HR LONGEVITY",
+    image: "/images/hero-campaign.jpg",
+    imageAlt: "SCENTÉ Artisanal Flacons Haute Parfumerie",
+    objectPosition: "object-[75%_center] md:object-[70%_center] lg:object-center",
+    overlayGradient: "from-[#090908]/90 via-[#090908]/55 to-transparent",
+  },
+  {
+    id: "slide-3",
+    eyebrow: "HAUTE PARFUMERIE",
+    headlineLine1: "PURE",
+    headlineLine2: "SENSORY",
+    headlineLine3: "DISTINCTION.",
+    subtitle: "Artisanal perfumes hand-poured in strictly numbered batches with rare botanical essences.",
+    ctaText: "EXPLORE FRAGRANCES",
+    ctaLink: "/shop",
+    badge: "FREE COD ACROSS PAKISTAN",
+    image: "/images/campaign/campaign-1.jpg",
+    imageAlt: "SCENTÉ Luxury Fragrance Editorial Campaign",
+    objectPosition: "object-[82%_center] md:object-[76%_center] lg:object-center",
+    overlayGradient: "from-[#090908]/95 via-[#090908]/60 to-[#090908]/20",
+  },
+];
+
+// =============================================================================
+// COLLECTION EDITORIAL DATA
+// =============================================================================
+const EDITORIAL_COLLECTIONS = {
+  women: {
+    title: "Women Perfumes",
+    image: "/images/collections/collection-women.jpg",
+    link: "/shop?audience=women",
+  },
+  men: {
+    title: "Men Perfumes",
+    image: "/images/collections/collection-men.jpg",
+    link: "/shop?audience=men",
+  },
+};
+
+
+
+// =============================================================================
+// SOCIAL PROOF DATA (Verified Patron Reflections)
+// =============================================================================
+const TESTIMONIALS = [
+  {
+    id: 1,
+    name: "Bilal K.",
+    city: "Lahore",
+    fragrance: "SCENTÉ NOIR",
+    quote:
+      "SCENTÉ NOIR is simply on another level. The leather and smoked cardamom projection lasted through a 10-hour workday in Lahore and was still noticeable the next morning. Rivals the finest Parisian niche extraits.",
+  },
+  {
+    id: 2,
+    name: "Ayesha M.",
+    city: "Karachi",
+    fragrance: "SCENTÉ AMBER",
+    quote:
+      "Finally, a Pakistani atelier delivering genuine Extrait de Parfum strength. SCENTÉ AMBER is warm, opulent, and received endless compliments at an evening dinner. Truly exceptional quiet luxury.",
+  },
+  {
+    id: 3,
+    name: "Hamza R.",
+    city: "Islamabad",
+    fragrance: "SCENTÉ OUD",
+    quote:
+      "The bottle weight, magnetic cap feel, and the rare Assam oud note are extraordinary. Arrived in Islamabad within 48 hours via COD. Superb artistry and flawless presentation.",
+  },
+];
 
 export default function Home() {
-  const heroRef = useRef(null);
+  // Live Product State (localStorage cache + Supabase sync)
   const [activeProducts, setActiveProducts] = useState(() => {
     try {
       const saved = localStorage.getItem("scente_admin_products_cache");
       if (saved) {
         return JSON.parse(saved).filter((p) => p.status !== "inactive" && p.is_active !== false);
       }
-    } catch (e) { }
+    } catch (e) {}
     return PRODUCTS.filter((p) => p.status !== "inactive" && p.is_active !== false);
   });
 
@@ -33,31 +141,139 @@ export default function Home() {
     });
   }, []);
 
-  // Scroll Progress Physics for Hero Section
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
+  // Cart Context for Quick Add
+  const { addToCart } = useCart();
+  const [addedItemKey, setAddedItemKey] = useState(null);
+
+  const handleQuickAdd = useCallback(
+    (e, product) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const success = addToCart(product, "50ml", 1);
+      if (success !== false) {
+        setAddedItemKey(product.id);
+        setTimeout(() => {
+          setAddedItemKey((prev) => (prev === product.id ? null : prev));
+        }, 2000);
+      }
+    },
+    [addToCart]
+  );
+
+  // ===========================================================================
+  // DYNAMIC HERO ATELIER SETTINGS & REAL-TIME BROADCAST SYNC
+  // ===========================================================================
+  const [customHero, setCustomHero] = useState(() => {
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_HERO_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return null;
   });
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 24,
-    restDelta: 0.001,
-  });
+  useEffect(() => {
+    // 1. Initial background fetch from Supabase
+    getHeroSettings().then(({ data }) => {
+      if (data) setCustomHero(data);
+    });
 
-  // Hero Parallax Transforms (Page Scroll Only)
-  const heroHeadlineY = useTransform(smoothProgress, [0, 1], ["0%", "28%"]);
-  const heroImageY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
-  const heroOpacity = useTransform(smoothProgress, [0, 0.75], [1, 0.2]);
-  const heroImageScale = useTransform(smoothProgress, [0, 1], [1, 1.04]);
-  const heroAuraY = useTransform(smoothProgress, [0, 1], ["-50%", "-30%"]);
+    // 2. Real-time same-window custom event listener
+    const handleHeroUpdate = (e) => {
+      if (e.detail) setCustomHero(e.detail);
+    };
 
+    // 3. Real-time cross-tab storage event listener (no redeploy/reload required)
+    const handleStorageChange = (e) => {
+      if (e.key === LOCAL_STORAGE_HERO_KEY && e.newValue) {
+        try {
+          setCustomHero(JSON.parse(e.newValue));
+        } catch (err) {}
+      }
+    };
+
+    window.addEventListener(HERO_UPDATE_EVENT, handleHeroUpdate);
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(HERO_UPDATE_EVENT, handleHeroUpdate);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  // Compute live slides with primary hero overrides from Admin
+  const heroSlides = useMemo(() => {
+    if (!customHero) return HERO_SLIDES;
+
+    const dynamicFirstSlide = {
+      ...HERO_SLIDES[0],
+      eyebrow: customHero.eyebrow || HERO_SLIDES[0].eyebrow,
+      badge: customHero.badge || HERO_SLIDES[0].badge,
+      headlineLine1: customHero.headline_line1 || HERO_SLIDES[0].headlineLine1,
+      headlineLine2: customHero.headline_line2 || HERO_SLIDES[0].headlineLine2,
+      headlineLine3: customHero.headline_line3 || HERO_SLIDES[0].headlineLine3,
+      subtitle: customHero.subtitle || HERO_SLIDES[0].subtitle,
+      ctaText: customHero.cta_text || HERO_SLIDES[0].ctaText,
+      ctaLink: customHero.cta_link || HERO_SLIDES[0].ctaLink,
+      image: customHero.image_url || HERO_SLIDES[0].image,
+      mobileImage: customHero.mobile_image_url || null,
+    };
+
+    return [dynamicFirstSlide, ...HERO_SLIDES.slice(1)];
+  }, [customHero]);
+
+  // ===========================================================================
+  // HERO CAROUSEL STATE & CONTROLS
+  // ===========================================================================
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  // Auto-advance timer (6s)
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [isPaused, heroSlides.length]);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  }, [heroSlides.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+  }, [heroSlides.length]);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX.current;
+    if (diff > 50) nextSlide();
+    else if (diff < -50) prevSlide();
+  };
+
+  // ===========================================================================
+  // NEW ARRIVALS HORIZONTAL SCROLL CONTROLS
+  // ===========================================================================
+  const arrivalsTrackRef = useRef(null);
+
+  const scrollArrivals = (direction) => {
+    if (arrivalsTrackRef.current) {
+      const scrollAmount = direction === "left" ? -360 : 360;
+      arrivalsTrackRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="w-full bg-[#0D0D0C] text-[#F2EEE7] overflow-hidden">
+    <div className="w-full bg-[#090908] text-[#F2EEE7] selection:bg-[#BFA27A] selection:text-[#090908]">
       <SEO
         title="SCENTÉ — Haute Parfumerie | Artisanal Extraits de Parfum"
-        description="SCENTÉ is an artisanal niche perfume atelier crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
+        description="SCENTÉ is a modern Pakistani artisanal fragrance house crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
         keywords={[
           "SCENTÉ",
           "niche perfume Pakistan",
@@ -69,263 +285,553 @@ export default function Home() {
           "Islamabad niche fragrance",
         ]}
         canonical="/"
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: "SCENTÉ Parfums",
-          url: "https://scente.pk",
-          logo: "https://scente.pk/favicon.svg",
-          description: "Haute Parfumerie atelier crafting rare Extraits de Parfum with 30%+ perfume oil concentration.",
-          contactPoint: {
-            "@type": "ContactPoint",
-            contactType: "concierge",
-            email: "concierge@scente.pk",
-            areaServed: "PK",
-            availableLanguage: ["English", "Urdu"],
-          },
-        }}
       />
-      {/* =========================================================================
-          1. HERO SECTION (Cinematic Editorial Campaign — Completely Static Mouse Image)
-          ========================================================================= */}
+
+      {/* =======================================================================
+          1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
+          ======================================================================= */}
       <section
-        ref={heroRef}
-        className="relative min-h-[68vh] sm:min-h-[76vh] lg:min-h-[80vh] xl:min-h-[82vh] max-h-[900px] flex flex-col justify-between pt-3 sm:pt-6 lg:pt-8 pb-4 sm:pb-6 lg:pb-8 border-b border-[rgba(242,238,231,0.06)] bg-[#0D0D0C] overflow-hidden"
+        className="relative w-full h-[calc(100vh-106px)] sm:h-[calc(100vh-112px)] min-h-[460px] max-h-[720px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        aria-label="Artisanal Fragrance Campaign"
       >
-        {/* Physical Studio Ambient Backlight linked to smooth scroll */}
-        <motion.div
-          style={{ y: heroAuraY, opacity: heroOpacity }}
-          className="absolute top-1/2 right-[5%] sm:right-[10%] -translate-y-1/2 w-[280px] sm:w-[420px] lg:w-[540px] xl:w-[620px] h-[280px] sm:h-[420px] lg:h-[540px] xl:h-[620px] bg-radial from-[#BFA27A]/12 via-[#141311]/45 to-transparent rounded-full blur-[70px] sm:blur-[90px] lg:blur-[110px] pointer-events-none -z-10 will-change-transform"
-        />
+        <AnimatePresence mode="wait">
+          {heroSlides.map((slide, index) => {
+            if (index !== currentSlide) return null;
+            return (
+              <motion.div
+                key={slide.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.7, ease: LUXURY_EASE }}
+                className="absolute inset-0 w-full h-full overflow-hidden"
+              >
+                {/* 1. Large Campaign Editorial Photograph (Full-Bleed Viewport with Mobile Art Direction) */}
+                <picture className="absolute inset-0 w-full h-full">
+                  {slide.mobileImage && (
+                    <source media="(max-width: 640px)" srcSet={slide.mobileImage} />
+                  )}
+                  <motion.img
+                    initial={{ scale: 1.03 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 7, ease: "easeOut" }}
+                    src={slide.image}
+                    alt={slide.imageAlt || "SCENTÉ Artisanal Fragrance Campaign"}
+                    className={`w-full h-full object-cover ${slide.objectPosition || "object-center"}`}
+                  />
+                </picture>
 
-        {/* Secondary subtle warmth aura behind typography */}
-        <div className="absolute top-1/4 left-1/12 w-[220px] sm:w-[340px] lg:w-[420px] h-[220px] sm:h-[340px] lg:h-[420px] bg-radial from-[#BFA27A]/5 via-[#181714]/20 to-transparent rounded-full blur-[60px] sm:blur-[80px] pointer-events-none -z-10" />
-
-        <div className="layout-container w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-8 xl:gap-12 items-center flex-grow py-1 sm:py-3 lg:py-0">
-          {/* LEFT ZONE: Editorial Typography (Choreographed Entrance & Scroll Shift) */}
-          <motion.div
-            style={{ y: heroHeadlineY, opacity: heroOpacity }}
-            className="lg:col-span-7 xl:col-span-6 flex flex-col justify-center z-10 space-y-4 sm:space-y-5 lg:space-y-6 transform-gpu"
-          >
-            {/* House Identity & Subtle Edition Label */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.08, ease: LUXURY_EASE }}
-              className="flex items-center justify-between max-w-md"
-            >
-              <div className="space-y-0.5 sm:space-y-1">
-                <span className="text-[10.5px] sm:text-[11.5px] font-sans uppercase tracking-eyebrow text-[#BFA27A] font-medium block">
-                  SCENTÉ
-                </span>
-                <span className="text-[8.5px] sm:text-[9.5px] font-sans uppercase tracking-micro text-[#8A847C] block font-light">
-                  Perfume Extracts
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Main Headline — Cormorant Garamond Light with Italic Accent */}
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.16, ease: LUXURY_EASE }}
-              className="font-serif font-light text-fluid-hero leading-[0.96] text-[#F2EEE7] tracking-[-0.03em]"
-            >
-              A Scent <br />
-              <span className="italic font-light text-[#EAE4DC]">That Stays.</span>
-            </motion.h1>
-
-            {/* Supporting Copy — 3-Line Concise Manifesto */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.26, ease: LUXURY_EASE }}
-              className="space-y-1 text-[13px] sm:text-[14px] md:text-[15px] font-sans text-[#AAA49B] font-light leading-[1.6] max-w-md"
-            >
-              <p className="text-[#DDD7CE]">Composed slowly.</p>
-              <p className="text-[#AAA49B]">Worn intimately.</p>
-              <p className="text-[#888279]">Remembered instinctively.</p>
-            </motion.div>
-
-            {/* Primary CTA & Credibility Note */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.34, ease: LUXURY_EASE }}
-              className="pt-2 sm:pt-3 space-y-4"
-            >
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                <Button
-                  to="/shop"
-                  variant="solid"
-                  showArrow={true}
-                  className="px-7 py-3 sm:px-10 sm:py-4 text-[10.5px] sm:text-xs tracking-[0.15em]"
-                >
-                  Explore the Collection
-                </Button>
-
-                <div className="flex items-center space-x-2 text-[9px] sm:text-[10px] font-sans uppercase tracking-micro text-[#8A847C]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#BFA27A] inline-block opacity-90 shadow-[0_0_8px_rgba(191,162,122,0.5)]" />
-                  <span className="text-[#AAA49B] font-light">30% PURE PERFUME OIL</span>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* RIGHT ZONE: Hero Perfume Flacon (Responsive Frame & True Aspect Ratio) */}
-          <div className="lg:col-span-5 xl:col-span-6 relative flex items-center justify-center lg:justify-end mt-4 sm:mt-6 lg:mt-0 pointer-events-none w-full">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.0, delay: 0.22, ease: LUXURY_EASE }}
-              style={{
-                y: heroImageY,
-                scale: heroImageScale,
-                opacity: heroOpacity,
-              }}
-              className="relative w-full flex items-center justify-center lg:justify-end transform-gpu will-change-transform"
-            >
-              {/* Responsive Flacon Frame */}
-              <div className="hero-flacon-wrapper">
-                <img
-                  src="/images/scente-hero.webp"
-                  alt="SCENTÉ Éclat Rogue Extrait de Parfum"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="sync"
-                  width="480"
-                  height="640"
-                  className="hero-flacon-img"
+                {/* 2. Tasteful Subtle Vignette / Gradient Overlay */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r ${slide.overlayGradient} pointer-events-none`}
                 />
-              </div>
-            </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090908] via-transparent to-black/25 pointer-events-none" />
+
+                {/* 3. Hero Copy Content Over Negative Space on the Left */}
+                <div className="relative z-10 w-full h-full flex items-center">
+                  <div className="layout-container w-full py-6 sm:py-8 lg:py-10">
+                    <div className="max-w-lg sm:max-w-xl lg:max-w-2xl flex flex-col justify-center space-y-3 sm:space-y-4 lg:space-y-5">
+                      
+                      {/* Eyebrow & Badge */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.12, ease: LUXURY_EASE }}
+                        className="flex flex-wrap items-center gap-2.5 sm:gap-3"
+                      >
+                        <span className="text-[10px] sm:text-xs uppercase font-sans tracking-[0.24em] text-[#BFA27A] font-semibold">
+                          {slide.eyebrow}
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#BFA27A]/60" />
+                        <span className="text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#AAA49B] font-medium">
+                          {slide.badge}
+                        </span>
+                      </motion.div>
+
+                      {/* Main Headline */}
+                      <motion.h1
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2, ease: LUXURY_EASE }}
+                        className="font-sans font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
+                      >
+                        {slide.headlineLine1} <br />
+                        {slide.headlineLine2} <br />
+                        <span className="text-[#EAE4DC]">{slide.headlineLine3}</span>
+                      </motion.h1>
+
+                      {/* Supporting Text */}
+                      <motion.p
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.28, ease: LUXURY_EASE }}
+                        className="text-xs sm:text-sm md:text-[15px] font-sans text-[#D4CEC5] font-light leading-[1.6] max-w-sm sm:max-w-md drop-shadow-sm"
+                      >
+                        {slide.subtitle}
+                      </motion.p>
+
+                      {/* Primary CTA (Positioned directly underneath supporting text) */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.36, ease: LUXURY_EASE }}
+                        className="pt-1 sm:pt-2"
+                      >
+                        <Link
+                          to={slide.ctaLink}
+                          className="inline-flex items-center justify-center px-7 py-3.5 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-xs sm:text-[13px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
+                        >
+                          <span>{slide.ctaText}</span>
+                          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2]" />
+                        </Link>
+                      </motion.div>
+
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        {/* Minimalist Slide Controls: Hairline Desktop Arrows */}
+        <div className="absolute bottom-4 sm:bottom-6 right-6 sm:right-10 flex items-center gap-2.5 sm:gap-3 z-20 pointer-events-auto">
+          <button
+            onClick={prevSlide}
+            aria-label="Previous slide"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+          >
+            <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
+          </button>
+          <button
+            onClick={nextSlide}
+            aria-label="Next slide"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+          >
+            <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
+          </button>
+        </div>
+
+        {/* Bottom Minimal Progress Bar & Slide Numbers */}
+        <div className="absolute bottom-4 sm:bottom-6 left-0 z-20">
+          <div className="layout-container flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-[9.5px] sm:text-xs font-sans tracking-[0.22em] text-[#AAA49B]">
+              <span className="text-[#F2EEE7] font-semibold">0{currentSlide + 1}</span>
+              <span className="opacity-40">/</span>
+              <span className="opacity-60">0{heroSlides.length}</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 ml-3">
+              {heroSlides.map((slide, idx) => (
+                <button
+                  key={slide.id}
+                  onClick={() => setCurrentSlide(idx)}
+                  aria-label={`Jump to slide ${idx + 1}`}
+                  className={`h-1 transition-all duration-500 rounded-full ${
+                    idx === currentSlide ? "w-8 bg-[#BFA27A]" : "w-2 bg-white/25 hover:bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Minimalist Bottom Indicator */}
-        <div className="flex justify-center pt-3 sm:pt-4">
-          <ScrollIndicator targetId="statement" />
-        </div>
       </section>
 
-      {/* =========================================================================
-          2. EDITORIAL STATEMENT TRANSITION (Generous Negative Space & Choreography)
-          ========================================================================= */}
-      <section
-        id="statement"
-        className="py-24 sm:py-32 md:py-40 bg-[#0D0D0C] border-b border-[rgba(242,238,231,0.06)] scroll-mt-10 text-center"
-      >
-        <div className="layout-container max-w-3xl mx-auto space-y-6 sm:space-y-8">
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT_DEFAULT}
-            transition={{ duration: 0.6, ease: LUXURY_EASE }}
-            className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block font-medium"
-          >
-            THE SCENTÉ PHILOSOPHY
-          </motion.span>
-
-          <motion.blockquote
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT_DEFAULT}
-            transition={{ duration: 0.85, delay: 0.08, ease: LUXURY_EASE }}
-            className="font-serif font-light text-fluid-section leading-[1.12] text-[#F2EEE7] tracking-[-0.025em]"
-          >
-            "A fragrance should not announce itself. <br className="hidden sm:inline" />
-            <span className="italic text-[#AAA49B]">It should remain.</span>"
-          </motion.blockquote>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT_DEFAULT}
-            transition={{ duration: 0.8, delay: 0.16, ease: LUXURY_EASE }}
-            className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light leading-[1.6] max-w-lg mx-auto"
-          >
-            Composed with patience, macerated in limited batches with 30% pure perfume oil, and designed for quiet, enduring presence.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          3. THE COLLECTION SECTION (#0D0D0C Dark Editorial Gallery)
-          ========================================================================= */}
-      <section
-        id="collection"
-        className="py-20 sm:py-28 bg-[#0D0D0C] border-b border-[rgba(242,238,231,0.06)]"
-      >
+      {/* =======================================================================
+          2. SHOP BY COLLECTION (Scentara Dual Campaign Banner — Women & Men)
+          ======================================================================= */}
+      <section id="collections" className="py-12 sm:py-16 bg-[#090908] border-b border-white/[0.06]">
         <div className="layout-container">
-          <div className="mb-14 sm:mb-18 pb-6 border-b border-[rgba(242,238,231,0.06)]">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
+            <div>
+              <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.24em] text-[#BFA27A] font-semibold block mb-2">
+                COLLECTIONS
+              </span>
+              <h2 className="font-sans font-bold text-2xl sm:text-3xl md:text-4xl text-[#F2EEE7] tracking-tight">
+                Shop by Collection
+              </h2>
+            </div>
+            <Link
+              to="/shop"
+              className="inline-flex items-center text-xs uppercase font-sans tracking-[0.18em] text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-300 font-medium"
+            >
+              <span>Explore All Compositions</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-2" />
+            </Link>
+          </div>
+
+          {/* Unified Dual Campaign Banner (Sleek Horizontal Ratio — Scentara Style) */}
+          <div className="relative overflow-hidden rounded-xl md:rounded-2xl border border-white/[0.08] shadow-2xl bg-[#121110]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              {/* WOMEN PERFUMES (Left Half) */}
+              <Link
+                to={EDITORIAL_COLLECTIONS.women.link}
+                className="group relative h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block"
+              >
+                <img
+                  src={EDITORIAL_COLLECTIONS.women.image}
+                  alt="Women Perfumes"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-[15%_center] md:object-[12%_center] transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+
+                {/* Subtle Hover Vignette */}
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300" />
+
+                {/* Modern Bottom Explore Pill */}
+                <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black/60 text-white border border-white/20 backdrop-blur-xl text-[11px] sm:text-xs uppercase font-sans tracking-[0.24em] font-semibold shadow-xl select-none">
+                    <span>EXPLORE</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </Link>
+
+              {/* MEN PERFUMES (Right Half) */}
+              <Link
+                to={EDITORIAL_COLLECTIONS.men.link}
+                aria-label="Explore Men Perfumes"
+                className="group relative h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block border-t md:border-t-0 md:border-l border-white/[0.08]"
+              >
+                <img
+                  src={EDITORIAL_COLLECTIONS.men.image}
+                  alt="Men Perfumes"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-[80%_center] md:object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+
+                {/* Subtle Hover Vignette */}
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300" />
+
+                {/* Modern Bottom Explore Pill */}
+                <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black/60 text-white border border-white/20 backdrop-blur-xl text-[11px] sm:text-xs uppercase font-sans tracking-[0.24em] font-semibold shadow-xl select-none">
+                    <span>EXPLORE</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =======================================================================
+          3. FEATURED PRODUCTS (BESTSELLERS — 4 Minimal Spacious Product Cards)
+          ======================================================================= */}
+      <section id="bestsellers" className="py-24 sm:py-32 bg-[#090908] border-b border-white/[0.06]">
+        <div className="layout-container">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-4 border-b border-white/[0.06] pb-6">
             <SectionHeading
-              eyebrow="THE COLLECTION"
-              title="Compositions for Every Version of You."
-              subtitle="Explore our permanent collection of Extraits de Parfum, handcrafted with pure perfume oils for extraordinary depth and longevity."
+              eyebrow="SIGNATURE SCENTS"
+              title="Bestsellers"
+              subtitle="Our most acclaimed Extraits de Parfum, macerated with 30%+ pure perfume oils for unrivaled depth."
               className="mb-0 max-w-2xl"
             />
-          </div>
-
-          {/* 6 Product Cards Grid (3 Columns Desktop, 2 Columns Tablet, 2 Columns Mobile) */}
-          <div className="scente-product-grid">
-            {activeProducts.slice(0, 6).map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
-          </div>
-
-          {/* Centered Collection CTA */}
-          <ScrollReveal delay={0.2} className="mt-8 sm:mt-16 md:mt-20 flex justify-center">
-            <Button
+            <Link
               to="/shop"
-              variant="solid"
-              className="px-4 py-2 sm:px-9 sm:py-3.5 text-[9.5px] sm:text-xs tracking-[0.08em] sm:tracking-[0.16em] rounded-lg sm:rounded-xl"
+              className="inline-flex items-center text-xs uppercase font-sans tracking-[0.16em] text-[#BFA27A] hover:text-[#D4BA94] transition-colors duration-300 font-medium"
             >
-              Explore the Collection
-            </Button>
-          </ScrollReveal>
+              <span>View Full Catalog</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-2" />
+            </Link>
+          </div>
+
+          {/* 4 Clean Modern Product Cards on Desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+            {activeProducts.slice(0, 4).map((product) => {
+              const primaryImg = product.image || product.primary_image;
+              const secondaryImg = product.secondaryImage || product.secondary_image;
+              const isAdded = addedItemKey === product.id;
+
+              return (
+                <div
+                  key={product.id}
+                  className="group flex flex-col h-full bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-500"
+                >
+                  {/* Image Container with Smooth Secondary Hover Cross-Fade */}
+                  <Link
+                    to={`/product/${product.slug}`}
+                    className="relative aspect-[4/5] overflow-hidden bg-[#141311] block"
+                  >
+                    <img
+                      src={getOptimizedImageUrl(primaryImg, { width: 500, quality: 85 })}
+                      alt={product.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+
+                    {secondaryImg && (
+                      <img
+                        src={getOptimizedImageUrl(secondaryImg, { width: 500, quality: 80 })}
+                        alt={`${product.name} lifestyle`}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover object-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out"
+                      />
+                    )}
+
+                    {/* Subtle Concentration Badge */}
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="text-[8.5px] uppercase font-sans tracking-[0.18em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2.5 py-1 rounded-full font-semibold backdrop-blur-md">
+                        {product.concentration || "30% Extrait"}
+                      </span>
+                    </div>
+                  </Link>
+
+                  {/* Minimal Details & Quick Action */}
+                  <div className="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-[9px] uppercase font-sans tracking-[0.2em] text-[#888279]">
+                        <span>{product.subtitle || "Extrait de Parfum"}</span>
+                        <span className="text-[#BFA27A] font-medium">{product.volume || "50ml"}</span>
+                      </div>
+
+                      <Link to={`/product/${product.slug}`}>
+                        <h3 className="font-sans font-bold text-lg sm:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-200 tracking-tight">
+                          {product.name}
+                        </h3>
+                      </Link>
+
+                      <p className="text-xs font-sans text-[#AAA49B] font-light line-clamp-1">
+                        {product.olfactiveFamily}
+                      </p>
+                    </div>
+
+                    {/* Price & Modern Quick Add Button */}
+                    <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2">
+                      <span className="text-sm sm:text-base font-sans font-semibold text-[#F2EEE7] tracking-tight">
+                        {product.formattedPrice}
+                      </span>
+
+                      <button
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        aria-label={`Quick add ${product.name} to bag`}
+                        className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-sans tracking-[0.14em] font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
+                          isAdded
+                            ? "bg-emerald-800 text-emerald-100 border border-emerald-500/50"
+                            : "bg-[#181714] text-[#F2EEE7] hover:bg-[#BFA27A] hover:text-[#090908] border border-white/10 hover:border-[#BFA27A]"
+                        }`}
+                      >
+                        {isAdded ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-300 stroke-[2.5]" />
+                            <span>Added</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-3 h-3 stroke-[2]" />
+                            <span>Add</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
 
 
+      {/* =======================================================================
+          5. NEW ARRIVALS (Horizontal Interactive Product Track)
+          ======================================================================= */}
+      <section className="py-24 sm:py-32 bg-[#090908] border-b border-white/[0.06]">
+        <div className="layout-container">
+          <div className="flex items-end justify-between mb-10 sm:mb-14">
+            <div>
+              <span className="text-[10px] sm:text-[11px] font-sans uppercase tracking-[0.24em] text-[#BFA27A] font-semibold block mb-2">
+                LATEST RELEASES
+              </span>
+              <h2 className="font-sans font-bold text-3xl sm:text-4xl md:text-5xl text-[#F2EEE7] tracking-tight">
+                New Arrivals
+              </h2>
+            </div>
 
-      {/* =========================================================================
-          6. METHODOLOGY / BRAND PILLARS (#0D0D0C Staggered Entrance)
-          ========================================================================= */}
-      <section className="py-20 sm:py-28 bg-[#0D0D0C] border-b border-[rgba(242,238,231,0.06)]">
+            {/* Desktop Navigation Arrows */}
+            <div className="hidden sm:flex items-center gap-3">
+              <button
+                onClick={() => scrollArrivals("left")}
+                aria-label="Previous products"
+                className="w-10 h-10 rounded-full border border-white/10 text-[#F2EEE7] flex items-center justify-center hover:bg-[#BFA27A] hover:text-[#090908] hover:border-[#BFA27A] transition-colors duration-200"
+              >
+                <ChevronLeft className="w-4 h-4 stroke-[2]" />
+              </button>
+              <button
+                onClick={() => scrollArrivals("right")}
+                aria-label="Next products"
+                className="w-10 h-10 rounded-full border border-white/10 text-[#F2EEE7] flex items-center justify-center hover:bg-[#BFA27A] hover:text-[#090908] hover:border-[#BFA27A] transition-colors duration-200"
+              >
+                <ChevronRight className="w-4 h-4 stroke-[2]" />
+              </button>
+            </div>
+          </div>
+
+          {/* Smooth Horizontal Track */}
+          <div
+            ref={arrivalsTrackRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
+            style={{ scrollBehavior: "smooth" }}
+          >
+            {activeProducts.map((product) => {
+              const primaryImg = product.image || product.primary_image;
+              const isAdded = addedItemKey === product.id;
+
+              return (
+                <div
+                  key={`new-${product.id}`}
+                  className="min-w-[260px] sm:min-w-[290px] md:min-w-[320px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
+                >
+                  <Link to={`/product/${product.slug}`} className="relative aspect-[4/3] overflow-hidden bg-[#141311] block">
+                    <img
+                      src={getOptimizedImageUrl(primaryImg, { width: 450, quality: 80 })}
+                      alt={product.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <span className="text-[8px] uppercase font-sans tracking-[0.16em] bg-[#090908]/90 text-[#F2EEE7] px-2.5 py-0.5 rounded-full border border-white/10">
+                        New Batch
+                      </span>
+                    </div>
+                  </Link>
+
+                  <div className="p-5 flex flex-col flex-grow justify-between space-y-3">
+                    <div>
+                      <span className="text-[9px] uppercase font-sans tracking-[0.2em] text-[#888279] block">
+                        {product.subtitle || "Extrait de Parfum"}
+                      </span>
+                      <Link to={`/product/${product.slug}`}>
+                        <h4 className="font-sans font-bold text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors mt-0.5 tracking-tight">
+                          {product.name}
+                        </h4>
+                      </Link>
+                    </div>
+
+                    <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                      <span className="text-sm font-sans font-semibold text-[#F2EEE7]">
+                        {product.formattedPrice}
+                      </span>
+                      <button
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        className={`text-[9.5px] uppercase font-sans tracking-[0.14em] font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                          isAdded
+                            ? "bg-emerald-800 text-emerald-100"
+                            : "bg-[#181714] text-[#AAA49B] hover:bg-[#BFA27A] hover:text-[#090908]"
+                        }`}
+                      >
+                        {isAdded ? "Added ✓" : "Quick Add"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* =======================================================================
+          8. CUSTOMER REVIEWS (Refined Social Proof)
+          ======================================================================= */}
+      <section className="py-24 sm:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
         <div className="layout-container">
           <SectionHeading
-            eyebrow="OUR METHODOLOGY"
-            title="The Standard of Haute Parfumerie"
-            subtitle="We refuse mass-market compromises. Every drop is blended and rested under rigorous standards."
+            eyebrow="PATRON IMPRESSIONS"
+            title="What Our Customers Say"
+            subtitle="Verified reviews from fragrance connoisseurs and patrons across Pakistan."
             align="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-10 mt-14">
-            {BRAND_VALUES.map((val, idx) => (
-              <ScrollReveal
-                key={val.number}
-                delay={idx * 0.1}
-                className="p-8 bg-[#121110] border border-[rgba(242,238,231,0.04)] flex flex-col justify-between transition-all duration-300 hover:border-[rgba(191,162,122,0.25)] transform-gpu"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-16">
+            {TESTIMONIALS.map((review) => (
+              <div
+                key={review.id}
+                className="p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
               >
-                <div>
-                  <span className="font-serif font-light text-3xl text-[#777169] block mb-4">
-                    {val.number}
-                  </span>
-                  <h3 className="font-serif text-xl text-[#F2EEE7] mb-3 font-normal">
-                    {val.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light leading-[1.6]">
-                    {val.description}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-1 text-[#BFA27A]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#BFA27A] stroke-none" />
+                    ))}
+                  </div>
+
+                  <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic">
+                    "{review.quote}"
                   </p>
                 </div>
-              </ScrollReveal>
+
+                <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                  <div>
+                    <h4 className="font-sans font-semibold text-sm text-[#F2EEE7]">
+                      {review.name}
+                    </h4>
+                    <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#888279] block">
+                      {review.city} • Verified Patron
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] bg-[#181714] px-2.5 py-1 rounded-full border border-[rgba(191,162,122,0.2)]">
+                    {review.fragrance}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* =======================================================================
+          9. FINAL CAMPAIGN BANNER (Find Your Signature)
+          ======================================================================= */}
+      <section className="relative py-28 sm:py-36 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
+        {/* Subtle Ambient Radial Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-radial from-[#BFA27A]/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
 
+        <div className="layout-container relative z-10 max-w-3xl mx-auto space-y-8">
+          <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] font-semibold block">
+            THE SIGNATURE EXPERIENCE
+          </span>
+
+          <h2 className="font-sans font-bold text-4xl sm:text-5xl md:text-6xl text-[#F2EEE7] leading-[1.05] tracking-tight">
+            Find Your Signature.
+          </h2>
+
+          <p className="text-sm sm:text-base font-sans text-[#AAA49B] font-normal leading-relaxed max-w-xl mx-auto">
+            Discover the fragrance that becomes an inseparable part of your presence. Unhurried, distinctive, and handcrafted to endure.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Link
+              to="/shop"
+              className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] text-xs font-semibold uppercase tracking-[0.16em] transition-all duration-300 shadow-xl shadow-black/50"
+            >
+              <span>Shop All Fragrances</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-2 stroke-[2]" />
+            </Link>
+
+            <Link
+              to="/scent-finder"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] text-xs font-medium uppercase tracking-[0.16em] transition-all duration-300"
+            >
+              Consult Scent Quiz
+            </Link>
+          </div>
+
+          <div className="pt-6">
+            <p className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#888279] font-medium">
+              Complimentary Express Delivery & Cash on Delivery Available Across Pakistan
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

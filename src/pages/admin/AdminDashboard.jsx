@@ -16,6 +16,7 @@ import {
   Eye,
   Plus,
   MapPin,
+  Sparkles,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -87,6 +88,14 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex items-center space-x-2.5 self-stretch sm:self-auto">
+          <Link
+            to="/admin/hero"
+            className="flex-1 sm:flex-initial flex items-center justify-center space-x-2 bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] font-semibold px-4 py-2.5 text-xs font-sans uppercase tracking-[0.16em] transition-all shadow-[0_4px_20px_rgba(191,162,122,0.25)] min-h-[44px]"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#0D0D0C]" />
+            <span>Edit Hero Section</span>
+          </Link>
+
           <Link
             to="/admin/products/new"
             className="flex-1 sm:flex-initial flex items-center justify-center space-x-2 bg-[#121110] border border-[rgba(242,238,231,0.14)] hover:border-[#BFA27A] px-4 py-2.5 text-xs font-sans uppercase tracking-[0.16em] text-[#F2EEE7] hover:text-[#BFA27A] transition-colors min-h-[44px]"

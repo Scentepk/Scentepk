@@ -12,6 +12,7 @@ import {
   X,
   Shield,
   Mail,
+  Sparkles,
   ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -63,6 +64,11 @@ export default function AdminLayout() {
       path: "/admin",
       icon: LayoutDashboard,
       exact: true,
+    },
+    {
+      name: "Hero Section",
+      path: "/admin/hero",
+      icon: Sparkles,
     },
     {
       name: "Products",

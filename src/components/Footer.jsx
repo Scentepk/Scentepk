@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="layout-container space-y-12 sm:space-y-16">
         {/* Main Footer Grid Layout (Brand + Explore + Client Care + Legal) */}
         <ScrollReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 md:gap-8 lg:gap-12 xl:gap-14 items-start pb-12 sm:pb-16 border-b border-[rgba(242,238,231,0.06)]">
-          
+
           {/* 1. BRAND AREA (Left Column) */}
           <div className="md:col-span-2 lg:col-span-4 space-y-3.5">
             <Link to="/" className="inline-block group focus:outline-none">
@@ -38,6 +38,14 @@ export default function Footer() {
                   className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
                 >
                   Shop
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/wishlist"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                >
+                  Wishlist
                 </Link>
               </li>
               <li>
@@ -137,7 +145,16 @@ export default function Footer() {
 
         {/* BOTTOM BAR (Copyright Left, Social Icons Right) */}
         <div className="flex flex-col sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2">
-          <p>© {currentYear} SCENTÉ PARFUMS. ALL RIGHTS RESERVED.</p>
+          <div className="flex items-center space-x-3">
+            <p>© {currentYear} SCENTÉ PARFUMS. ALL RIGHTS RESERVED.</p>
+            <span className="opacity-30">|</span>
+            <Link
+              to="/admin"
+              className="hover:text-[#BFA27A] transition-colors"
+            >
+              ADMIN
+            </Link>
+          </div>
 
           {/* 4 Circular Social Icons (Instagram, Facebook, TikTok, WhatsApp) */}
           <div className="flex items-center space-x-3">

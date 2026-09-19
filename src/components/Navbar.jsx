@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, ArrowRight, Search } from "lucide-react";
+import { Menu, X, ShoppingBag, ArrowRight, Search, Heart, Shield } from "lucide-react";
 import Input from "./Input";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { PRODUCTS } from "../data/products";
 import { getActiveProducts } from "../services/products";
 import { LUXURY_EASE, SUBTLE_EASE } from "../lib/animations";
@@ -23,6 +24,7 @@ export default function Navbar() {
 
   const location = useLocation();
   const { totalCount } = useCart();
+  const { wishlistCount } = useWishlist();
 
   // Fresh live catalog loader
   const loadLiveCatalog = useCallback(async () => {
@@ -271,9 +273,68 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Far Right Actions: BAG (0) followed by SEARCH INPUT */}
-          <div className="flex items-center justify-end space-x-4 lg:space-x-6 flex-1 lg:flex-initial">
-            {/* 1. BAG */}
+          {/* Far Right Actions: WISHLIST, BAG (0) followed by SEARCH INPUT */}
+          <div className="flex items-center justify-end space-x-3 lg:space-x-5 flex-1 lg:flex-initial">
+            {/* 1. WISHLIST */}
+            <NavLink
+              to="/wishlist"
+              className={({ isActive }) =>
+                `group flex items-center space-x-1.5 py-1 px-1 transition-colors duration-300 focus:outline-none relative ${isActive ? "text-[#F2EEE7]" : "text-[#AAA49B] hover:text-[#F2EEE7]"
+                }`
+              }
+              aria-label={`Wishlist (${wishlistCount} items)`}
+            >
+              {({ isActive }) => (
+                <>
+                  <div className="hidden lg:flex items-center space-x-1 text-[11px] xl:text-[11.5px] font-sans uppercase tracking-nav">
+                    <span className="relative inline-flex items-center gap-1">
+                      <Heart
+                        className={`w-3.5 h-3.5 transition-colors ${wishlistCount > 0
+                            ? "text-[#BFA27A] fill-[#BFA27A]"
+                            : isActive
+                              ? "text-[#BFA27A]"
+                              : "text-[#AAA49B] group-hover:text-[#BFA27A]"
+                          }`}
+                      />
+                      <span className={isActive ? "text-[#F2EEE7] font-medium" : "text-[#AAA49B] group-hover:text-[#F2EEE7]"}>
+                        WISHLIST
+                      </span>
+                      {isActive && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute -bottom-1.5 inset-x-0 h-[1px] bg-[#BFA27A] block pointer-events-none"
+                        />
+                      )}
+                    </span>
+                    <span
+                      className={`text-[10px] font-light ${isActive ? "text-[#BFA27A]" : "text-[#777169] group-hover:text-[#BFA27A]"
+                        }`}
+                    >
+                      ({wishlistCount})
+                    </span>
+                  </div>
+                  <div className="lg:hidden flex items-center relative">
+                    <Heart
+                      className={`w-5 h-5 stroke-[1.4] transition-colors ${wishlistCount > 0
+                          ? "text-[#BFA27A] fill-[#BFA27A]"
+                          : isActive
+                            ? "text-[#BFA27A]"
+                            : "text-[#F2EEE7] group-hover:text-[#BFA27A]"
+                        }`}
+                    />
+                    {wishlistCount > 0 && (
+                      <span className="absolute -top-1 -right-2 text-[9px] font-medium bg-[#BFA27A] text-[#0D0D0C] w-4 h-4 rounded-full flex items-center justify-center">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
+            </NavLink>
+
+            {/* 2. BAG */}
             <NavLink
               to="/cart"
               className={({ isActive }) =>
