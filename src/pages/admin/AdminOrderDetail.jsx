@@ -614,6 +614,14 @@ export default function AdminOrderDetail() {
               PKR {Number(order.subtotal || order.total).toLocaleString()}
             </span>
           </div>
+          {order.promo_code && (
+            <div className="flex justify-between text-[#BFA27A]">
+              <span>Promo Privilege ({order.promo_code})</span>
+              <span className="font-serif">
+                -PKR {Number(order.discount_amount || 0).toLocaleString()}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between text-[#AAA49B]">
             <span>Express Delivery</span>
             <span className="text-[#BFA27A] uppercase text-[10px]">

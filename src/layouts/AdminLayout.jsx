@@ -14,6 +14,7 @@ import {
   Mail,
   Sparkles,
   ChevronRight,
+  Tag,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUnreadInquiriesCount } from "../services/inquiries";
@@ -74,6 +75,11 @@ export default function AdminLayout() {
       name: "Products",
       path: "/admin/products",
       icon: Package,
+    },
+    {
+      name: "Promo Codes",
+      path: "/admin/promo-codes",
+      icon: Tag,
     },
     {
       name: "Orders",

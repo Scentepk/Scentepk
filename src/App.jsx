@@ -38,6 +38,7 @@ const AdminOrderList = lazy(() => import("./pages/admin/AdminOrderList"));
 const AdminOrderDetail = lazy(() => import("./pages/admin/AdminOrderDetail"));
 const AdminInquiries = lazy(() => import("./pages/admin/AdminInquiries"));
 const AdminHeroManagement = lazy(() => import("./pages/admin/AdminHeroManagement"));
+const AdminPromoCodes = lazy(() => import("./pages/admin/AdminPromoCodes"));
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 
 export default function App() {
@@ -93,6 +94,9 @@ export default function App() {
                     <Route path="products" element={<AdminProductList />} />
                     <Route path="products/new" element={<AdminProductForm />} />
                     <Route path="products/:id/edit" element={<AdminProductForm />} />
+
+                    {/* Promo Codes & Discounts Management */}
+                    <Route path="promo-codes" element={<AdminPromoCodes />} />
 
                     {/* Order Logistics Management */}
                     <Route path="orders" element={<AdminOrderList />} />

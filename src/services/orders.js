@@ -4,12 +4,14 @@ import { DELIVERY_CONFIG } from "../config/delivery.js";
 const LOCAL_STORAGE_ORDERS_KEY = "scente_admin_orders_cache";
 const LOCAL_STORAGE_PRODUCTS_KEY = "scente_admin_products_cache";
 
+import { incrementLocalPromoUsage } from "./promoCodes.js";
+
 /**
  * Submit Cash on Delivery Order
  * In Supabase-connected mode, delegates to atomic security-definer RPC function.
  * In local prototype mode, generates structured payload and updates local caches.
  */
-export async function createCodOrder(customerData, cartItems) {
+export async function createCodOrder(customerData, cartItems, promoDetails = null) {
   const itemsPayload = cartItems.map((item) => {
     const variantId =
       item.variantId ||
@@ -33,7 +35,7 @@ export async function createCodOrder(customerData, cartItems) {
 
   // 1. If Supabase is connected, execute atomic server-side RPC
   if (isSupabaseConfigured && supabase) {
-    const { data, error } = await supabase.rpc("create_cod_order", {
+    const rpcPayload = {
       p_customer_full_name: customerData.fullName,
       p_customer_phone: customerData.phone,
       p_customer_email: customerData.email || null,
@@ -42,7 +44,10 @@ export async function createCodOrder(customerData, cartItems) {
       p_province: customerData.province,
       p_postal_code: customerData.postalCode || null,
       p_items: itemsPayload,
-    });
+      p_promo_code: promoDetails?.code || null,
+    };
+
+    const { data, error } = await supabase.rpc("create_cod_order", rpcPayload);
 
     if (error) {
       console.error("Supabase RPC create_cod_order error:", error);
@@ -73,7 +78,24 @@ export async function createCodOrder(customerData, cartItems) {
     0
   );
   const deliveryFee = DELIVERY_CONFIG.fee;
-  const total = subtotal + deliveryFee;
+
+  let discountAmount = 0;
+  if (promoDetails && promoDetails.code) {
+    if (promoDetails.discountType === "percentage") {
+      const raw = Math.round((subtotal * (Number(promoDetails.discountValue) || 0)) / 100);
+      discountAmount = promoDetails.maxDiscountAmount
+        ? Math.min(raw, Number(promoDetails.maxDiscountAmount))
+        : raw;
+    } else if (promoDetails.discountType === "fixed") {
+      discountAmount = Math.min(Number(promoDetails.discountValue || 0), subtotal);
+    } else if (promoDetails.discountAmount) {
+      discountAmount = Math.min(Number(promoDetails.discountAmount), subtotal);
+    }
+    discountAmount = Math.max(0, Math.min(discountAmount, subtotal));
+    incrementLocalPromoUsage(promoDetails.code);
+  }
+
+  const total = Math.max(0, subtotal - discountAmount) + deliveryFee;
   const reference = `SC-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const localOrder = {
@@ -89,6 +111,10 @@ export async function createCodOrder(customerData, cartItems) {
     payment_method: "cod",
     subtotal,
     delivery_fee: deliveryFee,
+    discount_amount: discountAmount,
+    promo_code: promoDetails?.code || null,
+    discount_type: promoDetails?.discountType || null,
+    discount_value: promoDetails?.discountValue || null,
     total,
     status: "pending",
     carrier: null,

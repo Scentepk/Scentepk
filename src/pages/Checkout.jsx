@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { Check, ShieldCheck, ArrowLeft, Truck, AlertCircle, Loader2, Copy, Search, CheckCircle2 } from "lucide-react";
+import { Check, ShieldCheck, ArrowLeft, Truck, AlertCircle, Loader2, Copy, Search, CheckCircle2, Tag, X } from "lucide-react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { motion, AnimatePresence } from "framer-motion";
 import { LUXURY_EASE } from "../lib/animations";
 import SEO from "../components/SEO";
+import { validatePromoCode } from "../services/promoCodes";
 
 export default function Checkout() {
   const { cartItems, buyNowItem, clearBuyNow, placeOrder, validateAndSyncStock } = useCart();
@@ -38,6 +39,83 @@ export default function Checkout() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
+
+  // Promo Code State
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const [promoError, setPromoError] = useState("");
+  const [promoSuccess, setPromoSuccess] = useState("");
+
+  // Re-verify applied promo when cart subtotal changes
+  useEffect(() => {
+    if (!appliedPromo) return;
+
+    let isMounted = true;
+    validatePromoCode(appliedPromo.code, checkoutSubtotal, formData.phone, formData.email).then((res) => {
+      if (!isMounted) return;
+      if (res.valid) {
+        setAppliedPromo(res);
+        setPromoError("");
+      } else {
+        setAppliedPromo(null);
+        setPromoError(res.message || "Promo code is no longer applicable to your cart.");
+        setPromoSuccess("");
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [checkoutSubtotal]);
+
+  const discountAmount = appliedPromo?.discountAmount || 0;
+  const finalTotalDue = Math.max(0, checkoutSubtotal - discountAmount);
+  const formattedTotalDue = `PKR ${finalTotalDue.toLocaleString()}`;
+  const formattedDiscountAmount = `-PKR ${discountAmount.toLocaleString()}`;
+
+  const handleApplyPromo = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const cleanCode = promoCodeInput.trim().toUpperCase();
+    if (!cleanCode) {
+      setPromoError("Please enter a promo code.");
+      setPromoSuccess("");
+      return;
+    }
+
+    setIsApplyingPromo(true);
+    setPromoError("");
+    setPromoSuccess("");
+
+    try {
+      const res = await validatePromoCode(cleanCode, checkoutSubtotal, formData.phone, formData.email);
+      if (res.valid) {
+        setAppliedPromo(res);
+        setPromoSuccess(`Promo code ${res.code} applied! Saved PKR ${res.discountAmount.toLocaleString()}.`);
+        setPromoError("");
+      } else {
+        setAppliedPromo(null);
+        setPromoError(res.message || "Invalid promo code. Please check and try again.");
+        setPromoSuccess("");
+      }
+    } catch (err) {
+      console.error("Promo validation error:", err);
+      setPromoError("Unable to validate promo code. Please try again.");
+      setPromoSuccess("");
+    } finally {
+      setIsApplyingPromo(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoCodeInput("");
+    setPromoError("");
+    setPromoSuccess("");
+  };
 
   // Validate stock on checkout mount
   useEffect(() => {
@@ -194,7 +272,7 @@ export default function Checkout() {
     setSubmissionError("");
 
     try {
-      const generatedOrder = await placeOrder(formData, checkoutItems);
+      const generatedOrder = await placeOrder(formData, checkoutItems, appliedPromo);
       setConfirmedOrder(generatedOrder);
       try {
         sessionStorage.setItem("scente_confirmed_order", JSON.stringify(generatedOrder));
@@ -361,6 +439,22 @@ export default function Checkout() {
                   {confirmedOrder.customer.phone}
                 </span>
               </div>
+
+              {confirmedOrder.promo_code && (
+                <div className="pt-3 border-t border-[rgba(242,238,231,0.06)] col-span-1 sm:col-span-2 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] uppercase text-[#777169] tracking-micro">
+                      PROMO PRIVILEGE:
+                    </span>
+                    <span className="font-mono text-xs text-[#BFA27A] px-2 py-0.5 bg-[#BFA27A]/10 border border-[#BFA27A]/30">
+                      {confirmedOrder.promo_code}
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#BFA27A] font-medium font-sans">
+                    -PKR {Number(confirmedOrder.discount_amount || 0).toLocaleString()} SAVINGS
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Compositions List */}
@@ -714,12 +808,119 @@ export default function Checkout() {
                 ))}
               </div>
 
+              {/* Optional Promo Code Box */}
+              <div className="pt-4 border-t border-[rgba(242,238,231,0.06)] font-sans space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5 text-xs text-[#AAA49B]">
+                    <Tag className="w-3.5 h-3.5 text-[#BFA27A]" />
+                    <span className="text-[10px] uppercase tracking-wider text-[#777169] font-medium">
+                      Promo Code
+                    </span>
+                  </div>
+                  {appliedPromo && (
+                    <span className="text-[9.5px] uppercase tracking-wider text-emerald-400 font-mono">
+                      Active
+                    </span>
+                  )}
+                </div>
+
+                {appliedPromo ? (
+                  <div className="bg-[#0D0D0C] border border-[#BFA27A]/40 p-3 rounded flex items-center justify-between gap-3">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono text-xs text-[#F2EEE7] font-semibold tracking-wider">
+                          {appliedPromo.code}
+                        </span>
+                        <span className="text-[9px] uppercase px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium">
+                          Applied
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#BFA27A] font-light">
+                        Discount of PKR {appliedPromo.discountAmount.toLocaleString()} applied
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleRemovePromo}
+                      className="text-xs text-[#AAA49B] hover:text-rose-400 p-1.5 transition-colors cursor-pointer flex items-center space-x-1 shrink-0"
+                      title="Remove promo code"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      <span className="text-[10px] uppercase tracking-wider">Remove</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoCodeInput}
+                        onChange={(e) => {
+                          setPromoCodeInput(e.target.value.toUpperCase());
+                          if (promoError) setPromoError("");
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleApplyPromo(e);
+                          }
+                        }}
+                        placeholder="Enter promo code"
+                        className="flex-1 bg-[#0D0D0C] border border-[rgba(242,238,231,0.12)] focus:border-[#BFA27A] text-xs font-mono uppercase text-[#F2EEE7] px-3.5 py-2.5 outline-none transition-colors placeholder:normal-case placeholder:font-sans placeholder:text-[#55504A]"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyPromo}
+                        disabled={isApplyingPromo || !promoCodeInput.trim()}
+                        className="bg-[#181714] hover:bg-[#BFA27A] text-[#F2EEE7] hover:text-[#0D0D0C] border border-[#BFA27A]/50 px-4 py-2.5 text-[10.5px] uppercase tracking-wider transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:hover:bg-[#181714] disabled:hover:text-[#F2EEE7] disabled:cursor-not-allowed font-medium shrink-0 flex items-center justify-center min-w-[70px]"
+                      >
+                        {isApplyingPromo ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#BFA27A]" />
+                        ) : (
+                          <span>Apply</span>
+                        )}
+                      </button>
+                    </div>
+
+                    {promoError && (
+                      <p className="text-[11px] font-sans text-rose-400 flex items-start space-x-1 pt-0.5">
+                        <AlertCircle className="w-3.5 h-3.5 mr-1 shrink-0 mt-0.5" />
+                        <span>{promoError}</span>
+                      </p>
+                    )}
+                    {promoSuccess && (
+                      <p className="text-[11px] font-sans text-emerald-400 flex items-center space-x-1 pt-0.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 mr-1 shrink-0" />
+                        <span>{promoSuccess}</span>
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Totals Breakdown */}
               <div className="space-y-3 text-xs font-sans text-[#AAA49B] pt-4 border-t border-[rgba(242,238,231,0.06)]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="text-[#F2EEE7] font-medium">{formattedSubtotal}</span>
                 </div>
+
+                {appliedPromo && (
+                  <>
+                    <div className="flex justify-between items-center text-[#F2EEE7]">
+                      <span>Promo Code</span>
+                      <span className="font-mono text-xs text-[#BFA27A] font-medium">
+                        {appliedPromo.code} <span className="text-[9.5px] text-[#BFA27A]/80 uppercase ml-1">[Applied]</span>
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-[#BFA27A]">
+                      <span>Discount</span>
+                      <span className="font-serif font-medium">{formattedDiscountAmount}</span>
+                    </div>
+                  </>
+                )}
+
                 <div className="flex justify-between">
                   <span>Express Courier (Pakistan)</span>
                   <span className="text-[#BFA27A] font-medium uppercase tracking-micro">COMPLIMENTARY</span>
@@ -733,7 +934,7 @@ export default function Checkout() {
               {/* Total Due */}
               <div className="flex justify-between items-baseline font-sans text-xl sm:text-2xl font-light text-[#F2EEE7] pt-3 border-t border-[rgba(242,238,231,0.06)]">
                 <span>Total Due</span>
-                <span>{formattedSubtotal}</span>
+                <span>{formattedTotalDue}</span>
               </div>
 
               {/* Submit CTA */}

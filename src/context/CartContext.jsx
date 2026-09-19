@@ -239,7 +239,7 @@ export function CartProvider({ children }) {
    * Connects to Supabase createCodOrder service or structured fallback
    * Supports both regular Bag checkout and isolated Buy Now checkout
    */
-  const placeOrder = async (customerData, itemsToOrder = null) => {
+  const placeOrder = async (customerData, itemsToOrder = null, promoDetails = null) => {
     const isBuyNowOrder = Boolean(itemsToOrder && itemsToOrder.length > 0) || Boolean(buyNowItem);
     const orderItems = (itemsToOrder && itemsToOrder.length > 0)
       ? itemsToOrder
@@ -260,7 +260,7 @@ export function CartProvider({ children }) {
 
     let orderPayload;
     try {
-      const result = await createCodOrder(customerData, orderItems);
+      const result = await createCodOrder(customerData, orderItems, promoDetails);
       orderPayload = result.data;
     } catch (err) {
       // Re-sync stock immediately to reflect current state to customer
@@ -270,6 +270,8 @@ export function CartProvider({ children }) {
 
     const fullOrderDetails = {
       ...orderPayload,
+      promo_code: orderPayload.promo_code || promoDetails?.code || null,
+      discount_amount: orderPayload.discount_amount ?? promoDetails?.discountAmount ?? 0,
       customer: {
         fullName: customerData.fullName,
         phone: customerData.phone,
