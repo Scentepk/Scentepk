@@ -34,7 +34,7 @@ export default function NotFound() {
 
         {/* Headline */}
         <div className="space-y-3">
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-[#F2EEE7] tracking-tight leading-tight">
+          <h1 className="font-serif text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-light text-[#F2EEE7] tracking-tight leading-tight">
             The Essence Has Vanished
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light max-w-md mx-auto leading-relaxed">
@@ -63,10 +63,6 @@ export default function NotFound() {
         <div className="pt-8 border-t border-[rgba(242,238,231,0.06)] flex flex-wrap items-center justify-center gap-6 text-[11px] font-sans text-[#777169]">
           <Link to="/track" className="hover:text-[#BFA27A] transition-colors">
             Track Your Order
-          </Link>
-          <span>•</span>
-          <Link to="/scent-finder" className="hover:text-[#BFA27A] transition-colors">
-            Scent Finder
           </Link>
           <span>•</span>
           <Link to="/contact" className="hover:text-[#BFA27A] transition-colors">

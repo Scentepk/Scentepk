@@ -464,3 +464,42 @@ export async function updateOrderTrackingAdmin(orderId, { carrier, trackingNumbe
     return { data: null, error: err };
   }
 }
+
+/**
+ * Admin: Permanently delete an order and its associated order items (via cascade)
+ */
+export async function deleteOrderAdmin(orderId) {
+  if (!orderId) {
+    return { success: false, error: new Error("Order identifier required.") };
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    const items = getLocalOrdersStore();
+    const filtered = items.filter((o) => o.id !== orderId && o.reference !== orderId);
+    saveLocalOrdersStore(filtered);
+    return { success: true, error: null };
+  }
+
+  try {
+    let query = supabase.from("orders").delete();
+    if (isUuid(orderId)) {
+      query = query.eq("id", orderId.trim());
+    } else {
+      query = query.eq("reference", orderId.trim().toUpperCase());
+    }
+
+    const { error } = await query;
+    if (error) throw error;
+
+    // Also update local cache if present
+    const items = getLocalOrdersStore();
+    const filtered = items.filter((o) => o.id !== orderId && o.reference !== orderId);
+    saveLocalOrdersStore(filtered);
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error(`Failed to delete order ${orderId}:`, err);
+    return { success: false, error: err };
+  }
+}
+

@@ -31,11 +31,11 @@ export default function Footer() {
             <h4 className="text-[10.5px] sm:text-[11px] font-sans uppercase tracking-[0.22em] text-[#F2EEE7] font-medium leading-none">
               EXPLORE
             </h4>
-            <ul className="space-y-3 text-[12px] font-sans tracking-[0.06em] font-light">
+            <ul className="space-y-1.5 text-[12px] font-sans tracking-[0.06em] font-light">
               <li>
                 <Link
                   to="/shop"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Shop
                 </Link>
@@ -43,7 +43,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/wishlist"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Wishlist
                 </Link>
@@ -51,17 +51,9 @@ export default function Footer() {
               <li>
                 <Link
                   to="/about"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/scent-finder"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
-                >
-                  Scent Finder
                 </Link>
               </li>
             </ul>
@@ -72,11 +64,11 @@ export default function Footer() {
             <h4 className="text-[10.5px] sm:text-[11px] font-sans uppercase tracking-[0.22em] text-[#F2EEE7] font-medium leading-none">
               CLIENT CARE
             </h4>
-            <ul className="space-y-3 text-[12px] font-sans tracking-[0.06em] font-light">
+            <ul className="space-y-1.5 text-[12px] font-sans tracking-[0.06em] font-light">
               <li>
                 <Link
                   to="/track"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Track Order
                 </Link>
@@ -84,7 +76,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/contact"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Contact
                 </Link>
@@ -92,7 +84,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/delivery-returns"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Delivery & Returns
                 </Link>
@@ -100,7 +92,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/cod-guide"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   COD Guide
                 </Link>
@@ -113,11 +105,11 @@ export default function Footer() {
             <h4 className="text-[10.5px] sm:text-[11px] font-sans uppercase tracking-[0.22em] text-[#F2EEE7] font-medium leading-none">
               LEGAL
             </h4>
-            <ul className="space-y-3 text-[12px] font-sans tracking-[0.06em] font-light">
+            <ul className="space-y-1.5 text-[12px] font-sans tracking-[0.06em] font-light">
               <li>
                 <Link
                   to="/privacy"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Privacy Policy
                 </Link>
@@ -125,7 +117,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/terms"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Terms of Service
                 </Link>
@@ -133,7 +125,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/authenticity"
-                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-0.5 whitespace-nowrap"
+                  className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
                   Authenticity Guarantee
                 </Link>
@@ -144,16 +136,9 @@ export default function Footer() {
         </ScrollReveal>
 
         {/* BOTTOM BAR (Copyright Left, Social Icons Right) */}
-        <div className="flex flex-col sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2 text-center sm:text-left">
           <div className="flex items-center space-x-3">
             <p>© {currentYear} SCENTÉ PARFUMS. ALL RIGHTS RESERVED.</p>
-            <span className="opacity-30">|</span>
-            <Link
-              to="/admin"
-              className="hover:text-[#BFA27A] transition-colors"
-            >
-              ADMIN
-            </Link>
           </div>
 
           {/* 4 Circular Social Icons (Instagram, Facebook, TikTok, WhatsApp) */}
@@ -164,7 +149,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="SCENTÉ Instagram Profile"
-              className="w-8 h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
+              className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -179,7 +164,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="SCENTÉ Facebook Page"
-              className="w-8 h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
+              className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
@@ -192,7 +177,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="SCENTÉ TikTok Profile"
-              className="w-8 h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
+              className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
@@ -205,7 +190,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="SCENTÉ WhatsApp Concierge"
-              className="w-8 h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
+              className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />

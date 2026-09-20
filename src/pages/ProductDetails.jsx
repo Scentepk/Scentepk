@@ -508,7 +508,7 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen pb-16 lg:pb-0">
+    <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen pb-24 lg:pb-0">
       <SEO
         title={`${product.name} — ${resolvedClassification} (${selectedSize})`}
         description={`${cleanedDescription ? cleanedDescription.slice(0, 155) : (product.tagline || product.subtitle || product.name)}. Handcrafted in Pakistan with pure perfume oils. Cash on Delivery available.`}
@@ -1129,17 +1129,17 @@ export default function ProductDetails() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: LUXURY_EASE }}
-            className="fixed bottom-0 left-0 right-0 z-40 bg-[#121110]/95 backdrop-blur-xl border-t border-white/10 p-3.5 lg:hidden flex items-center justify-between gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]"
+            className="fixed bottom-0 left-0 right-0 z-40 bg-[#121110]/95 backdrop-blur-xl border-t border-white/10 px-4 py-3 sm:py-3.5 lg:hidden flex items-center justify-between gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.8)] safe-pb"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-11 h-11 rounded-lg overflow-hidden bg-black shrink-0 border border-white/10">
+              <div className="w-10 h-10 xs:w-11 xs:h-11 rounded-lg overflow-hidden bg-black shrink-0 border border-white/10">
                 <img src={activeImageSrc} alt="" className="w-full h-full object-cover" />
               </div>
               <div className="min-w-0">
-                <h4 className="font-serif text-xs text-[#F2EEE7] truncate font-medium">
+                <h4 className="font-serif text-xs xs:text-sm text-[#F2EEE7] truncate font-medium">
                   {product.name}
                 </h4>
-                <p className="text-[11px] font-mono text-[#BFA27A]">
+                <p className="text-[10.5px] xs:text-[11px] font-mono text-[#BFA27A]">
                   {currentFormattedPrice}
                 </p>
               </div>
@@ -1149,7 +1149,7 @@ export default function ProductDetails() {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="py-2.5 px-4 rounded-xl bg-[#BFA27A] text-[#0D0D0C] font-semibold text-[11px] uppercase tracking-wider transition-colors"
+                className="py-2.5 px-3.5 xs:px-4 rounded-xl bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] font-semibold text-[10.5px] xs:text-[11px] uppercase tracking-wider transition-colors cursor-pointer"
               >
                 {added ? "ADDED" : "ADD TO BAG"}
               </button>

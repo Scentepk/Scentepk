@@ -100,10 +100,10 @@ export default function Cart() {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-8">
                         {/* Product Visual & Details */}
-                        <div className="flex items-center space-x-5 sm:space-x-7">
+                        <div className="flex items-center space-x-3.5 xs:space-x-5 sm:space-x-7">
                           <Link
                             to={`/product/${item.product.slug}`}
-                            className="w-20 sm:w-24 aspect-[4/5] bg-[#121110] shrink-0 border border-[rgba(242,238,231,0.08)] overflow-hidden block rounded-sm group"
+                            className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#121110] shrink-0 border border-[rgba(242,238,231,0.08)] overflow-hidden block rounded-sm group"
                           >
                             <img
                               src={item.product.image || item.product.primary_image}
@@ -112,8 +112,8 @@ export default function Cart() {
                             />
                           </Link>
 
-                          <div className="space-y-1.5 font-sans">
-                            <h3 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] tracking-headline leading-tight">
+                          <div className="space-y-1 sm:space-y-1.5 font-sans">
+                            <h3 className="font-serif font-light text-base xs:text-xl sm:text-2xl text-[#F2EEE7] tracking-headline leading-tight">
                               <Link
                                 to={`/product/${item.product.slug}`}
                                 className="hover:text-[#BFA27A] transition-colors"
@@ -121,11 +121,11 @@ export default function Cart() {
                                 {item.product.name}
                               </Link>
                             </h3>
-                            <p className="text-xs sm:text-[13px] text-[#AAA49B] font-light tracking-wide">
+                            <p className="text-[11px] xs:text-xs sm:text-[13px] text-[#AAA49B] font-light tracking-wide">
                               {item.size || "50ml"} · {item.product.subtitle || "Extrait de Parfum"}
                             </p>
                             {(item.isUnavailable || item.availableStock === 0 || item.variant?.isOutOfStock) && (
-                              <span className="inline-block text-[9.5px] uppercase tracking-wider text-rose-400 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-sm font-medium">
+                              <span className="inline-block text-[9px] xs:text-[9.5px] uppercase tracking-wider text-rose-400 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-sm font-medium">
                                 SOLD OUT — PLEASE REMOVE
                               </span>
                             )}
@@ -133,23 +133,23 @@ export default function Cart() {
                         </div>
 
                         {/* Quantity, Price & Remove Controls */}
-                        <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-10">
+                        <div className="flex items-center justify-between sm:justify-end gap-3 xs:gap-6 sm:gap-10 pt-1 sm:pt-0">
                           {/* Quantity Stepper */}
-                          <div className="space-y-1.5 text-left sm:text-center">
-                            <span className="text-[9px] uppercase font-sans tracking-[0.22em] text-[#777169] block font-medium">
+                          <div className="space-y-1 text-left sm:text-center">
+                            <span className="text-[8.5px] xs:text-[9px] uppercase font-sans tracking-[0.18em] xs:tracking-[0.22em] text-[#777169] block font-medium">
                               QUANTITY
                             </span>
-                            <div className="flex items-center border border-[rgba(242,238,231,0.12)] bg-[#121110] rounded-full px-3 py-1.5 transition-colors hover:border-[rgba(242,238,231,0.22)]">
+                            <div className="flex items-center border border-[rgba(242,238,231,0.12)] bg-[#121110] rounded-full px-2.5 xs:px-3 py-1 xs:py-1.5 transition-colors hover:border-[rgba(242,238,231,0.22)]">
                               <button
                                 type="button"
                                 onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
                                 disabled={item.quantity <= 1 || item.isUnavailable || item.availableStock === 0}
-                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors px-1 cursor-pointer disabled:cursor-not-allowed"
+                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
                                 aria-label="Decrease quantity"
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
-                              <span className="w-8 text-center text-xs text-[#F2EEE7] font-medium font-sans select-none">
+                              <span className="w-6 xs:w-8 text-center text-xs text-[#F2EEE7] font-medium font-sans select-none">
                                 {item.quantity}
                               </span>
                               <button
@@ -160,7 +160,7 @@ export default function Cart() {
                                   item.availableStock === 0 ||
                                   item.quantity >= (item.availableStock ?? item.variant?.stockQuantity ?? item.variant?.stock_quantity ?? 99)
                                 }
-                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors px-1 cursor-pointer disabled:cursor-not-allowed"
+                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
                                 aria-label="Increase quantity"
                               >
                                 <Plus className="w-3 h-3" />
@@ -169,15 +169,15 @@ export default function Cart() {
                           </div>
 
                           {/* Product Price & Subtle Remove */}
-                          <div className="text-right min-w-[110px]">
-                            <div className="font-serif font-light text-lg sm:text-xl text-[#F2EEE7] tracking-tight">
+                          <div className="text-right min-w-[90px] xs:min-w-[110px]">
+                            <div className="font-serif font-light text-base xs:text-lg sm:text-xl text-[#F2EEE7] tracking-tight">
                               PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
                             </div>
-                            <div className="pt-2.5 sm:pt-3">
+                            <div className="pt-1.5 sm:pt-3">
                               <button
                                 type="button"
                                 onClick={() => removeFromCart(item.product.id, item.size)}
-                                className="text-xs sm:text-[13px] font-sans text-[#AAA49B] hover:text-[#BFA27A] underline underline-offset-4 decoration-[rgba(242,238,231,0.25)] hover:decoration-[#BFA27A] transition-all cursor-pointer font-medium tracking-wide"
+                                className="text-xs sm:text-[13px] font-sans text-[#AAA49B] hover:text-[#BFA27A] underline underline-offset-4 decoration-[rgba(242,238,231,0.25)] hover:decoration-[#BFA27A] transition-all cursor-pointer font-medium tracking-wide py-1"
                               >
                                 Remove
                               </button>

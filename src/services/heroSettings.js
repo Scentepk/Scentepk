@@ -135,8 +135,11 @@ export function normalizeHeroSettings(raw) {
   };
 }
 
+// In-memory flag to avoid redundant failing network calls if the table has not yet been migrated
+let isHeroTableAvailable = true;
+
 /**
- * Fetch active hero settings (Supabase first with LocalStorage cache fallback)
+ * Fetch current hero settings (checks Supabase, falls back to LocalStorage, then DEFAULT_HERO_SETTINGS)
  */
 export async function getHeroSettings() {
   // 1. Check local storage cache
@@ -150,8 +153,8 @@ export async function getHeroSettings() {
     console.warn("Could not read local hero cache:", e);
   }
 
-  // If Supabase is not configured, return cached or default
-  if (!isSupabaseConfigured || !supabase) {
+  // If Supabase is not configured or table is known to be missing in schema cache, return cached or default
+  if (!isSupabaseConfigured || !supabase || !isHeroTableAvailable) {
     return { data: cached || normalizeHeroSettings(null), error: null };
   }
 
@@ -163,7 +166,19 @@ export async function getHeroSettings() {
       .maybeSingle();
 
     if (error) {
-      console.warn("Hero settings DB fetch warning:", error.message);
+      if (
+        error.message?.includes("schema cache") ||
+        error.message?.includes("does not exist") ||
+        error.code === "PGRST205" ||
+        error.code === "42P01"
+      ) {
+        isHeroTableAvailable = false;
+        console.info(
+          "SCENTÉ Info: 'public.hero_settings' table has not been created in Supabase yet. Using local hero campaign slides. To sync cloud hero settings, execute migration '008_hero_settings.sql' in the Supabase SQL Editor."
+        );
+      } else {
+        console.warn("Hero settings DB fetch warning:", error.message);
+      }
       return { data: cached || normalizeHeroSettings(null), error: null };
     }
 
@@ -242,6 +257,7 @@ export async function saveHeroSettings(payload) {
 
       if (error) throw error;
 
+      isHeroTableAvailable = true;
       return { data: normalizeHeroSettings(data), error: null };
     } catch (err) {
       console.error("Failed to save hero settings to Supabase:", err);

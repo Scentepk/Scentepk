@@ -34,7 +34,7 @@ export default function About() {
             <ScrollReveal
               key={val.number}
               delay={idx * 0.1}
-              className="p-8 bg-[#121110] border border-[rgba(242,238,231,0.04)] flex flex-col justify-between transition-all duration-300 hover:border-[rgba(191,162,122,0.25)]"
+              className="p-5 xs:p-6 sm:p-8 bg-[#121110] border border-[rgba(242,238,231,0.04)] flex flex-col justify-between transition-all duration-300 hover:border-[rgba(191,162,122,0.25)]"
             >
               <div>
                 <span className="font-serif font-light text-3xl text-[#777169] block mb-4">
@@ -52,7 +52,7 @@ export default function About() {
         </div>
 
         {/* Editorial Story: Craft & Concentration */}
-        <section className="bg-[#121110] p-8 sm:p-14 border border-[rgba(242,238,231,0.06)] mb-20 font-sans">
+        <section className="bg-[#121110] p-6 sm:p-14 border border-[rgba(242,238,231,0.06)] mb-14 sm:mb-20 font-sans">
           <div className="max-w-2xl space-y-6">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-[#BFA27A] font-medium block">
               OUR CRAFT & CONCENTRATION

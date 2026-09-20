@@ -182,6 +182,9 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 5. UPGRADED ATOMIC COD ORDER RPC WITH SECURE PROMO CALCULATION
+-- Drop obsolete 8-parameter signature from migration 004 to eliminate PostgREST function overload ambiguity
+DROP FUNCTION IF EXISTS public.create_cod_order(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, JSONB);
+
 CREATE OR REPLACE FUNCTION public.create_cod_order(
     p_customer_full_name TEXT,
     p_customer_phone TEXT,
@@ -215,6 +218,9 @@ DECLARE
     v_clean_promo TEXT;
     v_customer_usage INTEGER := 0;
     v_raw_discount NUMERIC := 0;
+    v_applied_promo_code TEXT := NULL;
+    v_applied_discount_type TEXT := NULL;
+    v_applied_discount_value NUMERIC := NULL;
 BEGIN
     -- 1. Input Validation
     IF COALESCE(TRIM(p_customer_full_name), '') = '' THEN
@@ -281,24 +287,24 @@ BEGIN
             RAISE EXCEPTION 'Sorry, one or more items in your cart are no longer available.';
         END IF;
 
+        SELECT * INTO v_product
+        FROM public.products
+        WHERE id = v_variant.product_id;
+
+        IF NOT FOUND OR NOT v_product.is_active THEN
+            RAISE EXCEPTION 'Sorry, one or more items in your cart are no longer available.';
+        END IF;
+
         IF (v_item->>'product_id') IS NOT NULL AND v_variant.product_id != (v_item->>'product_id') THEN
             RAISE EXCEPTION 'Variant does not belong to the specified product.';
         END IF;
 
         IF NOT v_variant.is_active THEN
-            RAISE EXCEPTION 'Sorry, one or more items in your cart are no longer available in the requested quantity.';
+            RAISE EXCEPTION 'Sorry, "%" (%) is currently not available.', v_product.name, v_variant.size;
         END IF;
 
         IF v_variant.stock_quantity < v_qty THEN
-            RAISE EXCEPTION 'Sorry, one or more items in your cart are no longer available in the requested quantity.';
-        END IF;
-
-        SELECT * INTO v_product
-        FROM public.products
-        WHERE id = v_variant.product_id AND is_active = true;
-
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'Sorry, one or more items in your cart are no longer available.';
+            RAISE EXCEPTION 'Sorry, "%" (%) only has % item(s) left in stock (requested: %).', v_product.name, v_variant.size, v_variant.stock_quantity, v_qty;
         END IF;
 
         v_unit_price := COALESCE(v_variant.price, v_product.price);
@@ -371,6 +377,11 @@ BEGIN
         SET usage_count = usage_count + 1,
             updated_at = NOW()
         WHERE id = v_promo.id;
+
+        -- Record applied promo metadata into scalar variables (safe from unassigned RECORD errors)
+        v_applied_promo_code := v_promo.code;
+        v_applied_discount_type := v_promo.discount_type;
+        v_applied_discount_value := v_promo.discount_value;
     END IF;
 
     -- Final order total: subtotal minus validated discount plus delivery fee (never negative)
@@ -414,9 +425,9 @@ BEGIN
         v_subtotal,
         v_delivery_fee,
         v_discount_amount,
-        CASE WHEN v_clean_promo != '' THEN v_promo.code ELSE NULL END,
-        CASE WHEN v_clean_promo != '' THEN v_promo.discount_type ELSE NULL END,
-        CASE WHEN v_clean_promo != '' THEN v_promo.discount_value ELSE NULL END,
+        v_applied_promo_code,
+        v_applied_discount_type,
+        v_applied_discount_value,
         v_total,
         'pending'
     ) RETURNING * INTO v_order_record;
@@ -469,7 +480,7 @@ BEGIN
         WHERE id = v_variant_id;
 
         -- Re-aggregate product base stock
-        PERFORM public.sync_product_stock_from_variants(v_variant.product_id);
+        PERFORM public.sync_product_inventory_from_variants(v_variant.product_id);
     END LOOP;
 
     -- 7. Return Result Payload
@@ -479,7 +490,7 @@ BEGIN
         'reference', v_reference,
         'subtotal', v_subtotal,
         'discount_amount', v_discount_amount,
-        'promo_code', CASE WHEN v_clean_promo != '' THEN v_promo.code ELSE NULL END,
+        'promo_code', v_applied_promo_code,
         'delivery_fee', v_delivery_fee,
         'total', v_total,
         'status', 'pending'

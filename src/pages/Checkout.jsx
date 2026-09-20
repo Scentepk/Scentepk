@@ -331,7 +331,7 @@ export default function Checkout() {
                 YOUR UNIQUE ORDER REFERENCE
               </span>
 
-              <div className="font-serif text-3xl sm:text-5xl tracking-[0.16em] text-[#F2EEE7] font-medium select-all py-1">
+              <div className="font-serif text-2xl xs:text-3xl sm:text-5xl tracking-[0.1em] xs:tracking-[0.16em] text-[#F2EEE7] font-medium select-all py-1 break-all sm:break-normal">
                 {confirmedOrder.reference}
               </div>
 
@@ -542,7 +542,7 @@ export default function Checkout() {
           <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-2 font-medium">
             CHECKOUT
           </span>
-          <h1 className="font-serif font-light text-3xl sm:text-5xl text-[#F2EEE7] tracking-headline mb-2">
+          <h1 className="font-serif font-light text-2xl xs:text-3xl sm:text-5xl text-[#F2EEE7] tracking-headline mb-2">
             Complete Your Order
           </h1>
           <p className="text-sm font-sans text-[#AAA49B] font-light leading-[1.6]">
@@ -590,7 +590,7 @@ export default function Checkout() {
           {/* Left Column: Customer & Delivery Details */}
           <div className="lg:col-span-7 space-y-8">
             {/* Section 1: Customer Details */}
-            <div className="bg-[#121110] p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-6">
+            <div className="bg-[#121110] p-4 xs:p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-6">
               <h2 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] pb-3 border-b border-[rgba(242,238,231,0.06)] tracking-headline">
                 1. Customer Details
               </h2>
@@ -668,7 +668,7 @@ export default function Checkout() {
             </div>
 
             {/* Section 2: Delivery Destination */}
-            <div className="bg-[#121110] p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-6">
+            <div className="bg-[#121110] p-4 xs:p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-6">
               <h2 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] pb-3 border-b border-[rgba(242,238,231,0.06)] tracking-headline">
                 2. Delivery Destination
               </h2>
@@ -764,7 +764,7 @@ export default function Checkout() {
             </div>
 
             {/* Section 3: Payment Method (Cash on Delivery Only) */}
-            <div className="bg-[#121110] p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-4 font-sans">
+            <div className="bg-[#121110] p-4 xs:p-6 sm:p-10 border border-[rgba(242,238,231,0.06)] space-y-4 font-sans">
               <h2 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] pb-3 border-b border-[rgba(242,238,231,0.06)] tracking-headline">
                 3. Payment Selection
               </h2>
@@ -793,7 +793,7 @@ export default function Checkout() {
 
           {/* Right Column: Order Summary (Sticky on Desktop) */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
-            <div className="bg-[#121110] p-6 sm:p-8 border border-[rgba(242,238,231,0.06)] shadow-2xl space-y-6">
+            <div className="bg-[#121110] p-4 xs:p-6 sm:p-8 border border-[rgba(242,238,231,0.06)] shadow-2xl space-y-6">
               <h3 className="font-serif font-light text-2xl text-[#F2EEE7] pb-4 border-b border-[rgba(242,238,231,0.06)] tracking-headline">
                 Your Order
               </h3>

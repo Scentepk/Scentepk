@@ -12,26 +12,42 @@ import { incrementLocalPromoUsage } from "./promoCodes.js";
  * In local prototype mode, generates structured payload and updates local caches.
  */
 export async function createCodOrder(customerData, cartItems, promoDetails = null) {
-  const itemsPayload = cartItems.map((item) => {
-    const variantId =
-      item.variantId ||
-      item.variant?.id ||
-      item.product?.variants?.find((v) => v.size === item.size)?.id ||
-      null;
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-    if (!variantId) {
-      throw new Error(
-        `Unable to identify bottle size variant for "${item.product.name}" (${item.size}). Please remove and re-add this item.`
-      );
-    }
+  const itemsPayload = await Promise.all(
+    cartItems.map(async (item) => {
+      let variantId =
+        item.variantId ||
+        item.variant?.id ||
+        item.product?.variants?.find((v) => v.size === item.size)?.id ||
+        null;
 
-    return {
-      variant_id: variantId,
-      product_id: item.product.id,
-      size: item.size || "50ml",
-      quantity: item.quantity || 1,
-    };
-  });
+      // If variantId is missing or mock string (e.g. 'var-...'), resolve real UUID from Supabase
+      if ((!variantId || !UUID_REGEX.test(variantId)) && isSupabaseConfigured && supabase) {
+        try {
+          const { data: vRow } = await supabase
+            .from("product_variants")
+            .select("id")
+            .eq("product_id", item.product.id)
+            .eq("size", item.size || "50ml")
+            .maybeSingle();
+
+          if (vRow?.id) {
+            variantId = vRow.id;
+          }
+        } catch (err) {
+          console.warn("Could not query variant UUID from Supabase:", err);
+        }
+      }
+
+      return {
+        variant_id: variantId,
+        product_id: item.product.id,
+        size: item.size || "50ml",
+        quantity: item.quantity || 1,
+      };
+    })
+  );
 
   // 1. If Supabase is connected, execute atomic server-side RPC
   if (isSupabaseConfigured && supabase) {
@@ -49,27 +65,26 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
     let resultData = null;
     let resultError = null;
 
-    // If promo code was applied, attempt upgraded RPC with p_promo_code
-    if (promoDetails?.code) {
-      const promoPayload = {
-        ...basePayload,
-        p_promo_code: promoDetails.code,
-      };
+    // Primary attempt: Pass 9-parameter payload (including p_promo_code: code || null).
+    const fullPayload = {
+      ...basePayload,
+      p_promo_code: promoDetails?.code || null,
+    };
 
-      const res = await supabase.rpc("create_cod_order", promoPayload);
-      if (!res.error) {
-        resultData = res.data;
-      } else {
-        console.warn("create_cod_order with p_promo_code failed:", res.error);
-        // If remote database does not have migration 009 applied yet (schema cache missing function)
-        if (
-          res.error.message?.includes("schema cache") ||
-          res.error.message?.includes("Could not find the function")
-        ) {
-          const fallbackRes = await supabase.rpc("create_cod_order", basePayload);
-          if (!fallbackRes.error) {
-            resultData = fallbackRes.data;
-            // Best-effort attach promo details
+    const res = await supabase.rpc("create_cod_order", fullPayload);
+    if (!res.error) {
+      resultData = res.data;
+    } else {
+      console.warn("create_cod_order primary call failed:", res.error);
+      // If remote database does not have migration 009 applied yet (schema cache missing 9-param function)
+      if (
+        res.error.message?.includes("schema cache") ||
+        res.error.message?.includes("Could not find the function")
+      ) {
+        const fallbackRes = await supabase.rpc("create_cod_order", basePayload);
+        if (!fallbackRes.error) {
+          resultData = fallbackRes.data;
+          if (promoDetails?.code) {
             const discount = promoDetails.discountAmount || 0;
             const newTotal = Math.max(0, (resultData.subtotal || 0) - discount);
             try {
@@ -89,37 +104,17 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
             resultData.discount_amount = discount;
             resultData.promo_code = promoDetails.code;
             resultData.total = newTotal;
-          } else {
-            resultError = fallbackRes.error;
           }
         } else {
-          resultError = res.error;
+          resultError = fallbackRes.error;
         }
+      } else {
+        resultError = res.error;
       }
-    } else {
-      // Normal order without promo code -> call base 8-parameter RPC directly
-      const res = await supabase.rpc("create_cod_order", basePayload);
-      resultData = res.data;
-      resultError = res.error;
     }
 
     if (resultError) {
       console.error("Supabase RPC create_cod_order error:", resultError);
-      // Clean, customer-friendly message if stock is insufficient
-      const isStockError =
-        resultError.message?.includes("not available") ||
-        resultError.message?.includes("Insufficient stock") ||
-        resultError.message?.includes("stock") ||
-        resultError.code === "P0001";
-
-      if (isStockError) {
-        throw new Error(
-          resultError.message?.includes("Sorry,")
-            ? resultError.message
-            : "Sorry, one or more items in your cart are no longer available in the requested quantity."
-        );
-      }
-
       throw new Error(resultError.message || "Unable to place order. Please try again.");
     }
 

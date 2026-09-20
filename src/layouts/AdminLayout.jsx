@@ -15,6 +15,7 @@ import {
   Sparkles,
   ChevronRight,
   Tag,
+  Image as ImageIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUnreadInquiriesCount } from "../services/inquiries";
@@ -70,6 +71,11 @@ export default function AdminLayout() {
       name: "Hero Section",
       path: "/admin/hero",
       icon: Sparkles,
+    },
+    {
+      name: "Editorial Banner",
+      path: "/admin/editorial-banner",
+      icon: ImageIcon,
     },
     {
       name: "Products",

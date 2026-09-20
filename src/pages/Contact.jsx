@@ -69,17 +69,17 @@ export default function Contact() {
         canonicalUrl="https://scente.pk/contact"
         keywords="contact SCENTÉ, perfume concierge Pakistan, bespoke fragrance gifting, luxury customer service"
       />
-      <div className="layout-container py-16 sm:py-24">
+      <div className="layout-container py-10 sm:py-16 lg:py-24">
         <SectionHeading
           eyebrow="CLIENT SERVICES & ATELIER"
           title="Private Concierge"
           subtitle="For personalized olfactive advice, corporate bespoke gifting, or urgent order tracking across Pakistan."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 mt-8 sm:mt-12">
           {/* Left Form */}
-          <ScrollReveal delay={0.08} className="lg:col-span-7 bg-[#121110] p-8 sm:p-12 border border-[rgba(242,238,231,0.08)] shadow-2xl">
-            <h3 className="font-serif font-light text-2xl text-[#F2EEE7] mb-6 tracking-headline">
+          <ScrollReveal delay={0.08} className="lg:col-span-7 bg-[#121110] p-5 xs:p-6 sm:p-10 lg:p-12 border border-[rgba(242,238,231,0.08)] shadow-2xl">
+            <h3 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] mb-6 tracking-headline">
               Transmit an Inquiry
             </h3>
 
@@ -169,7 +169,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-transparent text-[#F2EEE7] border border-[rgba(242,238,231,0.22)] rounded-xl px-8 py-4 text-xs font-sans uppercase tracking-[0.14em] hover:border-[#BFA27A] hover:text-[#BFA27A] hover:bg-[#181714] disabled:opacity-40 transition-all duration-200 cursor-pointer font-medium flex items-center justify-center space-x-2"
+                className="w-full sm:w-auto bg-transparent text-[#F2EEE7] border border-[rgba(242,238,231,0.22)] rounded-xl px-8 py-4 text-xs font-sans uppercase tracking-[0.14em] hover:border-[#BFA27A] hover:text-[#BFA27A] hover:bg-[#181714] disabled:opacity-40 transition-all duration-200 cursor-pointer font-medium flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (
                   <>

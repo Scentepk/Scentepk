@@ -67,12 +67,12 @@ export default function Wishlist() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.16, ease: LUXURY_EASE }}
-                className="flex items-center gap-3"
+                className="flex flex-wrap items-center gap-2 sm:gap-3"
               >
                 <button
                   type="button"
                   onClick={handleAddAllToCart}
-                  className="px-4 py-2.5 rounded-xl bg-[#BFA27A] text-[#0D0D0C] text-xs uppercase tracking-wider font-semibold hover:bg-[#D4BA94] transition-colors flex items-center gap-2 cursor-pointer shadow-[0_4px_20px_rgba(191,162,122,0.25)]"
+                  className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#BFA27A] text-[#0D0D0C] text-xs uppercase tracking-wider font-semibold hover:bg-[#D4BA94] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-[0_4px_20px_rgba(191,162,122,0.25)] min-h-[42px]"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   <span>Add All to Bag</span>
@@ -80,7 +80,7 @@ export default function Wishlist() {
                 <button
                   type="button"
                   onClick={clearWishlist}
-                  className="px-3.5 py-2.5 rounded-xl border border-white/10 text-xs uppercase tracking-wider text-[#AAA49B] hover:text-[#F2EEE7] hover:border-white/25 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-2.5 rounded-xl border border-white/10 text-xs uppercase tracking-wider text-[#AAA49B] hover:text-[#F2EEE7] hover:border-white/25 transition-colors flex items-center justify-center gap-1.5 cursor-pointer min-h-[42px]"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Clear All</span>
@@ -92,11 +92,11 @@ export default function Wishlist() {
       </section>
 
       {/* 2. MAIN WISHLIST CONTENT */}
-      <section className="py-12 sm:py-16">
+      <section className="py-8 sm:py-16">
         <div className="layout-container">
           {wishlistProducts.length > 0 ? (
             <div>
-              <div className="flex items-center justify-between pb-6 mb-8 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between pb-4 sm:pb-6 mb-6 sm:mb-8 border-b border-white/[0.06]">
                 <p className="text-xs font-mono uppercase text-[#AAA49B]">
                   Showing {wishlistProducts.length} {wishlistProducts.length === 1 ? "Composition" : "Compositions"}
                 </p>
@@ -111,7 +111,7 @@ export default function Wishlist() {
 
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
+                className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
               >
                 <AnimatePresence mode="popLayout">
                   {wishlistProducts.map((product, idx) => (
@@ -132,7 +132,7 @@ export default function Wishlist() {
             </div>
           ) : (
             /* 3. EMPTY STATE */
-            <ScrollReveal className="py-20 sm:py-28 text-center max-w-lg mx-auto bg-[#141312] p-8 sm:p-14 border border-[rgba(242,238,231,0.07)] rounded-3xl">
+            <ScrollReveal className="py-16 sm:py-28 text-center max-w-lg mx-auto bg-[#141312] p-6 sm:p-14 border border-[rgba(242,238,231,0.07)] rounded-3xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-[#BFA27A]">
                 <Heart className="w-8 h-8 stroke-[1.2]" />
               </div>

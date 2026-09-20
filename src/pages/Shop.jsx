@@ -608,7 +608,7 @@ export default function Shop() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: LUXURY_EASE }}
-              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm bg-[#121110] border-r border-white/10 p-6 z-50 overflow-y-auto lg:hidden flex flex-col justify-between"
+              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-[#121110] border-r border-white/10 p-5 sm:p-6 z-50 overflow-y-auto lg:hidden flex flex-col justify-between safe-pt safe-drawer-bottom"
             >
               <div>
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
@@ -708,7 +708,7 @@ export default function Shop() {
               {filteredProducts.length > 0 ? (
                 <motion.div
                   layout
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+                  className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-3"
                 >
                   <AnimatePresence mode="popLayout">
                     {filteredProducts.map((product, idx) => (

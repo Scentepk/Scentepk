@@ -12,15 +12,15 @@ export default function Authenticity() {
         canonicalUrl="https://scente.pk/authenticity"
         keywords="authentic perfume Pakistan, pure perfume oil, original extrait de parfum, SCENTÉ authenticity guarantee, Grasse fragrance oils"
       />
-      <div className="layout-container py-16 sm:py-24">
+      <div className="layout-container py-10 sm:py-16 lg:py-24">
         <SectionHeading
           eyebrow="ATELIER STANDARDS"
           title="Authenticity Guarantee"
           subtitle="Every bottle of SCENTÉ is an unadulterated Extrait de Parfum crafted with 30%+ pure perfume oil."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <ScrollReveal delay={0.05} className="bg-[#121110] p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
+          <ScrollReveal delay={0.05} className="bg-[#121110] p-5 xs:p-6 sm:p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
             <span className="text-[10px] font-sans uppercase tracking-eyebrow text-[#BFA27A] font-medium block">
               30%+ OIL CONCENTRATION
             </span>
@@ -30,7 +30,7 @@ export default function Authenticity() {
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.12} className="bg-[#121110] p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
+          <ScrollReveal delay={0.12} className="bg-[#121110] p-5 xs:p-6 sm:p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
             <span className="text-[10px] font-sans uppercase tracking-eyebrow text-[#BFA27A] font-medium block">
               ATELIER DIRECT
             </span>
@@ -40,7 +40,7 @@ export default function Authenticity() {
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.19} className="bg-[#121110] p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
+          <ScrollReveal delay={0.19} className="bg-[#121110] p-5 xs:p-6 sm:p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
             <span className="text-[10px] font-sans uppercase tracking-eyebrow text-[#BFA27A] font-medium block">
               BATCH CERTIFICATION
             </span>

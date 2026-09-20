@@ -216,7 +216,7 @@ export default function ProductLightbox({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.28, ease: LUXURY_EASE }}
           onClick={onClose}
-          className="fixed inset-0 z-50 bg-[#090908]/95 backdrop-blur-xl flex flex-col justify-between select-none overflow-hidden"
+          className="fixed inset-0 h-[100dvh] z-50 bg-[#090908]/95 backdrop-blur-xl flex flex-col justify-between select-none overflow-hidden safe-pt safe-pb"
         >
           {/* Top Bar: Brand, Image Counter, and Close Button */}
           <div
@@ -322,7 +322,7 @@ export default function ProductLightbox({
                       transform: `scale(${scale}) translate3d(${panPosition.x / scale}px, ${panPosition.y / scale}px, 0)`,
                       transition: isDraggingRef.current ? "none" : "transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)",
                     }}
-                    className="max-h-[72vh] sm:max-h-[76vh] md:max-h-[80vh] max-w-[92vw] sm:max-w-[85vw] object-contain rounded-lg shadow-[0_25px_70px_rgba(0,0,0,0.9)] border border-[rgba(242,238,231,0.06)] pointer-events-auto"
+                    className="max-h-[68dvh] sm:max-h-[76vh] md:max-h-[80vh] max-w-[92vw] sm:max-w-[85vw] object-contain rounded-lg shadow-[0_25px_70px_rgba(0,0,0,0.9)] border border-[rgba(242,238,231,0.06)] pointer-events-auto"
                   />
                 </motion.div>
               </AnimatePresence>

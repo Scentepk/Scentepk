@@ -221,7 +221,7 @@ export default function Navbar() {
           <div className="flex lg:hidden items-center flex-1 justify-start">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 -ml-2 text-[#F2EEE7] hover:text-[#BFA27A] transition-colors focus:outline-none cursor-pointer"
+              className="p-2.5 -ml-2 text-[#F2EEE7] hover:text-[#BFA27A] transition-colors focus:outline-none cursor-pointer flex items-center justify-center min-w-[44px] min-h-[44px]"
               aria-label="Open navigation menu"
             >
               <Menu className="w-5 h-5 stroke-[1.5]" />
@@ -229,15 +229,15 @@ export default function Navbar() {
           </div>
 
           {/* Brand Logo / Wordmark */}
-          <div className="flex items-center justify-center lg:justify-start">
+          <div className="flex items-center justify-center lg:justify-start shrink-0">
             <Link
               to="/"
               className="group flex flex-col items-center lg:items-start tracking-tight focus:outline-none"
             >
-              <span className="font-serif text-2xl sm:text-[27px] font-medium tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300">
+              <span className="font-serif text-xl xs:text-2xl sm:text-[27px] font-medium tracking-[0.2em] xs:tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300">
                 SCENTÉ
               </span>
-              <span className="text-[7.5px] uppercase font-sans tracking-[0.35em] text-[#AAA49B] -mt-1 font-light opacity-80">
+              <span className="text-[7px] xs:text-[7.5px] uppercase font-sans tracking-[0.28em] xs:tracking-[0.35em] text-[#AAA49B] -mt-0.5 xs:-mt-1 font-light opacity-80">
                 Premium Perfumes
               </span>
             </Link>
@@ -492,18 +492,18 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-[#0D0D0C] flex flex-col justify-between p-5 sm:p-8 lg:hidden overflow-y-auto"
+            className="fixed inset-0 h-[100dvh] z-50 bg-[#0D0D0C] flex flex-col justify-between px-5 py-6 sm:p-8 lg:hidden overflow-y-auto safe-pt safe-drawer-bottom"
           >
             {/* Top Area: Brand Header, Search Input, and Navigation Links */}
             <div className="w-full flex flex-col shrink-0">
               {/* Top Bar with Brand and Dedicated Close Button */}
-              <div className="w-full flex items-center justify-between pb-6 border-b border-[rgba(242,238,231,0.06)]">
+              <div className="w-full flex items-center justify-between pb-5 border-b border-[rgba(242,238,231,0.06)]">
                 <span className="font-serif text-xl tracking-[0.2em] text-[#F2EEE7]">
                   SCENTÉ
                 </span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 -mr-2 text-[#AAA49B] hover:text-[#BFA27A] transition-colors focus:outline-none cursor-pointer"
+                  className="p-2.5 -mr-2 text-[#AAA49B] hover:text-[#BFA27A] transition-colors focus:outline-none cursor-pointer flex items-center justify-center min-w-[44px] min-h-[44px]"
                   aria-label="Close menu"
                 >
                   <X className="w-6 h-6 stroke-[1.5]" />

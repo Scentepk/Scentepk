@@ -17,7 +17,6 @@ const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const About = lazy(() => import("./pages/About"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
-const ScentFinder = lazy(() => import("./pages/ScentFinder"));
 const Contact = lazy(() => import("./pages/Contact"));
 const DeliveryReturns = lazy(() => import("./pages/DeliveryReturns"));
 const CodGuide = lazy(() => import("./pages/CodGuide"));
@@ -38,6 +37,7 @@ const AdminOrderList = lazy(() => import("./pages/admin/AdminOrderList"));
 const AdminOrderDetail = lazy(() => import("./pages/admin/AdminOrderDetail"));
 const AdminInquiries = lazy(() => import("./pages/admin/AdminInquiries"));
 const AdminHeroManagement = lazy(() => import("./pages/admin/AdminHeroManagement"));
+const AdminEditorialBanner = lazy(() => import("./pages/admin/AdminEditorialBanner"));
 const AdminPromoCodes = lazy(() => import("./pages/admin/AdminPromoCodes"));
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 
@@ -61,7 +61,6 @@ export default function App() {
                       <Route path="story" element={<About />} />
                       <Route path="track" element={<TrackOrder />} />
                       <Route path="track-order" element={<TrackOrder />} />
-                      <Route path="scent-finder" element={<ScentFinder />} />
                       <Route path="contact" element={<Contact />} />
                       <Route path="delivery-returns" element={<DeliveryReturns />} />
                       <Route path="cod-guide" element={<CodGuide />} />
@@ -89,6 +88,9 @@ export default function App() {
 
                     {/* Hero Section Editorial Management */}
                     <Route path="hero" element={<AdminHeroManagement />} />
+
+                    {/* Homepage Editorial Campaign Banner Management */}
+                    <Route path="editorial-banner" element={<AdminEditorialBanner />} />
 
                     {/* Product Catalog Management */}
                     <Route path="products" element={<AdminProductList />} />

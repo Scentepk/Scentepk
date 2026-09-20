@@ -46,7 +46,7 @@ export default function ScrollToTop() {
           transition={{ duration: 0.4, ease: LUXURY_EASE }}
           onClick={scrollToTop}
           aria-label="Scroll back to top"
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[rgba(242,238,231,0.16)] bg-[#121110]/85 backdrop-blur-md text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer group focus:outline-none"
+          className="fixed bottom-20 lg:bottom-8 right-4 sm:right-8 z-30 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[rgba(242,238,231,0.16)] bg-[#121110]/85 backdrop-blur-md text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer group focus:outline-none"
         >
           <ArrowUp className="w-4 h-4 transform group-hover:-translate-y-0.5 transition-transform duration-300" />
         </motion.button>

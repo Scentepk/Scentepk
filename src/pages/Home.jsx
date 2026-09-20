@@ -9,6 +9,7 @@ import {
 } from "../services/heroSettings";
 import { useCart } from "../context/CartContext";
 import SectionHeading from "../components/SectionHeading";
+import EditorialBanner from "../components/EditorialBanner";
 import SEO from "../components/SEO";
 import {
   ChevronLeft,
@@ -38,7 +39,7 @@ const HERO_SLIDES = [
     badge: "30% PURE PERFUME OIL",
     image: "/images/campaign/hero-campaign-main.jpg",
     imageAlt: "SCENTÉ The Nocturnal Oud Artisanal Fragrance Campaign",
-    objectPosition: "object-[78%_center] md:object-[72%_center] lg:object-center",
+    objectPosition: "object-center md:object-[72%_center] lg:object-center",
     overlayGradient: "from-[#090908]/90 via-[#090908]/50 to-transparent",
   },
   {
@@ -53,7 +54,7 @@ const HERO_SLIDES = [
     badge: "14+ HR LONGEVITY",
     image: "/images/hero-campaign.jpg",
     imageAlt: "SCENTÉ Artisanal Flacons Haute Parfumerie",
-    objectPosition: "object-[75%_center] md:object-[70%_center] lg:object-center",
+    objectPosition: "object-center md:object-[70%_center] lg:object-center",
     overlayGradient: "from-[#090908]/90 via-[#090908]/55 to-transparent",
   },
   {
@@ -68,7 +69,7 @@ const HERO_SLIDES = [
     badge: "FREE COD ACROSS PAKISTAN",
     image: "/images/campaign/campaign-1.jpg",
     imageAlt: "SCENTÉ Luxury Fragrance Editorial Campaign",
-    objectPosition: "object-[82%_center] md:object-[76%_center] lg:object-center",
+    objectPosition: "object-center md:object-[76%_center] lg:object-center",
     overlayGradient: "from-[#090908]/95 via-[#090908]/60 to-[#090908]/20",
   },
 ];
@@ -218,7 +219,7 @@ export default function Home() {
         image: s.image_url || s.image || "/images/campaign/hero-campaign-main.jpg",
         mobileImage: s.mobile_image_url || s.mobileImage || null,
         imageAlt: s.imageAlt || `SCENTÉ Artisanal Fragrance Campaign ${idx + 1}`,
-        objectPosition: s.objectPosition || "object-[78%_center] md:object-[72%_center] lg:object-center",
+        objectPosition: s.objectPosition || "object-center md:object-[72%_center] lg:object-center",
         overlayGradient: s.overlayGradient || "from-[#090908]/90 via-[#090908]/50 to-transparent",
       }));
     }
@@ -313,7 +314,7 @@ export default function Home() {
           1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[calc(100vh-106px)] sm:h-[calc(100vh-112px)] min-h-[460px] max-h-[720px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[60vh] xs:h-[64vh] min-h-[430px] max-h-[530px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -347,29 +348,32 @@ export default function Home() {
                   />
                 </picture>
 
-                {/* 2. Tasteful Subtle Vignette / Gradient Overlay */}
+                {/* 2. Atmospheric Luxury Vignette / Gradient Overlay: Vertical scrim on mobile so bottle shines above and text is crisp below; Horizontal split on desktop */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-r ${slide.overlayGradient} pointer-events-none`}
+                  className="absolute inset-0 bg-gradient-to-t from-[#090908] via-[#090908]/75 via-45% to-black/20 sm:hidden pointer-events-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#090908] via-transparent to-black/25 pointer-events-none" />
+                <div
+                  className={`hidden sm:block absolute inset-0 bg-gradient-to-r ${slide.overlayGradient} pointer-events-none`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090908]/50 via-transparent to-black/25 pointer-events-none" />
 
-                {/* 3. Hero Copy Content Over Negative Space on the Left */}
-                <div className="relative z-10 w-full h-full flex items-center">
-                  <div className="layout-container w-full py-6 sm:py-8 lg:py-10">
-                    <div className="max-w-lg sm:max-w-xl lg:max-w-2xl flex flex-col justify-center space-y-3 sm:space-y-4 lg:space-y-5">
+                {/* 3. Hero Copy Content: Placed at lower zone on mobile so bottle remains clear above */}
+                <div className="relative z-10 w-full h-full flex items-end sm:items-center">
+                  <div className="layout-container w-full py-4 xs:py-5 sm:py-8 lg:py-10 pb-14 xs:pb-16 sm:pb-8">
+                    <div className="max-w-lg sm:max-w-xl lg:max-w-2xl flex flex-col justify-end sm:justify-center space-y-2 xs:space-y-2.5 sm:space-y-4 lg:space-y-5">
                       
                       {/* Eyebrow & Badge */}
                       <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.12, ease: LUXURY_EASE }}
-                        className="flex flex-wrap items-center gap-2.5 sm:gap-3"
+                        className="flex flex-wrap items-center gap-2 xs:gap-2.5 sm:gap-3"
                       >
-                        <span className="text-[10px] sm:text-xs uppercase font-sans tracking-[0.24em] text-[#BFA27A] font-semibold">
+                        <span className="text-[9px] xs:text-[10px] sm:text-xs uppercase font-sans tracking-[0.2em] xs:tracking-[0.24em] text-[#BFA27A] font-semibold">
                           {slide.eyebrow}
                         </span>
                         <span className="w-1.5 h-1.5 rounded-full bg-[#BFA27A]/60" />
-                        <span className="text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#AAA49B] font-medium">
+                        <span className="text-[8px] xs:text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.14em] xs:tracking-[0.16em] text-[#AAA49B] font-medium">
                           {slide.badge}
                         </span>
                       </motion.div>
@@ -379,7 +383,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2, ease: LUXURY_EASE }}
-                        className="font-sans font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
+                        className="font-sans font-bold text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[1.02] sm:leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
                       >
                         {slide.headlineLine1} <br />
                         {slide.headlineLine2} <br />
@@ -391,7 +395,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 14 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.28, ease: LUXURY_EASE }}
-                        className="text-xs sm:text-sm md:text-[15px] font-sans text-[#D4CEC5] font-light leading-[1.6] max-w-sm sm:max-w-md drop-shadow-sm"
+                        className="text-[11px] xs:text-xs sm:text-sm md:text-[15px] font-sans text-[#D4CEC5] font-light leading-[1.45] sm:leading-[1.6] max-w-sm sm:max-w-md drop-shadow-sm line-clamp-2 sm:line-clamp-none"
                       >
                         {slide.subtitle}
                       </motion.p>
@@ -401,14 +405,14 @@ export default function Home() {
                         initial={{ opacity: 0, y: 14 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.36, ease: LUXURY_EASE }}
-                        className="pt-1 sm:pt-2"
+                        className="pt-0.5 sm:pt-2"
                       >
                         <Link
                           to={slide.ctaLink}
-                          className="inline-flex items-center justify-center px-7 py-3.5 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-xs sm:text-[13px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
+                          className="inline-flex items-center justify-center px-5 py-2.5 xs:px-6 xs:py-3 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-[11px] xs:text-xs sm:text-[13px] font-semibold uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
                         >
                           <span>{slide.ctaText}</span>
-                          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2]" />
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2]" />
                         </Link>
                       </motion.div>
 
@@ -420,20 +424,20 @@ export default function Home() {
           })}
         </AnimatePresence>
 
-        {/* Minimalist Slide Controls: Hairline Desktop Arrows (Only when multiple slides exist) */}
+        {/* Minimalist Slide Controls: Hairline Desktop Arrows (Only when multiple slides exist, desktop only) */}
         {heroSlides.length > 1 && (
-          <div className="absolute bottom-4 sm:bottom-6 right-6 sm:right-10 flex items-center gap-2.5 sm:gap-3 z-20 pointer-events-auto">
+          <div className="hidden sm:flex absolute bottom-3 xs:bottom-4 sm:bottom-6 right-4 xs:right-6 sm:right-10 items-center gap-2 xs:gap-2.5 sm:gap-3 z-20 pointer-events-auto">
             <button
               onClick={prevSlide}
               aria-label="Previous slide"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg cursor-pointer"
             >
               <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
             </button>
             <button
               onClick={nextSlide}
               aria-label="Next slide"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] bg-[#090908]/60 backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-lg cursor-pointer"
             >
               <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
             </button>
@@ -442,22 +446,22 @@ export default function Home() {
 
         {/* Bottom Minimal Progress Bar & Slide Numbers (Only when multiple slides exist) */}
         {heroSlides.length > 1 && (
-          <div className="absolute bottom-4 sm:bottom-6 left-0 z-20">
-            <div className="layout-container flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-[9.5px] sm:text-xs font-sans tracking-[0.22em] text-[#AAA49B]">
+          <div className="absolute bottom-2.5 xs:bottom-3.5 sm:bottom-6 left-0 z-20">
+            <div className="layout-container flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-1 text-[8.5px] xs:text-[9.5px] sm:text-xs font-sans tracking-[0.18em] sm:tracking-[0.22em] text-[#AAA49B]">
                 <span className="text-[#F2EEE7] font-semibold">0{currentSlide + 1}</span>
                 <span className="opacity-40">/</span>
                 <span className="opacity-60">0{heroSlides.length}</span>
               </div>
 
-              <div className="flex items-center gap-1.5 ml-3">
+              <div className="flex items-center gap-1 sm:gap-1.5 ml-1.5 sm:ml-3">
                 {heroSlides.map((slide, idx) => (
                   <button
                     key={slide.id}
                     onClick={() => setCurrentSlide(idx)}
                     aria-label={`Jump to slide ${idx + 1}`}
-                    className={`h-1 transition-all duration-500 rounded-full ${
-                      idx === currentSlide ? "w-8 bg-[#BFA27A]" : "w-2 bg-white/25 hover:bg-white/50"
+                    className={`h-0.5 sm:h-1 transition-all duration-500 rounded-full cursor-pointer ${
+                      idx === currentSlide ? "w-5 xs:w-7 sm:w-8 bg-[#BFA27A]" : "w-1.5 sm:w-2 bg-white/25 hover:bg-white/50"
                     }`}
                   />
                 ))}
@@ -567,8 +571,8 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* 4 Clean Modern Product Cards on Desktop */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+          {/* 4 Clean Modern Product Cards on Desktop, 2 Columns on Mobile */}
+          <div className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4">
             {activeProducts.slice(0, 4).map((product) => {
               const primaryImg = product.image || product.primary_image;
               const secondaryImg = product.secondaryImage || product.secondary_image;
@@ -601,42 +605,42 @@ export default function Home() {
                     )}
 
                     {/* Subtle Concentration Badge */}
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="text-[8.5px] uppercase font-sans tracking-[0.18em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2.5 py-1 rounded-full font-semibold backdrop-blur-md">
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
+                      <span className="text-[7.5px] xs:text-[8.5px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.18em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-semibold backdrop-blur-md">
                         {product.concentration || "30% Extrait"}
                       </span>
                     </div>
                   </Link>
 
                   {/* Minimal Details & Quick Action */}
-                  <div className="p-5 flex flex-col flex-grow justify-between space-y-4">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-[9px] uppercase font-sans tracking-[0.2em] text-[#888279]">
-                        <span>{product.subtitle || "Extrait de Parfum"}</span>
-                        <span className="text-[#BFA27A] font-medium">{product.volume || "50ml"}</span>
+                  <div className="p-3 xs:p-4 sm:p-5 flex flex-col flex-grow justify-between space-y-3 sm:space-y-4">
+                    <div className="space-y-1 sm:space-y-1.5">
+                      <div className="flex items-center justify-between text-[8px] xs:text-[9px] uppercase font-sans tracking-[0.16em] sm:tracking-[0.2em] text-[#888279]">
+                        <span className="truncate pr-1">{product.subtitle || "Extrait"}</span>
+                        <span className="text-[#BFA27A] font-medium shrink-0">{product.volume || "50ml"}</span>
                       </div>
 
                       <Link to={`/product/${product.slug}`}>
-                        <h3 className="font-sans font-bold text-lg sm:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-200 tracking-tight">
+                        <h3 className="font-sans font-bold text-sm xs:text-base sm:text-lg lg:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-200 tracking-tight line-clamp-1">
                           {product.name}
                         </h3>
                       </Link>
 
-                      <p className="text-xs font-sans text-[#AAA49B] font-light line-clamp-1">
+                      <p className="text-[11px] sm:text-xs font-sans text-[#AAA49B] font-light line-clamp-1">
                         {product.olfactiveFamily}
                       </p>
                     </div>
 
                     {/* Price & Modern Quick Add Button */}
-                    <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2">
-                      <span className="text-sm sm:text-base font-sans font-semibold text-[#F2EEE7] tracking-tight">
+                    <div className="pt-2.5 sm:pt-3 border-t border-white/[0.06] flex items-center justify-between gap-1.5 xs:gap-2">
+                      <span className="text-xs xs:text-sm sm:text-base font-sans font-semibold text-[#F2EEE7] tracking-tight shrink-0">
                         {product.formattedPrice}
                       </span>
 
                       <button
                         onClick={(e) => handleQuickAdd(e, product)}
                         aria-label={`Quick add ${product.name} to bag`}
-                        className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-sans tracking-[0.14em] font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
+                        className={`inline-flex items-center gap-1 text-[9px] xs:text-[10px] uppercase font-sans tracking-[0.1em] xs:tracking-[0.14em] font-semibold px-2.5 py-1.5 xs:px-3.5 xs:py-2 rounded-full transition-all duration-300 shrink-0 cursor-pointer ${
                           isAdded
                             ? "bg-emerald-800 text-emerald-100 border border-emerald-500/50"
                             : "bg-[#181714] text-[#F2EEE7] hover:bg-[#BFA27A] hover:text-[#090908] border border-white/10 hover:border-[#BFA27A]"
@@ -644,12 +648,12 @@ export default function Home() {
                       >
                         {isAdded ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-300 stroke-[2.5]" />
+                            <Check className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-emerald-300 stroke-[2.5]" />
                             <span>Added</span>
                           </>
                         ) : (
                           <>
-                            <Plus className="w-3 h-3 stroke-[2]" />
+                            <Plus className="w-2.5 h-2.5 xs:w-3 xs:h-3 stroke-[2]" />
                             <span>Add</span>
                           </>
                         )}
@@ -663,7 +667,10 @@ export default function Home() {
         </div>
       </section>
 
-
+      {/* =======================================================================
+          4. SCENTÉ EDITORIAL CAMPAIGN BANNER (Cinematic Editorial Image Section)
+          ======================================================================= */}
+      <EditorialBanner />
 
       {/* =======================================================================
           5. NEW ARRIVALS (Horizontal Interactive Product Track)
@@ -712,7 +719,7 @@ export default function Home() {
               return (
                 <div
                   key={`new-${product.id}`}
-                  className="min-w-[260px] sm:min-w-[290px] md:min-w-[320px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
+                  className="min-w-[240px] xs:min-w-[270px] sm:min-w-[300px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
                 >
                   <Link to={`/product/${product.slug}`} className="relative aspect-[4/3] overflow-hidden bg-[#141311] block">
                     <img
@@ -841,13 +848,6 @@ export default function Home() {
             >
               <span>Shop All Fragrances</span>
               <ArrowRight className="w-3.5 h-3.5 ml-2 stroke-[2]" />
-            </Link>
-
-            <Link
-              to="/scent-finder"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 hover:border-[#BFA27A] text-[#F2EEE7] hover:text-[#BFA27A] text-xs font-medium uppercase tracking-[0.16em] transition-all duration-300"
-            >
-              Consult Scent Quiz
             </Link>
           </div>
 

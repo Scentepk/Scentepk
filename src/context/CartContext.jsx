@@ -255,7 +255,20 @@ export function CartProvider({ children }) {
       if (!isBuyNowOrder && stockValidation.hasChanges) {
         setCartItems(stockValidation.updatedItems);
       }
-      throw new Error("Sorry, one or more items in your cart are no longer available in the requested quantity.");
+      const unavailableNames = (stockValidation.unavailableItems || [])
+        .map((i) => `"${i.product?.name || "Item"}" (${i.size || "50ml"})`)
+        .join(", ");
+      const adjustedNames = (stockValidation.adjustedItems || [])
+        .map((i) => `"${i.product?.name || "Item"}" (${i.size || "50ml"} - only ${i.adjustedQuantity} left)`)
+        .join(", ");
+
+      const errorDetail = [unavailableNames, adjustedNames].filter(Boolean).join("; ");
+
+      throw new Error(
+        errorDetail
+          ? `Sorry, ${errorDetail} is no longer available in the requested quantity.`
+          : "Sorry, one or more items in your cart are no longer available in the requested quantity."
+      );
     }
 
     let orderPayload;

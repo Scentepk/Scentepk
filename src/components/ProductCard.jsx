@@ -102,14 +102,14 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
           </div>
 
           {/* Scentara Centered Meta */}
-          <div className="space-y-1 px-2 pb-2">
-            <span className="text-[11px] sm:text-xs font-sans text-[#AAA49B] font-light tracking-wide line-clamp-1">
+          <div className="space-y-0.5 xs:space-y-1 px-1 sm:px-2 pb-2">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-sans text-[#AAA49B] font-light tracking-wide line-clamp-1">
               {olfactiveFamily || subtitle || "Extrait de Parfum"}
             </span>
-            <h3 className="font-sans font-bold text-base sm:text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 tracking-tight line-clamp-1">
+            <h3 className="font-sans font-bold text-sm xs:text-base sm:text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 tracking-tight line-clamp-1">
               {name}
             </h3>
-            <p className="font-sans font-semibold text-sm sm:text-base text-[#F2EEE7] pt-0.5">
+            <p className="font-sans font-semibold text-xs xs:text-sm sm:text-base text-[#F2EEE7] pt-0.5">
               {formattedPrice}
             </p>
           </div>

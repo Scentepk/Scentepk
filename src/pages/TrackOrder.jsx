@@ -365,13 +365,13 @@ export default function TrackOrder() {
         canonicalUrl="https://scente.pk/track"
         keywords="track order, SCENTÉ tracking, perfume delivery status Pakistan, courier tracking, Cash on Delivery status"
       />
-      <div className="layout-container py-14 sm:py-20 max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="layout-container py-10 sm:py-16 lg:py-20 max-w-4xl mx-auto">
         {/* 1. HEADER */}
-        <ScrollReveal className="text-center mb-10 sm:mb-12">
+        <ScrollReveal className="text-center mb-8 sm:mb-12">
           <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-3 font-medium">
             ATELIER DISPATCH & LOGISTICS
           </span>
-          <h1 className="font-serif font-light text-3xl sm:text-5xl text-[#F2EEE7] tracking-headline mb-3">
+          <h1 className="font-serif font-light text-2xl xs:text-3xl sm:text-5xl text-[#F2EEE7] tracking-headline mb-3">
             Track Your Parcel
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light max-w-lg mx-auto leading-relaxed">
@@ -382,7 +382,7 @@ export default function TrackOrder() {
         {/* 2. SEARCH FORM */}
         <ScrollReveal
           delay={0.05}
-          className="bg-[#121110] p-6 sm:p-9 border border-[rgba(242,238,231,0.08)] shadow-2xl mb-10 rounded-sm"
+          className="bg-[#121110] p-4 xs:p-6 sm:p-9 border border-[rgba(242,238,231,0.08)] shadow-2xl mb-8 sm:mb-10 rounded-sm"
         >
           <form onSubmit={handleTrack} className="space-y-5 font-sans">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -520,7 +520,7 @@ export default function TrackOrder() {
 
         {/* 4. TRACKING RESULTS MANIFEST */}
         {orderData && (
-          <ScrollReveal className="bg-[#121110] border border-[rgba(242,238,231,0.08)] shadow-2xl p-6 sm:p-10 space-y-8 font-sans rounded-sm">
+          <ScrollReveal className="bg-[#121110] border border-[rgba(242,238,231,0.08)] shadow-2xl p-4 xs:p-6 sm:p-10 space-y-8 font-sans rounded-sm">
             {/* Manifest Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[rgba(242,238,231,0.06)] gap-4">
               <div className="space-y-1">

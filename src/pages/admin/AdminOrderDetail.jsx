@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   getOrderByIdAdmin,
   updateOrderStatusAdmin,
   updateOrderTrackingAdmin,
+  deleteOrderAdmin,
 } from "../../services/adminOrders";
 import {
   ArrowLeft,
@@ -12,9 +13,11 @@ import {
   Truck,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   Loader2,
   Save,
   Clock,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
@@ -22,6 +25,7 @@ import Input from "../../components/Input";
 
 export default function AdminOrderDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [currentStatus, setCurrentStatus] = useState("pending");
   const [carrier, setCarrier] = useState("");
@@ -31,6 +35,24 @@ export default function AdminOrderDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const handleDeleteOrder = async () => {
+    if (!order) return;
+    setIsDeleting(true);
+    setDeleteError("");
+    const idOrRef = order.id || order.reference;
+    const { success, error } = await deleteOrderAdmin(idOrRef);
+    setIsDeleting(false);
+
+    if (error) {
+      setDeleteError(error.message || "Failed to delete order.");
+    } else {
+      navigate("/admin/orders");
+    }
+  };
 
   const statusOptions = [
     { value: "pending", label: "PENDING" },
@@ -260,22 +282,37 @@ export default function AdminOrderDetail() {
           </p>
         </div>
 
-        {/* Status Transition Control (Full width on mobile) */}
-        <div className="bg-[#121110] p-3 border border-[rgba(242,238,231,0.08)] rounded-xl flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 font-sans text-xs w-full lg:w-auto">
-          <span className="text-[10px] uppercase tracking-wider text-[#777169] font-medium">
-            UPDATE ORDER STATUS:
-          </span>
-          <div className="flex items-center space-x-2">
-            <CustomSelect
-              value={currentStatus}
-              disabled={isUpdating}
-              onChange={handleStatusChange}
-              options={statusOptions}
-              size="sm"
-              className="w-full sm:w-44"
-            />
-            {isUpdating && <Loader2 className="w-4 h-4 animate-spin text-[#BFA27A]" />}
+        {/* Status Transition Control & Delete Button */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+          <div className="bg-[#121110] p-3 border border-[rgba(242,238,231,0.08)] rounded-xl flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 font-sans text-xs flex-1 lg:flex-initial">
+            <span className="text-[10px] uppercase tracking-wider text-[#777169] font-medium">
+              UPDATE ORDER STATUS:
+            </span>
+            <div className="flex items-center space-x-2">
+              <CustomSelect
+                value={currentStatus}
+                disabled={isUpdating}
+                onChange={handleStatusChange}
+                options={statusOptions}
+                size="sm"
+                className="w-full sm:w-44"
+              />
+              {isUpdating && <Loader2 className="w-4 h-4 animate-spin text-[#BFA27A]" />}
+            </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setDeleteError("");
+              setShowDeleteModal(true);
+            }}
+            className="flex items-center justify-center space-x-2 px-4 py-3 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-500/30 hover:border-rose-500/50 text-rose-300 hover:text-rose-200 text-xs font-sans uppercase tracking-wider rounded-xl transition-colors cursor-pointer min-h-[44px]"
+            title="Delete Order"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+            <span>Delete Order</span>
+          </button>
         </div>
       </div>
 
@@ -636,6 +673,69 @@ export default function AdminOrderDetail() {
           </div>
         </div>
       </div>
+
+      {/* 5. DELETE ORDER CONFIRMATION MODAL */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#141311] border border-[rgba(242,238,231,0.12)] max-w-md w-full p-6 sm:p-7 space-y-5 rounded-sm shadow-2xl relative font-sans text-xs"
+            >
+              <div className="flex items-start space-x-3.5">
+                <div className="w-10 h-10 rounded-full bg-rose-950/50 border border-rose-500/30 flex items-center justify-center shrink-0 text-rose-400">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-serif text-lg sm:text-xl text-[#F2EEE7] font-normal">
+                    Delete Order {order.reference}?
+                  </h3>
+                  <p className="text-[#AAA49B] text-xs font-light leading-relaxed">
+                    This action will permanently delete order <strong className="text-[#F2EEE7] font-mono">{order.reference}</strong> and its line items from the atelier database. This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+
+              {deleteError && (
+                <div className="p-3 bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs rounded-sm">
+                  {deleteError}
+                </div>
+              )}
+
+              <div className="flex items-center justify-end space-x-3 pt-2">
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2.5 bg-[#181714] border border-[rgba(242,238,231,0.1)] text-[#AAA49B] hover:text-[#F2EEE7] uppercase tracking-wider text-[11px] font-medium transition-colors cursor-pointer rounded-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={handleDeleteOrder}
+                  className="px-5 py-2.5 bg-rose-700 hover:bg-rose-600 text-white uppercase tracking-wider text-[11px] font-semibold transition-colors cursor-pointer rounded-sm flex items-center space-x-1.5 shadow-lg shadow-rose-950/50 disabled:opacity-50"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Deleting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Order</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

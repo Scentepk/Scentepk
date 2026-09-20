@@ -383,9 +383,17 @@
   max-width: 1440px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.25rem;
-  /* 20px — comfortable on 320px */
-  padding-right: 1.25rem;
+  padding-left: 1rem;
+  /* 16px on compact mobile <=360px */
+  padding-right: 1rem;
+}
+
+@media (min-width: 375px) {
+  .layout-container {
+    padding-left: 1.25rem;
+    /* 20px on standard mobile */
+    padding-right: 1.25rem;
+  }
 }
 
 @media (min-width: 480px) {
@@ -418,6 +426,19 @@
     /* 80px large desktop */
     padding-right: 5rem;
   }
+}
+
+/* Safe Area Inset Helpers for iOS Notch / Dynamic Island / Home Indicator */
+.safe-pb {
+  padding-bottom: max(0.875rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-pt {
+  padding-top: max(1rem, env(safe-area-inset-top, 0px));
+}
+
+.safe-drawer-bottom {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
 }
 
 /* ==========================================================================
