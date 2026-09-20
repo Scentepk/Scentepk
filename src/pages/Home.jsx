@@ -314,7 +314,7 @@ export default function Home() {
           1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[60vh] xs:h-[64vh] min-h-[430px] max-h-[530px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[60vh] xs:h-[64vh] min-h-[380px] max-h-[530px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -500,7 +500,7 @@ export default function Home() {
               {/* WOMEN PERFUMES (Left Half) */}
               <Link
                 to={EDITORIAL_COLLECTIONS.women.link}
-                className="group relative h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block"
+                className="group relative h-[240px] xs:h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block"
               >
                 <img
                   src={EDITORIAL_COLLECTIONS.women.image}
@@ -525,7 +525,7 @@ export default function Home() {
               <Link
                 to={EDITORIAL_COLLECTIONS.men.link}
                 aria-label="Explore Men Perfumes"
-                className="group relative h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block border-t md:border-t-0 md:border-l border-white/[0.08]"
+                className="group relative h-[240px] xs:h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] overflow-hidden block border-t md:border-t-0 md:border-l border-white/[0.08]"
               >
                 <img
                   src={EDITORIAL_COLLECTIONS.men.image}
@@ -553,7 +553,7 @@ export default function Home() {
       {/* =======================================================================
           3. FEATURED PRODUCTS (BESTSELLERS — 4 Minimal Spacious Product Cards)
           ======================================================================= */}
-      <section id="bestsellers" className="py-24 sm:py-32 bg-[#090908] border-b border-white/[0.06]">
+      <section id="bestsellers" className="py-14 sm:py-24 lg:py-32 bg-[#090908] border-b border-white/[0.06]">
         <div className="layout-container">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-4 border-b border-white/[0.06] pb-6">
             <SectionHeading
@@ -675,7 +675,7 @@ export default function Home() {
       {/* =======================================================================
           5. NEW ARRIVALS (Horizontal Interactive Product Track)
           ======================================================================= */}
-      <section className="py-24 sm:py-32 bg-[#090908] border-b border-white/[0.06]">
+      <section className="py-14 sm:py-24 lg:py-32 bg-[#090908] border-b border-white/[0.06]">
         <div className="layout-container">
           <div className="flex items-end justify-between mb-10 sm:mb-14">
             <div>
@@ -719,7 +719,7 @@ export default function Home() {
               return (
                 <div
                   key={`new-${product.id}`}
-                  className="min-w-[240px] xs:min-w-[270px] sm:min-w-[300px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
+                  className="min-w-[200px] xs:min-w-[240px] sm:min-w-[300px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
                 >
                   <Link to={`/product/${product.slug}`} className="relative aspect-[4/3] overflow-hidden bg-[#141311] block">
                     <img
@@ -775,7 +775,7 @@ export default function Home() {
       {/* =======================================================================
           8. CUSTOMER REVIEWS (Refined Social Proof)
           ======================================================================= */}
-      <section className="py-24 sm:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
+      <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
         <div className="layout-container">
           <SectionHeading
             eyebrow="PATRON IMPRESSIONS"
@@ -788,7 +788,7 @@ export default function Home() {
             {TESTIMONIALS.map((review) => (
               <div
                 key={review.id}
-                className="p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
+                className="p-5 sm:p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
                   <div className="flex items-center gap-1 text-[#BFA27A]">
@@ -824,7 +824,7 @@ export default function Home() {
       {/* =======================================================================
           9. FINAL CAMPAIGN BANNER (Find Your Signature)
           ======================================================================= */}
-      <section className="relative py-28 sm:py-36 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
+      <section className="relative py-16 sm:py-28 lg:py-36 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
         {/* Subtle Ambient Radial Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-radial from-[#BFA27A]/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
 
@@ -833,7 +833,7 @@ export default function Home() {
             THE SIGNATURE EXPERIENCE
           </span>
 
-          <h2 className="font-sans font-bold text-4xl sm:text-5xl md:text-6xl text-[#F2EEE7] leading-[1.05] tracking-tight">
+          <h2 className="font-sans font-bold text-3xl xs:text-4xl sm:text-5xl md:text-6xl text-[#F2EEE7] leading-[1.05] tracking-tight">
             Find Your Signature.
           </h2>
 

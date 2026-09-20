@@ -156,7 +156,7 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
 
             <h3
               className={`font-serif ${
-                compact ? "text-base sm:text-xl" : "text-[15.5px] sm:text-2xl md:text-[26px] lg:text-[28px]"
+                compact ? "text-base sm:text-xl" : "text-[15.5px] xs:text-lg sm:text-xl md:text-2xl lg:text-[28px]"
               } font-normal leading-snug tracking-[-0.01em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 min-h-[38px] sm:min-h-[58px] line-clamp-2`}
             >
               {name}

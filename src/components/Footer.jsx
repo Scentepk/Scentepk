@@ -93,7 +93,7 @@ export default function Footer() {
           </div>
 
           {/* 4. LEGAL (Right Column) */}
-          <div className="md:col-span-2 lg:col-span-3 space-y-4 sm:space-y-5">
+          <div className="md:col-span-1 lg:col-span-3 space-y-4 sm:space-y-5">
             <h4 className="text-[10.5px] sm:text-[11px] font-sans uppercase tracking-[0.22em] text-[#F2EEE7] font-medium leading-none">
               LEGAL
             </h4>

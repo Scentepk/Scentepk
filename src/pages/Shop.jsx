@@ -708,7 +708,7 @@ export default function Shop() {
               {filteredProducts.length > 0 ? (
                 <motion.div
                   layout
-                  className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-3"
+                  className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
                 >
                   <AnimatePresence mode="popLayout">
                     {filteredProducts.map((product, idx) => (

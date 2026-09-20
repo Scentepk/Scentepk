@@ -835,3 +835,17 @@ select.rounded-full:autofill {
     /* 56px on large desktop */
   }
 }
+
+/* ==========================================================================
+   SCROLLBAR-HIDE UTILITY
+   Hides scrollbar chrome on horizontal scroll containers while preserving
+   native touch/mouse scroll behaviour.
+   ========================================================================== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

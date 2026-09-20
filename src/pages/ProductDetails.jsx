@@ -817,7 +817,7 @@ export default function ProductDetails() {
               </div>
 
               {/* Trust Guarantees */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 border-t border-white/[0.06] text-[11px] text-[#AAA49B]">
+              <div className="grid grid-cols-3 gap-3 pt-6 border-t border-white/[0.06] text-[11px] text-[#AAA49B]">
                 <div className="flex items-center gap-2.5 bg-[#141312] p-3 rounded-xl border border-white/[0.04]">
                   <Shield className="w-4 h-4 text-[#BFA27A] shrink-0" />
                   <span>100% Authentic Extrait</span>
@@ -1088,7 +1088,7 @@ export default function ProductDetails() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {relatedProducts.map((p, idx) => (
                 <ProductCard key={p.id || p.slug} product={p} variant="scentara" index={idx} />
               ))}
