@@ -1,10 +1,9 @@
 import React, { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { LUXURY_EASE, VIEWPORT_DEFAULT } from "../lib/animations";
 import { getOptimizedImageUrl } from "../lib/images";
-import { useWishlist } from "../context/WishlistContext";
 
 function ProductCard({ product, index = 0, compact = false, variant = "default" }) {
   const {
@@ -17,15 +16,6 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
     secondaryImage,
     mood,
   } = product;
-
-  const { isInWishlist, toggleWishlist: contextToggle } = useWishlist();
-  const isWishlisted = isInWishlist(product.id || slug);
-
-  const toggleWishlist = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    contextToggle(product.id || slug);
-  };
 
   const activeVariants = Array.isArray(product.variants)
     ? product.variants.filter((v) => v.isActive !== false && v.is_active !== false)
@@ -58,7 +48,7 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
     >
       {variant === "scentara" ? (
         <Link to={`/product/${slug}`} className="flex flex-col flex-grow focus:outline-none text-center">
-          {/* Image Container with Wishlist Heart */}
+          {/* Image Container */}
           <div className="relative aspect-square mb-3.5 bg-[#141312] overflow-hidden rounded-2xl border border-white/[0.07] transition-all duration-500 group-hover:border-[#BFA27A]/40 group-hover:shadow-[0_12px_35px_rgba(0,0,0,0.6)]">
             <img
               src={optimizedPrimaryImg}
@@ -85,20 +75,6 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
                 </span>
               </div>
             )}
-
-            {/* Wishlist Heart Button */}
-            <button
-              onClick={toggleWishlist}
-              type="button"
-              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-              className="absolute top-3 right-3 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-[#1a1918] shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-            >
-              <Heart
-                className={`w-4 h-4 transition-colors ${
-                  isWishlisted ? "fill-[#e11d48] text-[#e11d48]" : "text-[#1a1918]"
-                }`}
-              />
-            </button>
           </div>
 
           {/* Scentara Centered Meta */}

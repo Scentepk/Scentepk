@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { PRODUCTS } from "../data/products";
 import { getProductBySlug, getActiveProducts, normalizeProduct } from "../services/products";
 import { useCart } from "../context/CartContext";
-import { useWishlist } from "../context/WishlistContext";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
 import Button from "../components/Button";
@@ -17,7 +16,6 @@ import {
   ChevronDown,
   Minus,
   Plus,
-  Heart,
   Droplets,
   Clock,
   Sparkles,
@@ -34,7 +32,6 @@ export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart, buyNow } = useCart();
-  const { isInWishlist, toggleWishlist } = useWishlist();
 
   const [added, setAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState("50ml");
@@ -294,8 +291,6 @@ export default function ProductDetails() {
     if (s.includes("10")) return "10ml / 0.34 FL. OZ.";
     return activeVariant?.volume || activeVariant?.size || "50ml / 1.7 FL. OZ.";
   })();
-
-  const isWishlisted = product ? isInWishlist(product.id || product.slug || slug) : false;
 
   const handleAddToCart = () => {
     if (isOutOfStockNow || !product || stockCount <= 0) return;
@@ -565,25 +560,6 @@ export default function ProductDetails() {
                   {batchBadgeText}
                 </span>
               </div>
-
-              {/* Wishlist Heart Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleWishlist(product.id || product.slug || slug);
-                }}
-                className="absolute top-4 right-4 z-20 w-11 h-11 rounded-full bg-[#0D0D0C]/80 hover:bg-[#0D0D0C] backdrop-blur-md border border-white/10 hover:border-[#BFA27A]/50 flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer group"
-                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-              >
-                <Heart
-                  className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
-                    isWishlisted
-                      ? "text-[#BFA27A] fill-[#BFA27A]"
-                      : "text-[#AAA49B] group-hover:text-white"
-                  }`}
-                />
-              </button>
 
               {/* Main Image */}
               <AnimatePresence mode="wait">
