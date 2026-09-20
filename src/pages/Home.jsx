@@ -314,7 +314,7 @@ export default function Home() {
           1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[60vh] xs:h-[64vh] min-h-[380px] max-h-[530px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[65vh] min-h-[440px] max-h-[580px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -348,32 +348,29 @@ export default function Home() {
                   />
                 </picture>
 
-                {/* 2. Atmospheric Luxury Vignette / Gradient Overlay: Vertical scrim on mobile so bottle shines above and text is crisp below; Horizontal split on desktop */}
+                {/* 2. Atmospheric Luxury Vignette / Gradient Overlay */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-[#090908] via-[#090908]/75 via-45% to-black/20 sm:hidden pointer-events-none"
+                  className="absolute inset-0 bg-gradient-to-r from-[#090908]/90 via-[#090908]/70 via-65% sm:via-[#090908]/50 sm:via-50% to-transparent pointer-events-none"
                 />
-                <div
-                  className={`hidden sm:block absolute inset-0 bg-gradient-to-r ${slide.overlayGradient} pointer-events-none`}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#090908]/50 via-transparent to-black/25 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090908]/85 via-transparent to-black/30 pointer-events-none" />
 
-                {/* 3. Hero Copy Content: Placed at lower zone on mobile so bottle remains clear above */}
-                <div className="relative z-10 w-full h-full flex items-end sm:items-center">
-                  <div className="layout-container w-full py-4 xs:py-5 sm:py-8 lg:py-10 pb-14 xs:pb-16 sm:pb-8">
-                    <div className="max-w-lg sm:max-w-xl lg:max-w-2xl flex flex-col justify-end sm:justify-center space-y-2 xs:space-y-2.5 sm:space-y-4 lg:space-y-5">
+                {/* 3. Hero Copy Content: Vertically balanced and width-constrained so it never overlaps the bottle */}
+                <div className="relative z-10 w-full h-full flex items-center">
+                  <div className="layout-container w-full py-6 sm:py-8 lg:py-10 pb-12 sm:pb-8">
+                    <div className="max-w-[68%] xs:max-w-[72%] sm:max-w-xl lg:max-w-2xl flex flex-col justify-center space-y-2 xs:space-y-3 sm:space-y-4 lg:space-y-5">
                       
                       {/* Eyebrow & Badge */}
                       <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.12, ease: LUXURY_EASE }}
-                        className="flex flex-wrap items-center gap-2 xs:gap-2.5 sm:gap-3"
+                        className="flex flex-wrap items-center gap-1.5 xs:gap-2.5 sm:gap-3"
                       >
-                        <span className="text-[9px] xs:text-[10px] sm:text-xs uppercase font-sans tracking-[0.2em] xs:tracking-[0.24em] text-[#BFA27A] font-semibold">
+                        <span className="text-[8.5px] xs:text-[10px] sm:text-xs uppercase font-sans tracking-[0.16em] xs:tracking-[0.24em] text-[#BFA27A] font-semibold">
                           {slide.eyebrow}
                         </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#BFA27A]/60" />
-                        <span className="text-[8px] xs:text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.14em] xs:tracking-[0.16em] text-[#AAA49B] font-medium">
+                        <span className="hidden xs:inline-block w-1.5 h-1.5 rounded-full bg-[#BFA27A]/60" />
+                        <span className="hidden xs:inline-block text-[8.5px] xs:text-[9.5px] sm:text-[10px] uppercase font-sans tracking-[0.14em] xs:tracking-[0.16em] text-[#AAA49B] font-medium">
                           {slide.badge}
                         </span>
                       </motion.div>
@@ -383,7 +380,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2, ease: LUXURY_EASE }}
-                        className="font-sans font-bold text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[1.02] sm:leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
+                        className="font-sans font-bold text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[1.08] sm:leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
                       >
                         {slide.headlineLine1} <br />
                         {slide.headlineLine2} <br />
@@ -395,12 +392,12 @@ export default function Home() {
                         initial={{ opacity: 0, y: 14 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.28, ease: LUXURY_EASE }}
-                        className="text-[11px] xs:text-xs sm:text-sm md:text-[15px] font-sans text-[#D4CEC5] font-light leading-[1.45] sm:leading-[1.6] max-w-sm sm:max-w-md drop-shadow-sm line-clamp-2 sm:line-clamp-none"
+                        className="text-[11px] xs:text-xs sm:text-sm md:text-[15px] font-sans text-[#D4CEC5] font-light leading-[1.45] sm:leading-[1.6] drop-shadow-sm line-clamp-2 sm:line-clamp-none"
                       >
                         {slide.subtitle}
                       </motion.p>
 
-                      {/* Primary CTA (Positioned directly underneath supporting text) */}
+                      {/* Primary CTA */}
                       <motion.div
                         initial={{ opacity: 0, y: 14 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -409,7 +406,7 @@ export default function Home() {
                       >
                         <Link
                           to={slide.ctaLink}
-                          className="inline-flex items-center justify-center px-5 py-2.5 xs:px-6 xs:py-3 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-[11px] xs:text-xs sm:text-[13px] font-semibold uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
+                          className="inline-flex items-center justify-center px-4 py-2.5 xs:px-6 xs:py-3 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-[10.5px] xs:text-xs sm:text-[13px] font-semibold uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
                         >
                           <span>{slide.ctaText}</span>
                           <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2]" />
