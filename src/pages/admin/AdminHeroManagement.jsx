@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Sparkles,
-  Upload,
-  Image as ImageIcon,
   Save,
   RotateCcw,
   Check,
@@ -18,28 +16,37 @@ import {
   Plus,
   Layers,
   HelpCircle,
+  Send,
+  FileCheck,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   getHeroSettings,
-  saveHeroSettings,
+  saveHeroDraft,
+  publishHeroSettings,
+  discardHeroDraft,
   uploadHeroImage,
   deleteHeroImage,
   DEFAULT_HERO_SETTINGS,
   DEFAULT_HERO_SLIDES,
+  DEFAULT_CROP_SETTINGS,
   normalizeSingleSlide,
 } from "../../services/heroSettings";
+import HeroImageEditor from "../../components/admin/HeroImageEditor";
 
 export default function AdminHeroManagement() {
-  // Saved server/DB state
-  const [savedSettings, setSavedSettings] = useState(DEFAULT_HERO_SETTINGS);
-  // Working draft state with slides array
+  // Published server/DB state
+  const [publishedSettings, setPublishedSettings] = useState(DEFAULT_HERO_SETTINGS);
+  // Persisted draft state
+  const [savedDraftSettings, setSavedDraftSettings] = useState(null);
+  // Working draft in editor
   const [formData, setFormData] = useState(DEFAULT_HERO_SETTINGS);
   // Currently active slide index for editing
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isUploadingDesktop, setIsUploadingDesktop] = useState(false);
   const [isUploadingMobile, setIsUploadingMobile] = useState(false);
   const [notification, setNotification] = useState(null); // { type, message }
@@ -47,17 +54,21 @@ export default function AdminHeroManagement() {
   // Preview Mode: 'desktop' | 'mobile'
   const [previewDevice, setPreviewDevice] = useState("desktop");
 
-  const desktopFileInputRef = useRef(null);
-  const mobileFileInputRef = useRef(null);
-
-  // Load existing hero settings on mount
+  // Load existing hero settings & draft on mount
   useEffect(() => {
     async function loadSettings() {
       setIsLoading(true);
       try {
-        const { data } = await getHeroSettings();
+        const { data, draft } = await getHeroSettings();
         if (data && Array.isArray(data.slides)) {
-          setSavedSettings(data);
+          setPublishedSettings(data);
+        }
+
+        if (draft && Array.isArray(draft) && draft.length > 0) {
+          const draftPayload = { id: "primary_hero", slides: draft };
+          setSavedDraftSettings(draftPayload);
+          setFormData(draftPayload);
+        } else if (data && Array.isArray(data.slides)) {
           setFormData(data);
         }
       } catch (err) {
@@ -73,9 +84,15 @@ export default function AdminHeroManagement() {
   const slides = formData.slides || [];
   const currentSlide = slides[activeSlideIndex] || slides[0] || DEFAULT_HERO_SLIDES[0];
 
-  // Check if there are unsaved changes
-  const hasUnsavedChanges =
-    JSON.stringify(formData) !== JSON.stringify(savedSettings);
+  // Compare active working form with published state
+  const hasUnpublishedChanges =
+    JSON.stringify(formData.slides) !== JSON.stringify(publishedSettings.slides);
+
+  // Compare working form with last saved draft
+  const hasUnsavedDraftEdits =
+    savedDraftSettings
+      ? JSON.stringify(formData.slides) !== JSON.stringify(savedDraftSettings.slides)
+      : hasUnpublishedChanges;
 
   // Helper to update active slide field
   const handleActiveSlideChange = (field, value) => {
@@ -110,6 +127,8 @@ export default function AdminHeroManagement() {
       cta_link: "/shop",
       image_url: "/images/campaign/hero-campaign-main.jpg",
       mobile_image_url: "",
+      desktop_crop: { ...DEFAULT_CROP_SETTINGS, x: 70 },
+      mobile_crop: { ...DEFAULT_CROP_SETTINGS, x: 50 },
     });
 
     setFormData((prev) => ({
@@ -120,7 +139,7 @@ export default function AdminHeroManagement() {
     setActiveSlideIndex(slides.length);
     setNotification({
       type: "info",
-      message: `Slide 0${newSlideNumber} added. Upload your photo and click 'Save Changes' to publish.`,
+      message: `Slide 0${newSlideNumber} added to working draft. Adjust crop/text and click 'Save Draft' or 'Publish Changes'.`,
     });
   };
 
@@ -129,18 +148,17 @@ export default function AdminHeroManagement() {
     e?.stopPropagation();
 
     if (slides.length <= 1) {
-      alert("At least 1 hero banner is required. To replace this image, use the 'Replace Image' button below.");
+      alert("At least 1 hero banner is required. To replace this image, use the image editor above.");
       return;
     }
 
     const targetSlide = slides[indexToDelete];
     const confirmDelete = window.confirm(
-      `Are you sure you want to DELETE Slide 0${indexToDelete + 1} (${targetSlide.headline_line1 || "Hero"} Banner)? It will be permanently removed from your homepage carousel.`
+      `Are you sure you want to DELETE Slide 0${indexToDelete + 1} (${targetSlide.headline_line1 || "Hero"} Banner)? It will be removed from your carousel draft.`
     );
 
     if (!confirmDelete) return;
 
-    // If it had a Supabase storage path, clean it up
     if (targetSlide.storage_path) {
       try {
         await deleteHeroImage(targetSlide.storage_path);
@@ -168,88 +186,101 @@ export default function AdminHeroManagement() {
 
     setNotification({
       type: "success",
-      message: `Slide 0${indexToDelete + 1} deleted! Click 'SAVE CHANGES' to update your homepage.`,
+      message: `Slide 0${indexToDelete + 1} deleted from working draft! Remember to click 'Publish Changes' to update the live homepage.`,
     });
   };
 
-  // Upload Desktop Image for active slide
-  const handleDesktopImageUpload = async (e) => {
-    const file = e.target.files?.[0];
+  // Upload Image Handler passed to HeroImageEditor
+  const handleUploadImage = async (file, type = "desktop") => {
     if (!file) return;
 
-    setIsUploadingDesktop(true);
+    if (type === "desktop") {
+      setIsUploadingDesktop(true);
+    } else {
+      setIsUploadingMobile(true);
+    }
     setNotification(null);
 
     try {
-      const { url, path, error } = await uploadHeroImage(file, "desktop");
+      const { url, path, error } = await uploadHeroImage(file, type);
       if (error) throw error;
 
-      handleActiveSlideChange("image_url", url);
-      handleActiveSlideChange("storage_path", path);
-
-      setNotification({
-        type: "success",
-        message: "New image uploaded! Click 'Save Changes' to publish to homepage.",
-      });
+      if (type === "desktop") {
+        handleActiveSlideChange("image_url", url);
+        handleActiveSlideChange("storage_path", path);
+        setNotification({
+          type: "success",
+          message: "Desktop hero image uploaded! Drag on canvas to adjust framing.",
+        });
+      } else {
+        handleActiveSlideChange("mobile_image_url", url);
+        handleActiveSlideChange("mobile_storage_path", path);
+        setNotification({
+          type: "success",
+          message: "Mobile portrait image uploaded! Adjust framing for smartphone patrons.",
+        });
+      }
     } catch (err) {
       setNotification({
         type: "error",
-        message: err.message || "Failed to upload image. Please check format & size (<5MB).",
+        message: err.message || "Failed to upload image (<5MB, JPG/PNG/WebP).",
       });
     } finally {
-      setIsUploadingDesktop(false);
-      if (desktopFileInputRef.current) desktopFileInputRef.current.value = "";
+      if (type === "desktop") {
+        setIsUploadingDesktop(false);
+      } else {
+        setIsUploadingMobile(false);
+      }
     }
   };
 
-  // Upload Mobile Image for active slide
-  const handleMobileImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploadingMobile(true);
+  // 1. SAVE DRAFT (Safe, Does NOT affect live storefront)
+  const handleSaveDraft = async () => {
+    setIsSavingDraft(true);
     setNotification(null);
 
     try {
-      const { url, path, error } = await uploadHeroImage(file, "mobile");
+      const { data, error } = await saveHeroDraft(formData);
       if (error) throw error;
 
-      handleActiveSlideChange("mobile_image_url", url);
-      handleActiveSlideChange("mobile_storage_path", path);
-
+      setSavedDraftSettings({ id: "primary_hero", slides: data });
       setNotification({
         type: "success",
-        message: "Mobile portrait image uploaded! Click 'Save Changes' to publish.",
+        message: "Draft saved! Changes are persisted safely in the admin workspace without altering the live website.",
       });
+
+      setTimeout(() => {
+        setNotification((prev) => (prev?.type === "success" ? null : prev));
+      }, 5000);
     } catch (err) {
       setNotification({
         type: "error",
-        message: err.message || "Failed to upload mobile image (<5MB).",
+        message: err.message || "Failed to save hero draft.",
       });
     } finally {
-      setIsUploadingMobile(false);
-      if (mobileFileInputRef.current) mobileFileInputRef.current.value = "";
+      setIsSavingDraft(false);
     }
   };
 
-  // Save changes to Supabase & LocalStorage
-  const handleSave = async (e) => {
+  // 2. PUBLISH CHANGES (Pushes to live storefront immediately)
+  const handlePublish = async (e) => {
     e?.preventDefault();
-    setIsSaving(true);
+    setIsPublishing(true);
     setNotification(null);
 
     try {
-      const { data, error } = await saveHeroSettings(formData);
+      const { data, error } = await publishHeroSettings(formData);
       if (error && !data) throw error;
 
       if (data) {
-        setSavedSettings(data);
+        setPublishedSettings(data);
+        setSavedDraftSettings(null); // Draft is now merged into published
         setFormData(data);
       }
 
       setNotification({
         type: "success",
-        message: "Hero section published! Homepage carousel updated in real-time.",
+        message: "Hero section published! Homepage carousel & positioning updated in real-time for all patrons.",
       });
 
       setTimeout(() => {
@@ -261,24 +292,28 @@ export default function AdminHeroManagement() {
         message: err.message || "Failed to publish hero section changes.",
       });
     } finally {
-      setIsSaving(false);
+      setIsPublishing(false);
     }
   };
 
-  // Cancel / Revert edits to last saved state
-  const handleRevert = () => {
-    setFormData(savedSettings);
-    setActiveSlideIndex(0);
-    setNotification({
-      type: "info",
-      message: "Unsaved changes reverted to published state.",
-    });
-    setTimeout(() => setNotification(null), 3000);
+  // 3. DISCARD DRAFT / REVERT TO PUBLISHED
+  const handleDiscardDraft = async () => {
+    if (window.confirm("Discard all unpublished draft edits and revert to the currently live hero?")) {
+      await discardHeroDraft();
+      setFormData(publishedSettings);
+      setSavedDraftSettings(null);
+      setActiveSlideIndex(0);
+      setNotification({
+        type: "info",
+        message: "Unpublished draft discarded. Restored live hero configuration.",
+      });
+      setTimeout(() => setNotification(null), 4000);
+    }
   };
 
-  // Reset to Atelier Default 3 slides
+  // 4. RESET ALL SLIDES TO DEFAULT
   const handleResetToDefault = () => {
-    if (window.confirm("Reset hero section to the original 3 SCENTÉ campaign slides?")) {
+    if (window.confirm("Reset all hero slides to the original 3 SCENTÉ campaign slides?")) {
       setFormData(DEFAULT_HERO_SETTINGS);
       setActiveSlideIndex(0);
     }
@@ -295,69 +330,109 @@ export default function AdminHeroManagement() {
     );
   }
 
+  // Active preview image & crop calculation
   const activeDisplayImage =
     previewDevice === "mobile" && currentSlide.mobile_image_url
       ? currentSlide.mobile_image_url
       : currentSlide.image_url;
 
+  const activeDisplayCrop =
+    previewDevice === "mobile"
+      ? currentSlide.mobile_crop || DEFAULT_CROP_SETTINGS
+      : currentSlide.desktop_crop || DEFAULT_CROP_SETTINGS;
+
   return (
     <div className="space-y-8 pb-20">
-      {/* 1. TOP HEADER & ACTION BUTTONS */}
+      {/* 1. TOP HEADER & WORKSPACE TOOLBAR ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
         <div>
           <div className="flex items-center space-x-2.5 mb-1.5">
             <span className="text-[10px] uppercase font-sans tracking-[0.26em] text-[#BFA27A] font-semibold flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              FRONT-OF-HOUSE EDITORIAL
+              FRONT-OF-HOUSE EDITORIAL CMS
             </span>
-            {hasUnsavedChanges && (
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                UNSAVED CHANGES
+
+            {/* Status Pill Badge */}
+            {hasUnpublishedChanges ? (
+              <span className="px-2.5 py-0.5 rounded-full text-[9.5px] font-mono bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                DRAFT IN PROGRESS
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full text-[9.5px] font-mono bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <FileCheck className="w-3 h-3 text-emerald-400" />
+                ALL CHANGES PUBLISHED
               </span>
             )}
           </div>
+
           <h1 className="font-serif text-2xl sm:text-3xl text-[#F2EEE7] font-normal tracking-wide">
-            Hero Section Management
+            Hero Section & Visual Image Editor
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light mt-1">
-            Manage, replace, or delete your existing hero carousel slides, campaign imagery, and text.
+            Frame desktop and mobile campaign visuals independently, adjust focal cropping, and publish when ready.
           </p>
         </div>
 
-        {/* Global Toolbar Actions */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            type="button"
-            onClick={handleRevert}
-            disabled={!hasUnsavedChanges || isSaving}
-            className="px-4 py-2.5 rounded-lg border border-white/10 text-[#AAA49B] hover:text-[#F2EEE7] hover:border-white/20 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-sans uppercase tracking-[0.16em] transition-colors flex items-center gap-2 cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Cancel</span>
-          </button>
+        {/* Global Action Buttons */}
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          {/* Revert / Discard Draft Button */}
+          {hasUnpublishedChanges && (
+            <button
+              type="button"
+              onClick={handleDiscardDraft}
+              disabled={isSavingDraft || isPublishing}
+              className="px-3.5 py-2 rounded-lg border border-rose-500/30 hover:border-rose-500/60 text-rose-300 hover:text-white hover:bg-rose-950/40 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-sans uppercase tracking-[0.14em] transition-colors flex items-center gap-1.5 cursor-pointer"
+              title="Discard draft and restore currently published live hero"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Discard Draft</span>
+            </button>
+          )}
 
+          {/* Save Draft Action Button */}
           <button
             type="button"
-            onClick={handleSave}
-            disabled={isSaving || !hasUnsavedChanges}
-            className="px-5 py-2.5 rounded-lg bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xs font-sans uppercase tracking-[0.18em] transition-all shadow-[0_4px_20px_rgba(191,162,122,0.25)] flex items-center gap-2 cursor-pointer"
+            onClick={handleSaveDraft}
+            disabled={isSavingDraft || isPublishing || !hasUnsavedDraftEdits}
+            className="px-4 py-2 rounded-lg bg-[#1D1C19] hover:bg-[#252420] text-[#E0DCD3] hover:text-[#F2EEE7] border border-white/15 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-sans uppercase tracking-[0.16em] transition-colors flex items-center gap-2 cursor-pointer"
           >
-            {isSaving ? (
+            {isSavingDraft ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>SAVING...</span>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#BFA27A]" />
+                <span>SAVING DRAFT...</span>
               </>
             ) : (
               <>
-                <Save className="w-3.5 h-3.5" />
-                <span>SAVE CHANGES</span>
+                <Save className="w-3.5 h-3.5 text-[#BFA27A]" />
+                <span>Save Draft</span>
+              </>
+            )}
+          </button>
+
+          {/* Publish Changes Action Button */}
+          <button
+            type="button"
+            onClick={handlePublish}
+            disabled={isPublishing || !hasUnpublishedChanges}
+            className="px-5 py-2 rounded-lg bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xs font-sans uppercase tracking-[0.18em] transition-all shadow-[0_4px_20px_rgba(191,162,122,0.25)] flex items-center gap-2 cursor-pointer"
+          >
+            {isPublishing ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>PUBLISHING...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-3.5 h-3.5" />
+                <span>PUBLISH CHANGES</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* NOTIFICATION BANNER */}
+      {/* NOTIFICATION TOAST BANNER */}
       <AnimatePresence>
         {notification && (
           <motion.div
@@ -400,11 +475,11 @@ export default function AdminHeroManagement() {
           <div className="flex items-center space-x-2">
             <Layers className="w-4 h-4 text-[#BFA27A]" />
             <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
-              Active Hero Slides ({slides.length})
+              Active Hero Carousel Slides ({slides.length})
             </h2>
           </div>
           <span className="text-[11px] font-sans text-[#AAA49B]">
-            Click a slide to edit. Click <strong className="text-rose-400">Delete (🗑️)</strong> to permanently remove any existing image.
+            Select a slide card below to edit its visual crop or copy.
           </span>
         </div>
 
@@ -422,12 +497,17 @@ export default function AdminHeroManagement() {
                     : "bg-[#161513] border-white/10 hover:border-white/25 hover:bg-[#1A1916]"
                 }`}
               >
-                {/* Thumbnail Image */}
+                {/* Thumbnail Image with Crop Applied */}
                 <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 mb-2.5">
                   <img
                     src={slide.image_url}
                     alt=""
                     className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: `${slide.desktop_crop?.x ?? 50}% ${slide.desktop_crop?.y ?? 50}%`,
+                      transform: `scale(${slide.desktop_crop?.zoom ?? 1.0})`,
+                      transformOrigin: `${slide.desktop_crop?.x ?? 50}% ${slide.desktop_crop?.y ?? 50}%`,
+                    }}
                   />
                   <div className="absolute top-2 left-2">
                     <span className="text-[9px] uppercase font-mono font-semibold px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#BFA27A] border border-white/10">
@@ -435,15 +515,17 @@ export default function AdminHeroManagement() {
                     </span>
                   </div>
 
-                  {/* Red Delete Slide Button */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleDeleteSlide(idx, e)}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-md bg-rose-950/90 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 flex items-center justify-center transition-all shadow-md cursor-pointer group/btn"
-                    title={`Delete Slide 0${idx + 1} from Hero Carousel`}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  {/* Delete Slide Button */}
+                  {slides.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteSlide(idx, e)}
+                      className="absolute top-2 right-2 w-7 h-7 rounded-md bg-rose-950/90 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                      title={`Delete Slide 0${idx + 1} from Hero Carousel`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
 
                 {/* Info Text */}
@@ -461,12 +543,9 @@ export default function AdminHeroManagement() {
                   <span className={isSelected ? "text-[#BFA27A] font-semibold" : "text-[#777169]"}>
                     {isSelected ? "● Currently Editing" : "Click to edit"}
                   </span>
-                  {slides.length > 1 && (
-                    <span
-                      onClick={(e) => handleDeleteSlide(idx, e)}
-                      className="text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      Delete
+                  {slide.mobile_image_url && (
+                    <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                      Mobile Art
                     </span>
                   )}
                 </div>
@@ -494,175 +573,21 @@ export default function AdminHeroManagement() {
       </div>
 
       {/* ===================================================================
-          3. MAIN TWO-COLUMN SPLIT: ACTIVE SLIDE EDITOR & LIVE REAL-TIME PREVIEW
+          3. MAIN TWO-COLUMN SPLIT: ACTIVE SLIDE EDITOR & REAL-TIME PREVIEW
           =================================================================== */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         {/* ===================================================================
-            LEFT COLUMN (XL:COL-SPAN-6): ACTIVE SLIDE CONTROLS
+            LEFT COLUMN (XL:COL-SPAN-7): VISUAL CROP & COPY CONTROLS
             =================================================================== */}
-        <div className="xl:col-span-6 space-y-6">
-          {/* SECTION A: HERO IMAGERY */}
-          <div className="p-6 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
-              <div className="flex items-center space-x-2">
-                <ImageIcon className="w-4 h-4 text-[#BFA27A]" />
-                <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
-                  Slide 0{activeSlideIndex + 1} Image
-                </h2>
-              </div>
-              <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#777169]">
-                MAX 5MB · WEBP / JPG / PNG
-              </span>
-            </div>
-
-            {/* Desktop Background Image */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-sans font-medium uppercase tracking-[0.16em] text-[#D4CEC5]">
-                  Desktop Background Image <span className="text-[#BFA27A]">*</span>
-                </label>
-                {slides.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={(e) => handleDeleteSlide(activeSlideIndex, e)}
-                    className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1.5 underline cursor-pointer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Delete This Entire Slide</span>
-                  </button>
-                )}
-              </div>
-
-              <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#090908] group aspect-[16/8] flex items-center justify-center">
-                {currentSlide.image_url ? (
-                  <img
-                    src={currentSlide.image_url}
-                    alt="Desktop Hero Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="text-center p-4">
-                    <ImageIcon className="w-8 h-8 text-[#777169] mx-auto mb-2" />
-                    <p className="text-xs text-[#AAA49B]">No desktop image selected</p>
-                  </div>
-                )}
-
-                {/* Overlay Action Bar */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-xs">
-                  <button
-                    type="button"
-                    onClick={() => desktopFileInputRef.current?.click()}
-                    disabled={isUploadingDesktop}
-                    className="px-4 py-2 rounded-lg bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    {isUploadingDesktop ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Upload className="w-3.5 h-3.5" />
-                    )}
-                    <span>Replace Image</span>
-                  </button>
-
-                  {slides.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={(e) => handleDeleteSlide(activeSlideIndex, e)}
-                      className="px-3.5 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer"
-                      title="Delete this slide from the hero section"
-                    >
-                      <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Delete Slide</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Upload & Direct URL input row */}
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="file"
-                  ref={desktopFileInputRef}
-                  onChange={handleDesktopImageUpload}
-                  accept="image/jpeg,image/png,image/webp,image/avif"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => desktopFileInputRef.current?.click()}
-                  disabled={isUploadingDesktop}
-                  className="px-4 py-2 rounded-lg bg-[#181714] hover:bg-[#201F1B] border border-white/10 text-xs font-sans text-[#F2EEE7] flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Upload className="w-3.5 h-3.5 text-[#BFA27A]" />
-                  <span>{isUploadingDesktop ? "Uploading..." : "Upload File"}</span>
-                </button>
-
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={currentSlide.image_url}
-                    onChange={(e) => handleActiveSlideChange("image_url", e.target.value)}
-                    placeholder="/images/campaign/hero-campaign-main.jpg or https://..."
-                    className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-[#AAA49B] focus:border-[#BFA27A] focus:text-[#F2EEE7] focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Background Image (Optional) */}
-            <div className="space-y-3 pt-3 border-t border-white/[0.06]">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Smartphone className="w-3.5 h-3.5 text-[#BFA27A]" />
-                  <label className="text-xs font-sans font-medium uppercase tracking-[0.16em] text-[#D4CEC5]">
-                    Mobile Image (Optional Vertical)
-                  </label>
-                </div>
-                <span className="text-[10px] font-sans text-[#777169]">
-                  Defaults to desktop image if unset
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="file"
-                  ref={mobileFileInputRef}
-                  onChange={handleMobileImageUpload}
-                  accept="image/jpeg,image/png,image/webp,image/avif"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => mobileFileInputRef.current?.click()}
-                  disabled={isUploadingMobile}
-                  className="px-4 py-2 rounded-lg bg-[#181714] hover:bg-[#201F1B] border border-white/10 text-xs font-sans text-[#F2EEE7] flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Upload className="w-3.5 h-3.5 text-[#BFA27A]" />
-                  <span>{isUploadingMobile ? "Uploading..." : "Upload Mobile"}</span>
-                </button>
-
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={currentSlide.mobile_image_url || ""}
-                    onChange={(e) => handleActiveSlideChange("mobile_image_url", e.target.value)}
-                    placeholder="Optional vertical image URL"
-                    className="w-full bg-[#181714] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-[#AAA49B] focus:border-[#BFA27A] focus:text-[#F2EEE7] focus:outline-none transition-colors"
-                  />
-                </div>
-
-                {currentSlide.mobile_image_url && (
-                  <button
-                    type="button"
-                    onClick={() => handleActiveSlideChange("mobile_image_url", "")}
-                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer"
-                    title="Remove mobile image"
-                  >
-                    <Trash2 className="w-4 h-4 text-rose-400" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
+        <div className="xl:col-span-7 space-y-6">
+          {/* SECTION A: PROFESSIONAL HERO IMAGE CROP & POSITIONING CANVAS */}
+          <HeroImageEditor
+            slide={currentSlide}
+            onSlideChange={handleActiveSlideChange}
+            onUploadImage={handleUploadImage}
+            isUploadingDesktop={isUploadingDesktop}
+            isUploadingMobile={isUploadingMobile}
+          />
 
           {/* SECTION B: HERO HEADLINE & COPY */}
           <div className="p-6 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-6">
@@ -823,16 +748,16 @@ export default function AdminHeroManagement() {
         </div>
 
         {/* ===================================================================
-            RIGHT COLUMN (XL:COL-SPAN-6): LIVE REAL-TIME PREVIEW PANEL
+            RIGHT COLUMN (XL:COL-SPAN-5): LIVE STOREFRONT SIMULATION PREVIEW
             =================================================================== */}
-        <div className="xl:col-span-6 space-y-4 xl:sticky xl:top-8">
+        <div className="xl:col-span-5 space-y-4 xl:sticky xl:top-8">
           <div className="p-4 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-4">
-            {/* Preview Header & Device Switcher */}
+            {/* Preview Header & Viewport Switcher */}
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
               <div className="flex items-center space-x-2">
                 <Eye className="w-4 h-4 text-[#BFA27A]" />
                 <span className="font-serif text-sm text-[#F2EEE7]">
-                  Previewing Slide 0{activeSlideIndex + 1}
+                  Simulated Storefront (Slide 0{activeSlideIndex + 1})
                 </span>
               </div>
 
@@ -872,27 +797,38 @@ export default function AdminHeroManagement() {
                 className={`relative overflow-hidden transition-all duration-300 rounded-xl border border-white/15 shadow-2xl select-none ${
                   previewDevice === "desktop"
                     ? "w-full aspect-[16/10] sm:aspect-[16/9]"
-                    : "w-[280px] sm:w-[320px] aspect-[9/16]"
+                    : "w-[270px] sm:w-[310px] aspect-[9/16]"
                 }`}
               >
-                {/* 1. Background Campaign Image */}
-                <img
-                  src={activeDisplayImage}
-                  alt="Hero Preview"
-                  className="absolute inset-0 w-full h-full object-cover object-center"
-                />
+                {/* 1. Background Campaign Image with Real-time Positioning */}
+                {activeDisplayImage ? (
+                  <img
+                    src={activeDisplayImage}
+                    alt="Hero Live Preview"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-100"
+                    style={{
+                      objectPosition: `${activeDisplayCrop.x ?? 50}% ${activeDisplayCrop.y ?? 50}%`,
+                      transform: `scale(${activeDisplayCrop.zoom ?? 1.0})`,
+                      transformOrigin: `${activeDisplayCrop.x ?? 50}% ${activeDisplayCrop.y ?? 50}%`,
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-black flex items-center justify-center text-xs text-[#AAA49B]">
+                    No image available
+                  </div>
+                )}
 
                 {/* 2. Gradient Overlays for High Legibility */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#090908]/90 via-[#090908]/55 to-transparent pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#090908] via-transparent to-black/30 pointer-events-none" />
 
                 {/* 3. Real-Time Copy Typography */}
-                <div className="relative z-10 w-full h-full flex flex-col justify-center p-4 sm:p-6 lg:p-8">
-                  <div className="max-w-[85%] sm:max-w-[80%] space-y-2 sm:space-y-3">
+                <div className="relative z-10 w-full h-full flex flex-col justify-center p-4 sm:p-6 lg:p-7">
+                  <div className="max-w-[85%] sm:max-w-[80%] space-y-2 sm:space-y-2.5">
                     {/* Eyebrow & Badge */}
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       {currentSlide.eyebrow && (
-                        <span className="text-[8px] sm:text-[9.5px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-semibold truncate max-w-full">
+                        <span className="text-[7.5px] sm:text-[9px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-semibold truncate max-w-full">
                           {currentSlide.eyebrow}
                         </span>
                       )}
@@ -900,7 +836,7 @@ export default function AdminHeroManagement() {
                         <span className="w-1 h-1 rounded-full bg-[#BFA27A]/60" />
                       )}
                       {currentSlide.badge && (
-                        <span className="text-[7.5px] sm:text-[8.5px] uppercase font-sans tracking-[0.14em] text-[#AAA49B] font-medium">
+                        <span className="text-[7px] sm:text-[8px] uppercase font-sans tracking-[0.14em] text-[#AAA49B] font-medium">
                           {currentSlide.badge}
                         </span>
                       )}
@@ -908,7 +844,7 @@ export default function AdminHeroManagement() {
 
                     {/* Main Headline */}
                     <h2
-                      className={`font-sans font-bold leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md ${
+                      className={`font-sans font-bold leading-[0.98] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md ${
                         previewDevice === "mobile"
                           ? "text-lg sm:text-xl"
                           : "text-xl sm:text-2xl lg:text-3xl"
@@ -924,8 +860,8 @@ export default function AdminHeroManagement() {
                       <p
                         className={`font-sans text-[#D4CEC5] font-light leading-relaxed line-clamp-3 ${
                           previewDevice === "mobile"
-                            ? "text-[9.5px]"
-                            : "text-[10.5px] sm:text-xs"
+                            ? "text-[9px]"
+                            : "text-[10px] sm:text-[11.5px]"
                         }`}
                       >
                         {currentSlide.subtitle}
@@ -934,8 +870,8 @@ export default function AdminHeroManagement() {
 
                     {/* CTA Button */}
                     {currentSlide.cta_text && (
-                      <div className="pt-1 sm:pt-2">
-                        <div className="inline-flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#F2EEE7] text-[#090908] text-[9.5px] sm:text-[11px] font-semibold uppercase tracking-[0.16em] shadow-lg">
+                      <div className="pt-1">
+                        <div className="inline-flex items-center justify-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#F2EEE7] text-[#090908] text-[9px] sm:text-[10.5px] font-semibold uppercase tracking-[0.16em] shadow-lg">
                           <span>{currentSlide.cta_text}</span>
                           <ArrowRight className="w-3 h-3 ml-1.5" />
                         </div>
@@ -953,8 +889,13 @@ export default function AdminHeroManagement() {
               </div>
             </div>
 
-            <div className="text-[11px] text-[#777169] text-center font-sans">
-              Edits update the preview above in real time. Changes are published to live visitors when you click <strong className="text-[#F2EEE7]">Save Changes</strong>.
+            <div className="text-[11px] text-[#777169] text-center font-sans space-y-1">
+              <p>
+                Edits update this preview in real time. Use <strong>Save Draft</strong> to keep working privately.
+              </p>
+              <p className="text-[#AAA49B]">
+                Changes only appear on the public storefront when you click <strong className="text-[#BFA27A]">Publish Changes</strong>.
+              </p>
             </div>
           </div>
         </div>

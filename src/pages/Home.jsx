@@ -218,6 +218,8 @@ export default function Home() {
         ctaLink: s.cta_link || s.ctaLink || "/shop",
         image: s.image_url || s.image || "/images/campaign/hero-campaign-main.jpg",
         mobileImage: s.mobile_image_url || s.mobileImage || null,
+        desktop_crop: s.desktop_crop || null,
+        mobile_crop: s.mobile_crop || null,
         imageAlt: s.imageAlt || `SCENTÉ Artisanal Fragrance Campaign ${idx + 1}`,
         objectPosition: s.objectPosition || "object-center md:object-[72%_center] lg:object-center",
         overlayGradient: s.overlayGradient || "from-[#090908]/90 via-[#090908]/50 to-transparent",
@@ -237,6 +239,8 @@ export default function Home() {
         ctaLink: customHero.cta_link || HERO_SLIDES[0].ctaLink,
         image: customHero.image_url || HERO_SLIDES[0].image,
         mobileImage: customHero.mobile_image_url || null,
+        desktop_crop: customHero.desktop_crop || null,
+        mobile_crop: customHero.mobile_crop || null,
       };
       return [dynamicFirstSlide];
     }
@@ -333,20 +337,44 @@ export default function Home() {
                 transition={{ duration: 0.7, ease: LUXURY_EASE }}
                 className="absolute inset-0 w-full h-full overflow-hidden"
               >
-                {/* 1. Large Campaign Editorial Photograph (Full-Bleed Viewport with Mobile Art Direction) */}
-                <picture className="absolute inset-0 w-full h-full">
-                  {slide.mobileImage && (
-                    <source media="(max-width: 640px)" srcSet={slide.mobileImage} />
-                  )}
+                {/* 1. Large Campaign Editorial Photograph with Responsive Mobile & Desktop Crop Art Direction */}
+                {/* Mobile Viewport (< md: 768px) */}
+                <div className="block md:hidden absolute inset-0 w-full h-full overflow-hidden">
+                  <motion.img
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, ease: LUXURY_EASE }}
+                    src={slide.mobileImage || slide.image}
+                    alt={slide.imageAlt || "SCENTÉ Artisanal Fragrance Campaign"}
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: slide.mobile_crop ? `${slide.mobile_crop.x}% ${slide.mobile_crop.y}%` : "50% 50%",
+                      transform: slide.mobile_crop?.zoom ? `scale(${slide.mobile_crop.zoom})` : undefined,
+                      transformOrigin: slide.mobile_crop ? `${slide.mobile_crop.x}% ${slide.mobile_crop.y}%` : "50% 50%",
+                    }}
+                  />
+                </div>
+
+                {/* Desktop Viewport (>= md: 768px) */}
+                <div className="hidden md:block absolute inset-0 w-full h-full overflow-hidden">
                   <motion.img
                     initial={{ scale: 1.03 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 7, ease: "easeOut" }}
                     src={slide.image}
                     alt={slide.imageAlt || "SCENTÉ Artisanal Fragrance Campaign"}
-                    className={`w-full h-full object-cover ${slide.objectPosition || "object-center"}`}
+                    className={`w-full h-full object-cover ${!slide.desktop_crop ? (slide.objectPosition || "object-center") : ""}`}
+                    style={
+                      slide.desktop_crop
+                        ? {
+                            objectPosition: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
+                            transform: `scale(${slide.desktop_crop.zoom ?? 1.0})`,
+                            transformOrigin: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
+                          }
+                        : undefined
+                    }
                   />
-                </picture>
+                </div>
 
                 {/* 2. Atmospheric Luxury Vignette / Gradient Overlay */}
                 <div
