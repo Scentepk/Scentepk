@@ -900,16 +900,16 @@ export default function ProductDetails() {
                 onClick={() => setOpenAccordion(openAccordion === "notes" ? null : "notes")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
+                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     01
                   </span>
-                  <h3 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal">
+                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     The Olfactive Notes & Architecture
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>
@@ -981,16 +981,16 @@ export default function ProductDetails() {
                 onClick={() => setOpenAccordion(openAccordion === "ritual" ? null : "ritual")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
+                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     02
                   </span>
-                  <h3 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal">
+                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     The Application Ritual & Longevity
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>
@@ -1022,16 +1022,16 @@ export default function ProductDetails() {
                 onClick={() => setOpenAccordion(openAccordion === "delivery" ? null : "delivery")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
+                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     03
                   </span>
-                  <h3 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal">
+                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     Nationwide Delivery, COD & Authentic Guarantee
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>
