@@ -21,10 +21,10 @@ export default function About() {
             ATELIER HERITAGE
           </span>
           <h1 className="font-serif font-light text-fluid-display text-[#F2EEE7] tracking-headline mb-4 leading-[1.08]">
-            The House of <span className="italic">SCENTÉ</span>
+            The House of <span className="italic">SCENTÉPK</span>
           </h1>
           <p className="text-sm sm:text-base font-sans text-[#AAA49B] font-light leading-[1.7]">
-            SCENTÉ was founded on a simple, uncompromising ethos: to formulate pure, high-concentration Extraits de Parfum that honor ancient perfumery traditions while pushing the boundaries of modern sillage.
+            SCENTÉPK was founded on a simple, uncompromising ethos: to formulate pure, high-concentration Extraits de Parfum that honor ancient perfumery traditions while pushing the boundaries of modern sillage.
           </p>
         </ScrollReveal>
 

@@ -455,7 +455,7 @@ export default function ProductDetails() {
     ...(keyAccords || []),
     "Pakistan luxury perfume",
     "Extrait de Parfum",
-    "SCENTÉ fragrance",
+    "SCENTÉPK fragrance",
     "Cash on Delivery Pakistan"
   ].filter(Boolean).join(", ");
 
@@ -845,7 +845,7 @@ export default function ProductDetails() {
               Calibrated for Enduring Presence
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light mt-2 leading-relaxed">
-              Every SCENTÉ composition is matured in dark temperature-regulated cellars with radical pure oil concentrations.
+              Every SCENTÉPK composition is matured in dark temperature-regulated cellars with radical pure oil concentrations.
             </p>
           </div>
 
@@ -1005,7 +1005,7 @@ export default function ProductDetails() {
                     className="overflow-hidden pt-6 font-sans text-xs sm:text-sm text-[#AAA49B] font-light leading-relaxed space-y-3"
                   >
                     <p>
-                      Because SCENTÉ compositions contain 30–35% pure fragrance oil with zero water dilution, standard heavy misting is unnecessary. 2 to 3 sprays on pulse points — the hollow of the neck, inner wrists, and collarbone — are sufficient for an intimate, hypnotic sillage that radiates throughout your day.
+                      Because SCENTÉPK compositions contain 30–35% pure fragrance oil with zero water dilution, standard heavy misting is unnecessary. 2 to 3 sprays on pulse points — the hollow of the neck, inner wrists, and collarbone — are sufficient for an intimate, hypnotic sillage that radiates throughout your day.
                     </p>
                     <p className="text-[#BFA27A] text-xs font-mono">
                       Tip: Do not rub your wrists together after spraying, as friction crushes the delicate top molecular accords and alters the planned drydown sequence.
@@ -1134,7 +1134,7 @@ export default function ProductDetails() {
         isOpen={isLightboxOpen}
         images={galleryImages}
         initialIndex={activeImageIndex}
-        productName={product?.name || "SCENTÉ Fragrance"}
+        productName={product?.name || "SCENTÉPK Fragrance"}
         onClose={() => setIsLightboxOpen(false)}
       />
     </div>

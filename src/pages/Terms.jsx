@@ -8,14 +8,14 @@ export default function Terms() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Terms of Service — Legal & Purchase Policy"
-        description="Terms governing the purchase of SCENTÉ Extrait de Parfum products, Cash on Delivery agreements, and website terms of service."
+        description="Terms governing the purchase of SCENTÉPK Extrait de Parfum products, Cash on Delivery agreements, and website terms of service."
         canonicalUrl="https://scente.pk/terms"
       />
       <div className="layout-container py-16 sm:py-24">
         <SectionHeading
           eyebrow="LEGAL & COMPLIANCE"
           title="Terms of Service"
-          subtitle="Terms governing the purchase of SCENTÉ Extrait de Parfum products and website usage."
+          subtitle="Terms governing the purchase of SCENTÉPK Extrait de Parfum products and website usage."
         />
 
         <div className="max-w-4xl mx-auto mt-12 space-y-8 font-sans text-xs text-[#AAA49B] leading-[1.8] font-light">
@@ -36,7 +36,7 @@ export default function Terms() {
           <ScrollReveal delay={0.19} className="bg-[#121110] p-8 sm:p-10 border border-[rgba(242,238,231,0.08)] space-y-3">
             <h3 className="font-serif text-xl font-light text-[#F2EEE7]">3. Intellectual Property</h3>
             <p>
-              The SCENTÉ name, trademark, olfactive descriptions, bottle designs, and website content are the exclusive intellectual property of SCENTÉ Parfums. Unauthorized reproduction is strictly prohibited.
+              The SCENTÉPK name, trademark, olfactive descriptions, bottle designs, and website content are the exclusive intellectual property of SCENTÉPK Parfums. Unauthorized reproduction is strictly prohibited.
             </p>
           </ScrollReveal>
         </div>

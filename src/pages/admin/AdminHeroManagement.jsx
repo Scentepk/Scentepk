@@ -185,7 +185,7 @@ export default function AdminHeroManagement() {
     const newSlideNumber = slides.length + 1;
     const newSlide = normalizeSingleSlide({
       id: `slide-${Date.now()}`,
-      eyebrow: `SCENTÉ — EDITION 0${newSlideNumber}`,
+      eyebrow: `SCENTÉPK — EDITION 0${newSlideNumber}`,
       badge: "EXTRAIT DE PARFUM",
       headline_line1: "DISCOVER",
       headline_line2: "THE",
@@ -381,7 +381,7 @@ export default function AdminHeroManagement() {
 
   // 4. RESET ALL SLIDES TO DEFAULT
   const handleResetToDefault = () => {
-    if (window.confirm("Reset all hero slides to the original 3 SCENTÉ campaign slides?")) {
+    if (window.confirm("Reset all hero slides to the original 3 SCENTÉPK campaign slides?")) {
       setFormData(DEFAULT_HERO_SETTINGS);
       setActiveSlideIndex(0);
     }
@@ -597,7 +597,7 @@ export default function AdminHeroManagement() {
                 {/* Info Text */}
                 <div className="space-y-0.5">
                   <span className="text-[9.5px] uppercase font-sans tracking-wider text-[#BFA27A] truncate block font-medium">
-                    {slide.eyebrow || `SCENTÉ SLIDE 0${idx + 1}`}
+                    {slide.eyebrow || `SCENTÉPK SLIDE 0${idx + 1}`}
                   </span>
                   <h4 className="font-serif text-sm text-[#F2EEE7] truncate">
                     {slide.headline_line1} {slide.headline_line2}
@@ -662,7 +662,7 @@ export default function AdminHeroManagement() {
                 Slide 0{activeSlideIndex + 1} Headline & Copy
               </h2>
               <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#BFA27A]">
-                SCENTÉ ATELIER VOICE
+                SCENTÉPK ATELIER VOICE
               </span>
             </div>
 
@@ -676,7 +676,7 @@ export default function AdminHeroManagement() {
                   type="text"
                   value={currentSlide.eyebrow}
                   onChange={(e) => handleActiveSlideChange("eyebrow", e.target.value)}
-                  placeholder="e.g. SCENTÉ — BATCH 04"
+                  placeholder="e.g. SCENTÉPK — BATCH 04"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
               </div>
@@ -847,7 +847,7 @@ export default function AdminHeroManagement() {
                 onClick={handleResetToDefault}
                 className="text-[11px] text-[#777169] hover:text-[#BFA27A] underline transition-colors cursor-pointer"
               >
-                Reset all slides to SCENTÉ original default
+                Reset all slides to SCENTÉPK original default
               </button>
 
               <Link

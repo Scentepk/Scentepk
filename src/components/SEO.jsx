@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const BASE_URL = "https://scente.pk";
-const DEFAULT_TITLE = "SCENTÉ — Haute Parfumerie | Extraits de Parfum";
+const DEFAULT_TITLE = "SCENTÉPK — Haute Parfumerie | Extraits de Parfum";
 const DEFAULT_DESCRIPTION =
-  "SCENTÉ is a luxury niche fragrance atelier crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
+  "SCENTÉPK is a luxury niche fragrance atelier crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=85";
 
@@ -59,8 +59,8 @@ export default function SEO({
     // 1. Resolve values
     const fullTitle = title
       ? title.includes("SCENTÉ")
-        ? title
-        : `${title} | SCENTÉ — Haute Parfumerie`
+        ? title.replace(/SCENTÉ(?!\w)/g, "SCENTÉPK")
+        : `${title} | SCENTÉPK — Haute Parfumerie`
       : DEFAULT_TITLE;
 
     const fullDescription = description || DEFAULT_DESCRIPTION;

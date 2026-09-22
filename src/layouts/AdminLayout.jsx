@@ -112,7 +112,7 @@ export default function AdminLayout() {
           <div className="space-y-1 pb-5 border-b border-[rgba(242,238,231,0.06)] shrink-0">
             <Link to="/admin" className="block focus:outline-none group">
               <span className="font-serif text-2xl lg:text-3xl font-medium tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors block">
-                SCENTÉ
+                SCENTÉPK
               </span>
               <span className="text-[8px] uppercase font-sans tracking-[0.32em] text-[#BFA27A] block font-medium">
                 ATELIER CONTROL ROOM
@@ -273,7 +273,7 @@ export default function AdminLayout() {
                 <div className="flex items-center justify-between pb-5 border-b border-[rgba(242,238,231,0.06)]">
                   <div>
                     <span className="font-serif text-2xl font-medium tracking-[0.2em] text-[#F2EEE7] block">
-                      SCENTÉ
+                      SCENTÉPK
                     </span>
                     <span className="text-[8px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium mt-0.5">
                       ATELIER CONTROL

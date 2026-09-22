@@ -361,9 +361,9 @@ export default function TrackOrder() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Track Your Parcel — Live Atelier Dispatch & Logistics"
-        description="Inspect live courier milestones and transit manifests for your SCENTÉ fragrance order using your order reference and registered contact number."
+        description="Inspect live courier milestones and transit manifests for your SCENTÉPK fragrance order using your order reference and registered contact number."
         canonicalUrl="https://scente.pk/track"
-        keywords="track order, SCENTÉ tracking, perfume delivery status Pakistan, courier tracking, Cash on Delivery status"
+        keywords="track order, SCENTÉPK tracking, perfume delivery status Pakistan, courier tracking, Cash on Delivery status"
       />
       <div className="layout-container py-10 sm:py-16 lg:py-20 max-w-4xl mx-auto">
         {/* 1. HEADER */}
@@ -489,7 +489,7 @@ export default function TrackOrder() {
               <div className="flex items-center space-x-2.5 text-[#BFA27A]">
                 <Package className="w-4 h-4 shrink-0" />
                 <h3 className="font-serif text-lg sm:text-xl text-[#F2EEE7] font-normal">
-                  Track your SCENTÉ order
+                  Track your SCENTÉPK order
                 </h3>
               </div>
               <p className="text-xs font-sans text-[#AAA49B] font-light leading-relaxed max-w-2xl">

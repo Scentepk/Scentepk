@@ -17,7 +17,7 @@ export default function CodGuide() {
       number: "02",
       title: "ORDER CONFIRMATION",
       description:
-        "Your order is reviewed and confirmed by the SCENTÉ team.",
+        "Your order is reviewed and confirmed by the SCENTÉPK team.",
     },
     {
       number: "03",
@@ -45,7 +45,7 @@ export default function CodGuide() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Cash on Delivery Guide — Seamless Payment on Arrival"
-        description="Learn how Cash on Delivery works at SCENTÉ. Zero advance payment required; inspect and pay in cash only when your sealed parcel arrives."
+        description="Learn how Cash on Delivery works at SCENTÉPK. Zero advance payment required; inspect and pay in cash only when your sealed parcel arrives."
         canonicalUrl="https://scente.pk/cod-guide"
         keywords="cash on delivery perfume Pakistan, COD fragrance guide, pay on delivery perfume, no advance payment"
       />
@@ -65,7 +65,7 @@ export default function CodGuide() {
               A Simple, Secure Way to Receive Your Fragrance
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#AAA49B] font-light leading-[1.75] max-w-2xl pt-1">
-              SCENTÉ offers Cash on Delivery across Pakistan, allowing customers to pay when their order arrives.
+              SCENTÉPK offers Cash on Delivery across Pakistan, allowing customers to pay when their order arrives.
             </p>
           </motion.div>
         </section>

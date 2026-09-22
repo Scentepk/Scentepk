@@ -69,7 +69,7 @@ export default function AdminLogin() {
         {/* Header */}
         <div className="text-center space-y-2 pb-5 sm:pb-6 border-b border-[rgba(242,238,231,0.06)]">
           <span className="font-serif text-3xl sm:text-4xl font-medium tracking-[0.2em] text-[#F2EEE7] block">
-            SCENTÉ
+            SCENTÉPK
           </span>
           <span className="text-[9px] uppercase font-sans tracking-[0.35em] text-[#BFA27A] block font-medium">
             ATELIER CONTROL PORTAL
@@ -157,7 +157,7 @@ export default function AdminLogin() {
       {/* Bottom Footer Note */}
       <div className="max-w-md w-full mx-auto text-center py-4">
         <span className="text-[10px] text-[#777169] uppercase tracking-wider font-mono">
-          SCENTÉ Atelier Parfums • Control Architecture v2.0
+          SCENTÉPK Atelier Parfums • Control Architecture v2.0
         </span>
       </div>
     </div>

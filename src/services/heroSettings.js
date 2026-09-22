@@ -15,7 +15,7 @@ export const DEFAULT_HERO_SLIDES = [
   {
     id: "slide-1",
     product_id: null,
-    eyebrow: "SCENTÉ — BATCH 04",
+    eyebrow: "SCENTÉPK — BATCH 04",
     badge: "30% PURE PERFUME OIL",
     headline_line1: "FRAGRANCE",
     headline_line2: "BECOMES",
