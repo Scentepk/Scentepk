@@ -624,8 +624,8 @@ export default function ProductDetails() {
 
             {/* Thumbnail Row */}
             {galleryImages.length > 1 && (
-              <div className="w-full overflow-x-auto pb-1 pt-1 scrollbar-none">
-                <div className="flex items-center gap-3">
+              <div className="w-full overflow-x-auto pt-1.5 pb-2.5 px-1.5 -mx-1.5 scrollbar-none">
+                <div className="flex items-center gap-3 pl-0.5">
                   {galleryImages.map((imgUrl, idx) => {
                     const isActive = idx === activeImageIndex;
                     return (
@@ -633,10 +633,11 @@ export default function ProductDetails() {
                         key={`${imgUrl}-${idx}`}
                         type="button"
                         onClick={() => setActiveImageIndex(idx)}
-                        className={`relative aspect-square w-16 sm:w-20 rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer bg-[#141312] shrink-0 ${isActive
-                            ? "border-[#BFA27A] ring-2 ring-[#BFA27A]/50 shadow-[0_0_15px_rgba(191,162,122,0.3)] scale-[1.03]"
-                            : "border-white/10 opacity-60 hover:opacity-100 hover:border-white/30"
+                        className={`relative aspect-square w-16 sm:w-20 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-200 cursor-pointer bg-[#141312] shrink-0 ${isActive
+                            ? "border-2 border-[#BFA27A] ring-2 ring-[#BFA27A]/35 shadow-[0_4px_16px_rgba(191,162,122,0.25)] opacity-100"
+                            : "border border-white/10 opacity-50 hover:opacity-90 hover:border-white/25"
                           }`}
+                        aria-label={`View fragrance image ${idx + 1}`}
                       >
                         <img
                           src={imgUrl}
