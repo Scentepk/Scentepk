@@ -14,6 +14,7 @@ export const DEFAULT_CROP_SETTINGS = {
 export const DEFAULT_HERO_SLIDES = [
   {
     id: "slide-1",
+    product_id: null,
     eyebrow: "SCENTÉ — BATCH 04",
     badge: "30% PURE PERFUME OIL",
     headline_line1: "FRAGRANCE",
@@ -31,6 +32,7 @@ export const DEFAULT_HERO_SLIDES = [
   },
   {
     id: "slide-2",
+    product_id: null,
     eyebrow: "ATELIER EXTRAIT DE PARFUM",
     badge: "14+ HR LONGEVITY",
     headline_line1: "YOUR",
@@ -48,6 +50,7 @@ export const DEFAULT_HERO_SLIDES = [
   },
   {
     id: "slide-3",
+    product_id: null,
     eyebrow: "HAUTE PARFUMERIE",
     badge: "FREE COD ACROSS PAKISTAN",
     headline_line1: "PURE",
@@ -110,39 +113,45 @@ export function normalizeSingleSlide(raw, defaultIndex = 0) {
 
   return {
     id: raw.id || `slide-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    product_id:
+      raw.product_id !== undefined
+        ? (raw.product_id || null)
+        : raw.productId !== undefined
+          ? (raw.productId || null)
+          : (fallback.product_id || null),
     eyebrow: raw.eyebrow !== undefined ? String(raw.eyebrow).trim() : fallback.eyebrow,
     badge: raw.badge !== undefined ? String(raw.badge).trim() : fallback.badge,
     headline_line1:
       raw.headline_line1 !== undefined
         ? String(raw.headline_line1).trim()
         : raw.headlineLine1 !== undefined
-        ? String(raw.headlineLine1).trim()
-        : fallback.headline_line1,
+          ? String(raw.headlineLine1).trim()
+          : fallback.headline_line1,
     headline_line2:
       raw.headline_line2 !== undefined
         ? String(raw.headline_line2).trim()
         : raw.headlineLine2 !== undefined
-        ? String(raw.headlineLine2).trim()
-        : fallback.headline_line2,
+          ? String(raw.headlineLine2).trim()
+          : fallback.headline_line2,
     headline_line3:
       raw.headline_line3 !== undefined
         ? String(raw.headline_line3).trim()
         : raw.headlineLine3 !== undefined
-        ? String(raw.headlineLine3).trim()
-        : fallback.headline_line3,
+          ? String(raw.headlineLine3).trim()
+          : fallback.headline_line3,
     subtitle: raw.subtitle !== undefined ? String(raw.subtitle).trim() : fallback.subtitle,
     cta_text:
       raw.cta_text !== undefined
         ? String(raw.cta_text).trim()
         : raw.ctaText !== undefined
-        ? String(raw.ctaText).trim()
-        : fallback.cta_text,
+          ? String(raw.ctaText).trim()
+          : fallback.cta_text,
     cta_link:
       raw.cta_link !== undefined
         ? String(raw.cta_link).trim()
         : raw.ctaLink !== undefined
-        ? String(raw.ctaLink).trim()
-        : fallback.cta_link,
+          ? String(raw.ctaLink).trim()
+          : fallback.cta_link,
     image_url: raw.image_url || raw.image || fallback.image_url,
     mobile_image_url: raw.mobile_image_url || raw.mobileImage || "",
     storage_path: raw.storage_path || null,
@@ -217,7 +226,7 @@ export async function getHeroSettings() {
         localDraft = parsedDraft.slides.map((s, i) => normalizeSingleSlide(s, i));
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 
   // If Supabase is not configured or table is missing, return cached or default
   if (!isSupabaseConfigured || !supabase || !isHeroTableAvailable) {
@@ -262,7 +271,7 @@ export async function getHeroSettings() {
       const normalized = normalizeHeroSettings(data);
       try {
         localStorage.setItem(LOCAL_STORAGE_HERO_KEY, JSON.stringify(normalized));
-      } catch (e) {}
+      } catch (e) { }
 
       // Prioritize local draft if newer or DB draft
       const activeDraft = localDraft || normalized.draft_slides || null;
@@ -300,8 +309,8 @@ export async function saveHeroDraft(payload) {
   const slides = Array.isArray(payload.slides)
     ? payload.slides.map((s, i) => normalizeSingleSlide(s, i))
     : Array.isArray(payload)
-    ? payload.map((s, i) => normalizeSingleSlide(s, i))
-    : DEFAULT_HERO_SLIDES;
+      ? payload.map((s, i) => normalizeSingleSlide(s, i))
+      : DEFAULT_HERO_SLIDES;
 
   const draftPayload = {
     id: "primary_hero",
@@ -440,7 +449,7 @@ export async function publishHeroSettings(payload) {
 export async function discardHeroDraft() {
   try {
     localStorage.removeItem(LOCAL_STORAGE_HERO_DRAFT_KEY);
-  } catch (e) {}
+  } catch (e) { }
 
   if (isSupabaseConfigured && supabase) {
     try {
@@ -448,7 +457,7 @@ export async function discardHeroDraft() {
         .from("hero_settings")
         .update({ draft_slides: null })
         .eq("id", "primary_hero");
-    } catch (e) {}
+    } catch (e) { }
   }
 
   return { success: true };

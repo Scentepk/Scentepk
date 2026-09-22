@@ -130,7 +130,7 @@ export default function Home() {
       if (saved) {
         return JSON.parse(saved).filter((p) => p.status !== "inactive" && p.is_active !== false);
       }
-    } catch (e) {}
+    } catch (e) { }
     return PRODUCTS.filter((p) => p.status !== "inactive" && p.is_active !== false);
   });
 
@@ -168,7 +168,7 @@ export default function Home() {
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_HERO_KEY);
       if (raw) return JSON.parse(raw);
-    } catch (e) {}
+    } catch (e) { }
     return null;
   });
 
@@ -188,7 +188,7 @@ export default function Home() {
       if (e.key === LOCAL_STORAGE_HERO_KEY && e.newValue) {
         try {
           setCustomHero(JSON.parse(e.newValue));
-        } catch (err) {}
+        } catch (err) { }
       }
     };
 
@@ -367,10 +367,10 @@ export default function Home() {
                     style={
                       slide.desktop_crop
                         ? {
-                            objectPosition: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
-                            transform: `scale(${slide.desktop_crop.zoom ?? 1.0})`,
-                            transformOrigin: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
-                          }
+                          objectPosition: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
+                          transform: `scale(${slide.desktop_crop.zoom ?? 1.0})`,
+                          transformOrigin: `${slide.desktop_crop.x}% ${slide.desktop_crop.y}%`,
+                        }
                         : undefined
                     }
                   />
@@ -386,7 +386,7 @@ export default function Home() {
                 <div className="relative z-10 w-full h-full flex items-center">
                   <div className="layout-container w-full py-4 xs:py-5 sm:py-8 lg:py-10 pb-8 xs:pb-10 sm:pb-8">
                     <div className="max-w-[65%] xs:max-w-[70%] sm:max-w-xl lg:max-w-2xl flex flex-col justify-center space-y-1.5 xs:space-y-2.5 sm:space-y-4 lg:space-y-5">
-                      
+
                       {/* Eyebrow & Badge */}
                       {(slide.eyebrow || slide.badge) && (
                         <motion.div
@@ -499,9 +499,8 @@ export default function Home() {
                     key={slide.id}
                     onClick={() => setCurrentSlide(idx)}
                     aria-label={`Jump to slide ${idx + 1}`}
-                    className={`h-0.5 sm:h-1 transition-all duration-500 rounded-full cursor-pointer ${
-                      idx === currentSlide ? "w-5 xs:w-7 sm:w-8 bg-[#BFA27A]" : "w-1.5 sm:w-2 bg-white/25 hover:bg-white/50"
-                    }`}
+                    className={`h-0.5 sm:h-1 transition-all duration-500 rounded-full cursor-pointer ${idx === currentSlide ? "w-5 xs:w-7 sm:w-8 bg-[#BFA27A]" : "w-1.5 sm:w-2 bg-white/25 hover:bg-white/50"
+                      }`}
                   />
                 ))}
               </div>
@@ -610,8 +609,8 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* 4 Clean Modern Product Cards on Desktop, 2 Columns on Mobile */}
-          <div className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4">
+          {/* 4 Clean Modern Product Cards on Desktop & Tablets, Responsive Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 min-[880px]:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4.5 lg:gap-5">
             {activeProducts.slice(0, 4).map((product) => {
               const primaryImg = product.image || product.primary_image;
               const secondaryImg = product.secondaryImage || product.secondary_image;
@@ -644,15 +643,15 @@ export default function Home() {
                     )}
 
                     {/* Subtle Concentration Badge */}
-                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
-                      <span className="text-[7.5px] xs:text-[8.5px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.18em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-semibold backdrop-blur-md">
+                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 max-w-[85%]">
+                      <span className="text-[7.5px] xs:text-[8px] sm:text-[8.5px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.16em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full font-semibold backdrop-blur-md block truncate">
                         {product.concentration || "30% Extrait"}
                       </span>
                     </div>
                   </Link>
 
                   {/* Minimal Details & Quick Action */}
-                  <div className="p-3 xs:p-4 sm:p-5 flex flex-col flex-grow justify-between space-y-3 sm:space-y-4">
+                  <div className="p-3 sm:p-3.5 lg:p-4 flex flex-col flex-grow justify-between space-y-2.5 sm:space-y-3">
                     <div className="space-y-1 sm:space-y-1.5">
                       <div className="flex items-center justify-between text-[8px] xs:text-[9px] uppercase font-sans tracking-[0.16em] sm:tracking-[0.2em] text-[#888279]">
                         <span className="truncate pr-1">{product.subtitle || "Extrait"}</span>
@@ -660,26 +659,26 @@ export default function Home() {
                       </div>
 
                       <Link to={`/product/${product.slug}`}>
-                        <h3 className="font-sans font-bold text-sm xs:text-base sm:text-lg lg:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-200 tracking-tight line-clamp-1">
+                        <h3 className="font-sans font-bold text-xs xs:text-sm sm:text-[15px] lg:text-base text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-200 tracking-tight line-clamp-1">
                           {product.name}
                         </h3>
                       </Link>
 
-                      <p className="text-[11px] sm:text-xs font-sans text-[#AAA49B] font-light line-clamp-1">
+                      <p className="text-[10px] sm:text-[11px] font-sans text-[#AAA49B] font-light line-clamp-1">
                         {product.olfactiveFamily}
                       </p>
                     </div>
 
                     {/* Price & Modern Quick Add Button */}
-                    <div className="pt-2.5 sm:pt-3 border-t border-white/[0.06] flex items-center justify-between gap-1.5 xs:gap-2">
-                      <span className="text-xs xs:text-sm sm:text-base font-sans font-semibold text-[#F2EEE7] tracking-tight shrink-0">
+                    <div className="pt-2 sm:pt-2.5 border-t border-white/[0.06] flex items-center justify-between gap-1.5 xs:gap-2">
+                      <span className="text-xs sm:text-sm font-sans font-semibold text-[#F2EEE7] tracking-tight shrink-0">
                         {product.formattedPrice}
                       </span>
 
                       <button
                         onClick={(e) => handleQuickAdd(e, product)}
                         aria-label={`Quick add ${product.name} to bag`}
-                        className={`inline-flex items-center gap-1 text-[9px] xs:text-[10px] uppercase font-sans tracking-[0.1em] xs:tracking-[0.14em] font-semibold px-2.5 py-1.5 xs:px-3.5 xs:py-2 rounded-full transition-all duration-300 shrink-0 cursor-pointer ${
+                        className={`inline-flex items-center gap-1 text-[8.5px] xs:text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.1em] xs:tracking-[0.14em] font-semibold px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-full transition-all duration-300 shrink-0 cursor-pointer ${
                           isAdded
                             ? "bg-emerald-800 text-emerald-100 border border-emerald-500/50"
                             : "bg-[#181714] text-[#F2EEE7] hover:bg-[#BFA27A] hover:text-[#090908] border border-white/10 hover:border-[#BFA27A]"
@@ -687,12 +686,12 @@ export default function Home() {
                       >
                         {isAdded ? (
                           <>
-                            <Check className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-emerald-300 stroke-[2.5]" />
+                            <Check className="w-2.5 h-2.5 stroke-[2.5] text-emerald-300" />
                             <span>Added</span>
                           </>
                         ) : (
                           <>
-                            <Plus className="w-2.5 h-2.5 xs:w-3 xs:h-3 stroke-[2]" />
+                            <Plus className="w-2.5 h-2.5 stroke-[2]" />
                             <span>Add</span>
                           </>
                         )}
@@ -792,11 +791,10 @@ export default function Home() {
                       </span>
                       <button
                         onClick={(e) => handleQuickAdd(e, product)}
-                        className={`text-[9.5px] uppercase font-sans tracking-[0.14em] font-semibold px-3 py-1.5 rounded-full transition-colors ${
-                          isAdded
+                        className={`text-[9.5px] uppercase font-sans tracking-[0.14em] font-semibold px-3 py-1.5 rounded-full transition-colors ${isAdded
                             ? "bg-emerald-800 text-emerald-100"
                             : "bg-[#181714] text-[#AAA49B] hover:bg-[#BFA27A] hover:text-[#090908]"
-                        }`}
+                          }`}
                       >
                         {isAdded ? "Added ✓" : "Quick Add"}
                       </button>

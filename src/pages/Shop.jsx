@@ -77,9 +77,8 @@ const FilterPanel = React.memo(function FilterPanel({
               </span>
             )}
             <ChevronDown
-              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${
-                availabilityOpen ? "rotate-180" : ""
-              }`}
+              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${availabilityOpen ? "rotate-180" : ""
+                }`}
             />
           </div>
         </button>
@@ -96,11 +95,10 @@ const FilterPanel = React.memo(function FilterPanel({
               <label className="flex items-center gap-2.5 cursor-pointer text-xs text-[#AAA49B] hover:text-[#F2EEE7] transition-colors select-none">
                 <div
                   onClick={() => setInStockOnly((prev) => !prev)}
-                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                    inStockOnly
+                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${inStockOnly
                       ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]"
                       : "border-white/20 bg-transparent hover:border-white/40"
-                  }`}
+                    }`}
                 >
                   {inStockOnly && <Check className="w-3 h-3 stroke-[3]" />}
                 </div>
@@ -112,11 +110,10 @@ const FilterPanel = React.memo(function FilterPanel({
               <label className="flex items-center gap-2.5 cursor-pointer text-xs text-[#AAA49B] hover:text-[#F2EEE7] transition-colors select-none">
                 <div
                   onClick={() => setOutOfStockOnly((prev) => !prev)}
-                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                    outOfStockOnly
+                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${outOfStockOnly
                       ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]"
                       : "border-white/20 bg-transparent hover:border-white/40"
-                  }`}
+                    }`}
                 >
                   {outOfStockOnly && <Check className="w-3 h-3 stroke-[3]" />}
                 </div>
@@ -151,9 +148,8 @@ const FilterPanel = React.memo(function FilterPanel({
               </span>
             )}
             <ChevronDown
-              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${
-                priceOpen ? "rotate-180" : ""
-              }`}
+              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${priceOpen ? "rotate-180" : ""
+                }`}
             />
           </div>
         </button>
@@ -267,9 +263,8 @@ const FilterPanel = React.memo(function FilterPanel({
               </span>
             )}
             <ChevronDown
-              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${
-                collectionOpen ? "rotate-180" : ""
-              }`}
+              className={`w-3.5 h-3.5 text-[#AAA49B] transition-transform duration-200 ${collectionOpen ? "rotate-180" : ""
+                }`}
             />
           </div>
         </button>
@@ -295,11 +290,10 @@ const FilterPanel = React.memo(function FilterPanel({
                     key={cat.id}
                     type="button"
                     onClick={() => handleFilterSelect(cat.id)}
-                    className={`w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs transition-colors text-left cursor-pointer ${
-                      isSelected
+                    className={`w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs transition-colors text-left cursor-pointer ${isSelected
                         ? "text-[#BFA27A] bg-white/[0.04] font-medium"
                         : "text-[#AAA49B] hover:text-[#F2EEE7] hover:bg-white/[0.02]"
-                    }`}
+                      }`}
                   >
                     <span>{cat.label}</span>
                     <span className="text-[11px] text-[#777169] font-mono">
@@ -497,8 +491,8 @@ export default function Shop() {
         activeVariants.length > 0
           ? activeVariants.every((v) => Number(v.stockQuantity ?? v.stock_quantity ?? 0) <= 0)
           : (product.status === "out_of_stock" ||
-             product.isOutOfStock ||
-             Number(product.stockQuantity ?? product.stock_quantity ?? 0) <= 0);
+            product.isOutOfStock ||
+            Number(product.stockQuantity ?? product.stock_quantity ?? 0) <= 0);
 
       if (inStockOnly && !outOfStockOnly && isOutOfStock) return false;
       if (outOfStockOnly && !inStockOnly && !isOutOfStock) return false;
@@ -703,12 +697,12 @@ export default function Shop() {
               />
             </aside>
 
-            {/* PRODUCT GRID (3 COLUMNS, NO TOP CONTROL TOOLBAR) */}
+            {/* PRODUCT GRID (RESPONSIVE COLUMNS) */}
             <main className="flex-1 min-w-0">
               {filteredProducts.length > 0 ? (
                 <motion.div
                   layout
-                  className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
+                  className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 min-[880px]:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4.5 lg:gap-5"
                 >
                   <AnimatePresence mode="popLayout">
                     {filteredProducts.map((product, idx) => (

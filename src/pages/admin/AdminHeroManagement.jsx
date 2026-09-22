@@ -18,6 +18,7 @@ import {
   HelpCircle,
   Send,
   FileCheck,
+  Package,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -32,7 +33,9 @@ import {
   DEFAULT_CROP_SETTINGS,
   normalizeSingleSlide,
 } from "../../services/heroSettings";
+import { getAllProductsAdmin } from "../../services/adminProducts";
 import HeroImageEditor from "../../components/admin/HeroImageEditor";
+import CustomSelect from "../../components/CustomSelect";
 
 export default function AdminHeroManagement() {
   // Published server/DB state
@@ -53,23 +56,60 @@ export default function AdminHeroManagement() {
 
   // Preview Mode: 'desktop' | 'mobile'
   const [previewDevice, setPreviewDevice] = useState("desktop");
+  const [availableProducts, setAvailableProducts] = useState([]);
 
-  // Load existing hero settings & draft on mount
+  // Load existing hero settings, draft & products on mount
   useEffect(() => {
     async function loadSettings() {
       setIsLoading(true);
       try {
-        const { data, draft } = await getHeroSettings();
+        const [heroRes, prodRes] = await Promise.all([
+          getHeroSettings(),
+          getAllProductsAdmin(),
+        ]);
+
+        const prods = prodRes?.data || [];
+        if (prods.length > 0) {
+          setAvailableProducts(prods);
+        }
+
+        const { data, draft } = heroRes;
         if (data && Array.isArray(data.slides)) {
           setPublishedSettings(data);
         }
 
+        let initialWorking = null;
         if (draft && Array.isArray(draft) && draft.length > 0) {
-          const draftPayload = { id: "primary_hero", slides: draft };
-          setSavedDraftSettings(draftPayload);
-          setFormData(draftPayload);
+          initialWorking = { id: "primary_hero", slides: draft };
+          setSavedDraftSettings(initialWorking);
+          setFormData(initialWorking);
         } else if (data && Array.isArray(data.slides)) {
+          initialWorking = data;
           setFormData(data);
+        }
+
+        // Auto-resolve product_id for existing slides if link matches /product/:slug
+        if (prods.length > 0 && initialWorking && Array.isArray(initialWorking.slides)) {
+          let hasAutoResolved = false;
+          const resolvedSlides = initialWorking.slides.map((slide) => {
+            if (!slide.product_id && slide.cta_link) {
+              const matchedProd = prods.find(
+                (p) =>
+                  slide.cta_link === `/product/${p.slug}` ||
+                  slide.cta_link === `/product/${p.id}` ||
+                  slide.cta_link === p.slug
+              );
+              if (matchedProd) {
+                hasAutoResolved = true;
+                return { ...slide, product_id: matchedProd.id };
+              }
+            }
+            return slide;
+          });
+
+          if (hasAutoResolved) {
+            setFormData((prev) => ({ ...prev, slides: resolvedSlides }));
+          }
         }
       } catch (err) {
         console.error("Error loading hero settings:", err);
@@ -83,6 +123,34 @@ export default function AdminHeroManagement() {
   // Safe active slide
   const slides = formData.slides || [];
   const currentSlide = slides[activeSlideIndex] || slides[0] || DEFAULT_HERO_SLIDES[0];
+
+  // Handler for product selection on the active slide
+  const handleProductSelection = (productId) => {
+    if (!productId) {
+      handleActiveSlideChange("product_id", null);
+      return;
+    }
+
+    const matched = availableProducts.find((p) => String(p.id) === String(productId));
+    if (matched) {
+      setFormData((prev) => {
+        const updatedSlides = [...(prev.slides || [])];
+        if (!updatedSlides[activeSlideIndex]) {
+          updatedSlides[activeSlideIndex] = { ...DEFAULT_HERO_SLIDES[0] };
+        }
+        const current = updatedSlides[activeSlideIndex];
+        updatedSlides[activeSlideIndex] = {
+          ...current,
+          product_id: matched.id,
+          cta_link: `/product/${matched.slug}`,
+        };
+        return {
+          ...prev,
+          slides: updatedSlides,
+        };
+      });
+    }
+  };
 
   // Compare active working form with published state
   const hasUnpublishedChanges =
@@ -162,12 +230,12 @@ export default function AdminHeroManagement() {
     if (targetSlide.storage_path) {
       try {
         await deleteHeroImage(targetSlide.storage_path);
-      } catch (err) {}
+      } catch (err) { }
     }
     if (targetSlide.mobile_storage_path) {
       try {
         await deleteHeroImage(targetSlide.mobile_storage_path);
-      } catch (err) {}
+      } catch (err) { }
     }
 
     const updatedSlides = slides.filter((_, idx) => idx !== indexToDelete);
@@ -439,13 +507,12 @@ export default function AdminHeroManagement() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`p-4 rounded-xl border text-xs font-sans flex items-center justify-between gap-3 ${
-              notification.type === "success"
+            className={`p-4 rounded-xl border text-xs font-sans flex items-center justify-between gap-3 ${notification.type === "success"
                 ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
                 : notification.type === "error"
-                ? "bg-rose-950/40 border-rose-500/40 text-rose-300"
-                : "bg-[#181714] border-white/10 text-[#D4CEC5]"
-            }`}
+                  ? "bg-rose-950/40 border-rose-500/40 text-rose-300"
+                  : "bg-[#181714] border-white/10 text-[#D4CEC5]"
+              }`}
           >
             <div className="flex items-center gap-2.5">
               {notification.type === "success" ? (
@@ -491,11 +558,10 @@ export default function AdminHeroManagement() {
               <div
                 key={slide.id || idx}
                 onClick={() => setActiveSlideIndex(idx)}
-                className={`relative rounded-xl overflow-hidden border p-3 flex flex-col justify-between transition-all duration-300 cursor-pointer group select-none ${
-                  isSelected
+                className={`relative rounded-xl overflow-hidden border p-3 flex flex-col justify-between transition-all duration-300 cursor-pointer group select-none ${isSelected
                     ? "bg-[#1C1B18] border-[#BFA27A] shadow-[0_0_20px_rgba(191,162,122,0.15)] ring-1 ring-[#BFA27A]"
                     : "bg-[#161513] border-white/10 hover:border-white/25 hover:bg-[#1A1916]"
-                }`}
+                  }`}
               >
                 {/* Thumbnail Image with Crop Applied */}
                 <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 mb-2.5">
@@ -686,17 +752,58 @@ export default function AdminHeroManagement() {
             </div>
           </div>
 
-          {/* SECTION C: CALL TO ACTION (CTA) BUTTON */}
+          {/* SECTION C: CALL TO ACTION (CTA) BUTTON & PRODUCT LINKING */}
           <div className="p-6 rounded-2xl bg-[#121110] border border-white/[0.08] space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
-              <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
-                Call to Action (CTA)
-              </h2>
-              <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#777169]">
-                PRIMARY BUTTON
+              <div>
+                <h2 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                  Call to Action (CTA) & Destination
+                </h2>
+                <p className="text-xs text-[#AAA49B] font-light mt-0.5">
+                  Link this slide directly to a featured product PDP or custom page.
+                </p>
+              </div>
+              <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#BFA27A]">
+                INTERACTIVE BUTTON
               </span>
             </div>
 
+            {/* 1. PRODUCT SELECTOR (Supabase Catalog Integration) */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-sans font-medium uppercase tracking-[0.16em] text-[#AAA49B] flex items-center gap-1.5">
+                  <Package className="w-3.5 h-3.5 text-[#BFA27A]" />
+                  <span>Featured Product (Direct PDP Link)</span>
+                </label>
+                {currentSlide.product_id && (
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded">
+                    Linked to PDP
+                  </span>
+                )}
+              </div>
+
+              <CustomSelect
+                value={currentSlide.product_id || ""}
+                onChange={(selectedProdId) => {
+                  handleProductSelection(selectedProdId);
+                }}
+                options={[
+                  { value: "", label: "Custom Link / No Product Selected" },
+                  ...availableProducts.map((p) => ({
+                    value: p.id,
+                    label: `${p.name} — PKR ${Number(p.price || 0).toLocaleString()} (/product/${p.slug})`,
+                  })),
+                ]}
+                placeholder="Choose a product to link directly to its PDP..."
+                className="w-full"
+              />
+
+              <p className="text-[11px] font-sans text-[#777169]">
+                Selecting a product automatically sets the CTA destination to its Product Detail Page (e.g. <code>/product/dark-desire</code>).
+              </p>
+            </div>
+
+            {/* 2. BUTTON TEXT & DESTINATION URL */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-[11px] font-sans font-medium uppercase tracking-[0.16em] text-[#AAA49B]">
@@ -718,7 +825,16 @@ export default function AdminHeroManagement() {
                 <input
                   type="text"
                   value={currentSlide.cta_link}
-                  onChange={(e) => handleActiveSlideChange("cta_link", e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    handleActiveSlideChange("cta_link", val);
+                    if (currentSlide.product_id) {
+                      const matched = availableProducts.find((p) => p.id === currentSlide.product_id);
+                      if (matched && val !== `/product/${matched.slug}` && val !== matched.slug) {
+                        handleActiveSlideChange("product_id", null);
+                      }
+                    }
+                  }}
                   placeholder="e.g. /shop or /product/grand-soiree"
                   className="w-full bg-[#181714] border border-white/10 rounded-lg px-3.5 py-2.5 text-xs font-mono text-[#F2EEE7] focus:border-[#BFA27A] focus:outline-none transition-colors"
                 />
@@ -766,11 +882,10 @@ export default function AdminHeroManagement() {
                 <button
                   type="button"
                   onClick={() => setPreviewDevice("desktop")}
-                  className={`px-3 py-1.5 rounded-md text-[10.5px] uppercase font-sans tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer ${
-                    previewDevice === "desktop"
+                  className={`px-3 py-1.5 rounded-md text-[10.5px] uppercase font-sans tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer ${previewDevice === "desktop"
                       ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold"
                       : "text-[#AAA49B] hover:text-[#F2EEE7]"
-                  }`}
+                    }`}
                 >
                   <Monitor className="w-3.5 h-3.5" />
                   <span>Desktop</span>
@@ -779,11 +894,10 @@ export default function AdminHeroManagement() {
                 <button
                   type="button"
                   onClick={() => setPreviewDevice("mobile")}
-                  className={`px-3 py-1.5 rounded-md text-[10.5px] uppercase font-sans tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer ${
-                    previewDevice === "mobile"
+                  className={`px-3 py-1.5 rounded-md text-[10.5px] uppercase font-sans tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer ${previewDevice === "mobile"
                       ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold"
                       : "text-[#AAA49B] hover:text-[#F2EEE7]"
-                  }`}
+                    }`}
                 >
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>Mobile</span>
@@ -794,11 +908,10 @@ export default function AdminHeroManagement() {
             {/* LIVE PREVIEW CONTAINER */}
             <div className="flex justify-center bg-[#090908] p-2 sm:p-4 rounded-xl overflow-hidden border border-white/[0.06]">
               <div
-                className={`relative overflow-hidden transition-all duration-300 rounded-xl border border-white/15 shadow-2xl select-none ${
-                  previewDevice === "desktop"
+                className={`relative overflow-hidden transition-all duration-300 rounded-xl border border-white/15 shadow-2xl select-none ${previewDevice === "desktop"
                     ? "w-full aspect-[16/10] sm:aspect-[16/9]"
                     : "w-[270px] sm:w-[310px] aspect-[9/16]"
-                }`}
+                  }`}
               >
                 {/* 1. Background Campaign Image with Real-time Positioning */}
                 {activeDisplayImage ? (
@@ -844,11 +957,10 @@ export default function AdminHeroManagement() {
 
                     {/* Main Headline */}
                     <h2
-                      className={`font-sans font-bold leading-[0.98] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md ${
-                        previewDevice === "mobile"
+                      className={`font-sans font-bold leading-[0.98] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md ${previewDevice === "mobile"
                           ? "text-lg sm:text-xl"
                           : "text-xl sm:text-2xl lg:text-3xl"
-                      }`}
+                        }`}
                     >
                       {currentSlide.headline_line1} <br />
                       {currentSlide.headline_line2} <br />
@@ -858,11 +970,10 @@ export default function AdminHeroManagement() {
                     {/* Supporting Description */}
                     {currentSlide.subtitle && (
                       <p
-                        className={`font-sans text-[#D4CEC5] font-light leading-relaxed line-clamp-3 ${
-                          previewDevice === "mobile"
+                        className={`font-sans text-[#D4CEC5] font-light leading-relaxed line-clamp-3 ${previewDevice === "mobile"
                             ? "text-[9px]"
                             : "text-[10px] sm:text-[11.5px]"
-                        }`}
+                          }`}
                       >
                         {currentSlide.subtitle}
                       </p>
@@ -870,11 +981,16 @@ export default function AdminHeroManagement() {
 
                     {/* CTA Button */}
                     {currentSlide.cta_text && (
-                      <div className="pt-1">
+                      <div className="pt-1 flex flex-wrap items-center gap-2">
                         <div className="inline-flex items-center justify-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#F2EEE7] text-[#090908] text-[9px] sm:text-[10.5px] font-semibold uppercase tracking-[0.16em] shadow-lg">
                           <span>{currentSlide.cta_text}</span>
                           <ArrowRight className="w-3 h-3 ml-1.5" />
                         </div>
+                        {currentSlide.cta_link && (
+                          <span className="text-[8.5px] font-mono text-[#AAA49B] bg-black/60 px-2 py-0.5 rounded border border-white/10 truncate max-w-[150px]">
+                            {currentSlide.cta_link}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>

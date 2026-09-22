@@ -4,6 +4,7 @@ import {
   getProductByIdAdmin,
   createProductAdmin,
   updateProductAdmin,
+  deleteProductAdmin,
   uploadProductImageAdmin,
   deleteProductImageAdmin,
 } from "../../services/adminProducts";
@@ -16,9 +17,11 @@ import {
   ExternalLink,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   Loader2,
   Image as ImageIcon,
   Star,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
@@ -35,6 +38,9 @@ export default function AdminProductForm() {
   const [isUploading, setIsUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalError, setDeleteModalError] = useState("");
 
   // Product form data
   const [formData, setFormData] = useState({
@@ -393,7 +399,8 @@ export default function AdminProductForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10 pb-16 max-w-5xl mx-auto w-full min-w-0">
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10 pb-16 max-w-5xl mx-auto w-full min-w-0">
       {/* 1. TOP HEADER & ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 sm:pb-6 border-b border-[rgba(242,238,231,0.06)] gap-4">
         <div className="space-y-1">
@@ -404,31 +411,48 @@ export default function AdminProductForm() {
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5 stroke-[1.5]" />
             <span>Back to Product Catalog</span>
           </Link>
-          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-[#F2EEE7] tracking-tight">
-            {isEditing ? `Edit: ${formData.name}` : "Add New Fragrance"}
-          </h1>
-          <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light">
-            Fill in the details below to publish or update this fragrance on the website.
-          </p>
+          <div>
+            <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-1 font-medium">
+              {isEditing ? "FORMULATION EDITOR" : "NEW FORMULATION ARCHITECTURE"}
+            </span>
+            <h1 className="font-serif font-light text-2xl sm:text-3xl text-[#F2EEE7] tracking-headline leading-tight">
+              {isEditing ? (formData.name || "Edit Fragrance") : "Craft New Fragrance"}
+            </h1>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2.5 self-stretch sm:self-auto">
+        <div className="flex items-center space-x-2 sm:space-x-2.5 self-stretch sm:self-auto flex-wrap">
           {isEditing && (
             <Link
               to={`/product/${formData.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] hover:border-[#BFA27A] transition-colors flex items-center justify-center space-x-2 min-h-[44px]"
+              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] hover:border-[#BFA27A] transition-colors flex items-center justify-center space-x-1.5 min-h-[44px]"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Storefront</span>
             </Link>
           )}
 
+          {isEditing && (
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteModalError("");
+                setShowDeleteModal(true);
+              }}
+              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-rose-400 hover:text-white bg-rose-950/20 hover:bg-rose-900/60 border border-rose-500/30 transition-all flex items-center justify-center space-x-1.5 min-h-[44px] cursor-pointer"
+              title="Delete this fragrance"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Delete</span>
+            </button>
+          )}
+
           <button
             type="submit"
             disabled={isSaving}
-            className="flex-1 sm:flex-initial bg-[#181714] text-[#F2EEE7] border border-[#BFA27A]/60 px-6 py-2.5 text-xs uppercase font-sans tracking-[0.2em] hover:bg-[#BFA27A] hover:text-[#0D0D0C] transition-all flex items-center justify-center space-x-2 cursor-pointer font-medium disabled:opacity-40 shadow-md min-h-[44px]"
+            className="flex-1 sm:flex-initial bg-[#181714] text-[#F2EEE7] border border-[#BFA27A]/60 px-5 sm:px-6 py-2.5 text-xs uppercase font-sans tracking-[0.2em] hover:bg-[#BFA27A] hover:text-[#0D0D0C] transition-all flex items-center justify-center space-x-2 cursor-pointer font-medium disabled:opacity-40 shadow-md min-h-[44px]"
           >
             {isSaving ? (
               <>
@@ -1166,6 +1190,48 @@ export default function AdminProductForm() {
         </div>
       </div>
 
+      {/* DANGER ZONE (EXISTING PRODUCT ONLY) */}
+      {isEditing && (
+        <div className="bg-[#121110] p-4 sm:p-6 lg:p-8 border border-rose-900/40 rounded-sm space-y-4">
+          <div className="pb-3 border-b border-rose-950/50 flex items-center justify-between">
+            <div>
+              <h2 className="font-serif text-lg sm:text-xl text-rose-300 font-normal">
+                Danger Zone
+              </h2>
+              <p className="text-xs text-[#777169] mt-0.5 font-sans">
+                Irreversible catalog modification
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 bg-rose-950/60 text-rose-400 border border-rose-500/30">
+              Caution
+            </span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 font-sans">
+            <div className="space-y-1">
+              <h4 className="text-sm font-medium text-[#F2EEE7]">
+                Permanently delete this fragrance
+              </h4>
+              <p className="text-xs text-[#AAA49B] max-w-xl leading-relaxed">
+                Once deleted, this fragrance formulation, all associated sizing variants, and gallery images will be removed from your atelier store. This action cannot be reversed.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteModalError("");
+                setShowDeleteModal(true);
+              }}
+              className="px-5 py-2.5 bg-rose-950/30 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 hover:text-white text-xs uppercase font-sans tracking-[0.18em] font-medium transition-all shrink-0 flex items-center justify-center space-x-2 min-h-[44px] cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>DELETE FRAGRANCE</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 7. BOTTOM SUBMISSION BAR */}
       <div className="bg-[#121110] p-4 sm:p-6 border border-[rgba(242,238,231,0.06)] flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-xs rounded-sm">
         <Link
@@ -1194,5 +1260,116 @@ export default function AdminProductForm() {
         </button>
       </div>
     </form>
+
+    {/* DELETE CONFIRMATION MODAL */}
+    <AnimatePresence>
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              if (!isDeleting) setShowDeleteModal(false);
+            }}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          />
+
+          {/* Modal Dialog */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            className="relative w-full max-w-md bg-[#141311] border border-[rgba(242,238,231,0.12)] p-6 sm:p-7 shadow-2xl rounded-sm z-10 space-y-5"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-rose-950/50 border border-rose-500/40 flex items-center justify-center text-rose-400 shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                    Delete Fragrance
+                  </h3>
+                  <p className="text-[11px] text-[#777169] uppercase tracking-wider font-sans">
+                    Permanent Catalog Removal
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setShowDeleteModal(false)}
+                className="p-1.5 text-[#AAA49B] hover:text-[#F2EEE7] transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Product Snippet */}
+            <div className="flex items-center space-x-3 p-3 bg-[#0D0D0C] border border-[rgba(242,238,231,0.06)] rounded-sm">
+              <div className="w-12 h-14 bg-[#181714] border border-[rgba(242,238,231,0.08)] overflow-hidden shrink-0">
+                <img
+                  src={formData.primary_image || (images[0]?.public_url)}
+                  alt={formData.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-serif text-base text-[#F2EEE7] truncate">
+                  {formData.name || "Untitled Fragrance"}
+                </p>
+                <p className="text-[11px] font-mono text-[#AAA49B] truncate">
+                  /{formData.slug} • PKR {Number(formData.price || 0).toLocaleString()}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs font-sans text-[#AAA49B] leading-relaxed">
+              Are you sure you want to delete <strong className="text-[#F2EEE7]">{formData.name}</strong>? This action will permanently remove this fragrance, all its bottle size variants, and gallery images from your storefront. This cannot be undone.
+            </p>
+
+            {deleteModalError && (
+              <div className="p-3 bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs rounded-sm">
+                {deleteModalError}
+              </div>
+            )}
+
+            <div className="flex items-center justify-end space-x-3 pt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] transition-colors min-h-[42px] cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleDeleteProduct}
+                className="px-5 py-2.5 text-xs uppercase font-sans tracking-[0.18em] bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-500/60 flex items-center space-x-2 font-medium transition-all shadow-lg min-h-[42px] disabled:opacity-50 cursor-pointer"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>DELETING...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>DELETE FRAGRANCE</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

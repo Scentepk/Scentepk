@@ -51,7 +51,7 @@ export default function ProductDetails() {
         const parsed = JSON.parse(saved);
         raw = parsed.find((p) => p.slug === targetSlug || p.id === targetSlug);
       }
-    } catch (e) {}
+    } catch (e) { }
 
     if (!raw) {
       raw = PRODUCTS.find((p) => p.slug === targetSlug || p.id === targetSlug);
@@ -155,19 +155,19 @@ export default function ProductDetails() {
     product?.variants && product.variants.length > 0
       ? product.variants
       : [
-          {
-            id: `${product?.id || "prod"}-var-50ml`,
-            product_id: product?.id,
-            size: "50ml",
-            volume: product?.volume || "50 ML",
-            price: product?.price || 14500,
-            formattedPrice: product?.formattedPrice || "PKR 14,500",
-            stockQuantity: product?.stockQuantity ?? 50,
-            stock_quantity: product?.stockQuantity ?? 50,
-            isOutOfStock: Boolean(product?.isOutOfStock),
-            isActive: true,
-          },
-        ];
+        {
+          id: `${product?.id || "prod"}-var-50ml`,
+          product_id: product?.id,
+          size: "50ml",
+          volume: product?.volume || "50 ML",
+          price: product?.price || 14500,
+          formattedPrice: product?.formattedPrice || "PKR 14,500",
+          stockQuantity: product?.stockQuantity ?? 50,
+          stock_quantity: product?.stockQuantity ?? 50,
+          isOutOfStock: Boolean(product?.isOutOfStock),
+          isActive: true,
+        },
+      ];
 
   useEffect(() => {
     if (variants.length > 0 && !variants.some((v) => v.size === selectedSize)) {
@@ -314,7 +314,7 @@ export default function ProductDetails() {
           .filter((p) => p.status !== "inactive" && p.is_active !== false)
           .map(normalizeProduct);
       }
-    } catch (e) {}
+    } catch (e) { }
     return PRODUCTS.filter((p) => p.status !== "inactive" && p.is_active !== false).map(normalizeProduct);
   });
 
@@ -633,11 +633,10 @@ export default function ProductDetails() {
                         key={`${imgUrl}-${idx}`}
                         type="button"
                         onClick={() => setActiveImageIndex(idx)}
-                        className={`relative aspect-square w-16 sm:w-20 rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer bg-[#141312] shrink-0 ${
-                          isActive
+                        className={`relative aspect-square w-16 sm:w-20 rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer bg-[#141312] shrink-0 ${isActive
                             ? "border-[#BFA27A] ring-2 ring-[#BFA27A]/50 shadow-[0_0_15px_rgba(191,162,122,0.3)] scale-[1.03]"
                             : "border-white/10 opacity-60 hover:opacity-100 hover:border-white/30"
-                        }`}
+                          }`}
                       >
                         <img
                           src={imgUrl}
@@ -715,11 +714,10 @@ export default function ProductDetails() {
                         type="button"
                         disabled={isSoldOut}
                         onClick={() => setSelectedSize(v.size)}
-                        className={`px-5 py-2.5 rounded-xl font-sans text-xs uppercase tracking-[0.14em] transition-all duration-200 cursor-pointer border ${
-                          isSelected
+                        className={`px-5 py-2.5 rounded-xl font-sans text-xs uppercase tracking-[0.14em] transition-all duration-200 cursor-pointer border ${isSelected
                             ? "bg-[#1E1C18] border-[#BFA27A] text-[#F2EEE7] font-medium shadow-[0_0_15px_rgba(191,162,122,0.2)] ring-1 ring-[#BFA27A]/50"
                             : "bg-[#141312] border-white/10 text-[#AAA49B] hover:border-white/30 hover:text-white"
-                        } ${isSoldOut ? "opacity-40 cursor-not-allowed line-through" : ""}`}
+                          } ${isSoldOut ? "opacity-40 cursor-not-allowed line-through" : ""}`}
                       >
                         <span>{v.size}</span>
                         {v.formattedPrice && (
@@ -737,20 +735,19 @@ export default function ProductDetails() {
               <div className="flex items-center justify-between py-4 border-y border-white/[0.08] mb-7">
                 <div className="flex items-center gap-2 text-xs">
                   <span
-                    className={`w-2.5 h-2.5 rounded-full ${
-                      isOutOfStockNow
+                    className={`w-2.5 h-2.5 rounded-full ${isOutOfStockNow
                         ? "bg-rose-500"
                         : isLowStock
-                        ? "bg-amber-400 animate-pulse"
-                        : "bg-emerald-400"
-                    }`}
+                          ? "bg-amber-400 animate-pulse"
+                          : "bg-emerald-400"
+                      }`}
                   />
                   <span className="uppercase tracking-widest text-[11px] font-medium text-[#F2EEE7]">
                     {isOutOfStockNow
                       ? "Sold Out"
                       : isLowStock
-                      ? "Only a few bottles remaining"
-                      : "In Stock · Ready to Dispatch"}
+                        ? "Only a few bottles remaining"
+                        : "In Stock · Ready to Dispatch"}
                   </span>
                 </div>
 
@@ -911,9 +908,8 @@ export default function ProductDetails() {
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${
-                    openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
-                  }`}
+                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
+                    }`}
                 />
               </button>
 
@@ -993,9 +989,8 @@ export default function ProductDetails() {
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${
-                    openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
-                  }`}
+                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
+                    }`}
                 />
               </button>
 
@@ -1035,9 +1030,8 @@ export default function ProductDetails() {
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${
-                    openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
-                  }`}
+                  className={`w-5 h-5 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
+                    }`}
                 />
               </button>
 

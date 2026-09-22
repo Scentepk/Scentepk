@@ -127,28 +127,28 @@ export default function SEO({
       structuredData ||
       (ogType === "product" && productData
         ? {
-            "@context": "https://schema.org",
-            "@type": "Product",
-            name: productData.name,
-            image: resolvedImage,
-            description: fullDescription,
-            sku: productData.sku || "SCENTE-PARFUM",
-            brand: {
-              "@type": "Brand",
-              name: "SCENTÉ",
-            },
-            offers: {
-              "@type": "Offer",
-              url: resolvedCanonical,
-              priceCurrency: productData.currency || "PKR",
-              price: productData.price || 0,
-              availability:
-                productData.inStock !== false && productData.availability !== "out_of_stock"
-                  ? "https://schema.org/InStock"
-                  : "https://schema.org/OutOfStock",
-              itemCondition: "https://schema.org/NewCondition",
-            },
-          }
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: productData.name,
+          image: resolvedImage,
+          description: fullDescription,
+          sku: productData.sku || "SCENTE-PARFUM",
+          brand: {
+            "@type": "Brand",
+            name: "SCENTÉ",
+          },
+          offers: {
+            "@type": "Offer",
+            url: resolvedCanonical,
+            priceCurrency: productData.currency || "PKR",
+            price: productData.price || 0,
+            availability:
+              productData.inStock !== false && productData.availability !== "out_of_stock"
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+        }
         : null);
 
     if (resolvedStructuredData) {

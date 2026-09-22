@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { PRODUCTS } from "../data/products";
 import { createCodOrder } from "../services/orders";
 import { validateCartStock } from "../services/inventory";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  // Initialize from localStorage or sample item for first-time visitors
+  // Initialize from localStorage or empty cart for new visitors
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem("scente_cart");
@@ -16,16 +15,7 @@ export function CartProvider({ children }) {
     } catch (e) {
       console.error("Failed to load cart from storage", e);
     }
-    return [
-      {
-        product: PRODUCTS[0],
-        size: "50ml",
-        quantity: 1,
-        price: PRODUCTS[0].price,
-        formattedPrice: PRODUCTS[0].formattedPrice,
-        variantId: null,
-      },
-    ];
+    return [];
   });
 
   // Ephemeral in-memory order completion state (never persisted across sessions/restarts)

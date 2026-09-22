@@ -144,14 +144,14 @@ export default function Checkout() {
     if (isFreshCheckout || (checkoutItems && checkoutItems.length > 0)) {
       try {
         sessionStorage.removeItem("scente_confirmed_order");
-      } catch (e) {}
+      } catch (e) { }
       return null;
     }
     // Only restore if user reloaded while actively on the confirmation view with 0 items in cart
     try {
       const saved = sessionStorage.getItem("scente_confirmed_order");
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch (e) { }
     return null;
   });
 
@@ -161,7 +161,7 @@ export default function Checkout() {
       setConfirmedOrder(null);
       try {
         sessionStorage.removeItem("scente_confirmed_order");
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [checkoutItems?.length]);
 
@@ -276,7 +276,7 @@ export default function Checkout() {
       setConfirmedOrder(generatedOrder);
       try {
         sessionStorage.setItem("scente_confirmed_order", JSON.stringify(generatedOrder));
-      } catch (e) {}
+      } catch (e) { }
       window.scrollTo(0, 0);
     } catch (err) {
       console.error("Order submission error:", err);
@@ -284,7 +284,7 @@ export default function Checkout() {
       setSubmissionError(message);
       try {
         await validateAndSyncStock(checkoutItems);
-      } catch (e) {}
+      } catch (e) { }
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
@@ -340,11 +340,10 @@ export default function Checkout() {
                 <button
                   type="button"
                   onClick={() => handleCopyReference(confirmedOrder.reference)}
-                  className={`inline-flex items-center space-x-2 text-xs uppercase font-sans tracking-[0.18em] px-5 py-2.5 border transition-all duration-200 cursor-pointer ${
-                    copiedRef
+                  className={`inline-flex items-center space-x-2 text-xs uppercase font-sans tracking-[0.18em] px-5 py-2.5 border transition-all duration-200 cursor-pointer ${copiedRef
                       ? "bg-emerald-950/60 border-emerald-500/60 text-emerald-300 shadow-md"
                       : "bg-[#181714] border-[rgba(242,238,231,0.18)] text-[#F2EEE7] hover:border-[#BFA27A] hover:text-[#BFA27A]"
-                  }`}
+                    }`}
                 >
                   {copiedRef ? (
                     <>
@@ -379,7 +378,7 @@ export default function Checkout() {
                 onClick={() => {
                   try {
                     sessionStorage.removeItem("scente_confirmed_order");
-                  } catch (e) {}
+                  } catch (e) { }
                 }}
                 className="w-full sm:w-auto bg-[#F2EEE7] text-[#0D0D0C] border border-[#F2EEE7] py-3.5 px-8 text-xs uppercase font-sans tracking-[0.2em] font-medium hover:bg-[#BFA27A] hover:border-[#BFA27A] transition-all duration-200 text-center cursor-pointer shadow-lg inline-flex items-center justify-center space-x-2"
               >
@@ -392,7 +391,7 @@ export default function Checkout() {
                 onClick={() => {
                   try {
                     sessionStorage.removeItem("scente_confirmed_order");
-                  } catch (e) {}
+                  } catch (e) { }
                   setConfirmedOrder(null);
                 }}
                 className="w-full sm:w-auto bg-transparent border border-[rgba(242,238,231,0.2)] text-[#AAA49B] hover:text-[#F2EEE7] hover:border-[#F2EEE7] py-3.5 px-6 text-xs uppercase font-sans tracking-[0.2em] font-medium transition-colors text-center cursor-pointer"
@@ -561,8 +560,8 @@ export default function Checkout() {
             <div className="flex-1 space-y-1">
               <span className="font-medium text-sm text-rose-300 block">{submissionError}</span>
               {submissionError.toLowerCase().includes("stock") ||
-              submissionError.toLowerCase().includes("not available") ||
-              submissionError.toLowerCase().includes("sold out") ? (
+                submissionError.toLowerCase().includes("not available") ||
+                submissionError.toLowerCase().includes("sold out") ? (
                 <>
                   <p className="text-[11px] text-rose-300/80 leading-relaxed">
                     One or more requested bottle sizes are no longer in stock. Please adjust your bag before placing your order.

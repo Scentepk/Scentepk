@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   getAllProductsAdmin,
   updateProductStatusAdmin,
+  deleteProductAdmin,
 } from "../../services/adminProducts";
 import {
   Plus,
@@ -13,12 +14,17 @@ import {
   CheckCircle2,
   RefreshCw,
   Package,
+  Trash2,
+  AlertTriangle,
+  Loader2,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
 import Input from "../../components/Input";
 
 export default function AdminProductList() {
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [familyFilter, setFamilyFilter] = useState("all");
@@ -26,6 +32,9 @@ export default function AdminProductList() {
   const [isLoading, setIsLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState("");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const audiences = [
     { id: "all", label: "All Audiences" },
@@ -48,6 +57,31 @@ export default function AdminProductList() {
   useEffect(() => {
     loadProducts();
   }, [search, familyFilter, statusFilter]);
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setToastMessage(location.state.message);
+      window.history.replaceState({}, document.title);
+      setTimeout(() => setToastMessage(""), 4000);
+    }
+  }, [location.state]);
+
+  const handleDeleteProduct = async () => {
+    if (!productToDelete) return;
+    setIsDeleting(true);
+    setDeleteError("");
+    const { success, error } = await deleteProductAdmin(productToDelete.id);
+    setIsDeleting(false);
+    if (error) {
+      setDeleteError(error.message || "Failed to delete fragrance. Please try again.");
+    } else {
+      const deletedName = productToDelete.name;
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      setProductToDelete(null);
+      setToastMessage(`"${deletedName}" was permanently deleted.`);
+      setTimeout(() => setToastMessage(""), 4000);
+    }
+  };
 
   const handleStatusChange = async (id, name, newStatus) => {
     const { error } = await updateProductStatusAdmin(id, newStatus);
@@ -368,7 +402,7 @@ export default function AdminProductList() {
 
                       {/* Actions */}
                       <td className="py-3.5 px-5 text-right">
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="flex items-center justify-end space-x-1.5">
                           <Link
                             to={`/admin/products/${prod.id}/edit`}
                             className="p-1.5 text-[#AAA49B] hover:text-[#BFA27A] transition-colors"
@@ -388,6 +422,19 @@ export default function AdminProductList() {
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                           </Link>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDeleteError("");
+                              setProductToDelete(prod);
+                            }}
+                            className="p-1.5 text-[#AAA49B] hover:text-rose-400 transition-colors cursor-pointer"
+                            title="Delete fragrance"
+                            aria-label={`Delete ${prod.name}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -459,24 +506,36 @@ export default function AdminProductList() {
                   </div>
 
                   {/* Card Actions Toolbar */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
+                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
                     <Link
                       to={`/admin/products/${prod.id}/edit`}
-                      className="flex items-center justify-center space-x-1.5 bg-[#181714] border border-[rgba(242,238,231,0.12)] text-[#F2EEE7] hover:text-[#BFA27A] py-2.5 text-[11px] uppercase tracking-wider rounded-sm min-h-[44px]"
+                      className="flex items-center justify-center space-x-1 bg-[#181714] border border-[rgba(242,238,231,0.12)] text-[#F2EEE7] hover:text-[#BFA27A] py-2 text-[10.5px] uppercase tracking-wider rounded-sm min-h-[42px]"
                     >
                       <Edit2 className="w-3.5 h-3.5 text-[#BFA27A]" />
-                      <span>Edit Details</span>
+                      <span>Edit</span>
                     </Link>
 
                     <Link
                       to={`/product/${prod.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center space-x-1.5 bg-[#0D0D0C] border border-[rgba(242,238,231,0.08)] text-[#AAA49B] hover:text-[#F2EEE7] py-2.5 text-[11px] uppercase tracking-wider rounded-sm min-h-[44px]"
+                      className="flex items-center justify-center space-x-1 bg-[#0D0D0C] border border-[rgba(242,238,231,0.08)] text-[#AAA49B] hover:text-[#F2EEE7] py-2 text-[10.5px] uppercase tracking-wider rounded-sm min-h-[42px]"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Storefront</span>
+                      <span>Store</span>
                     </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDeleteError("");
+                        setProductToDelete(prod);
+                      }}
+                      className="flex items-center justify-center space-x-1 bg-rose-950/20 border border-rose-500/30 text-rose-300 hover:bg-rose-950/40 py-2 text-[10.5px] uppercase tracking-wider rounded-sm min-h-[42px] cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Delete</span>
+                    </button>
                   </div>
 
                   {/* Quick Mobile Status Switcher */}
@@ -514,6 +573,116 @@ export default function AdminProductList() {
           </div>
         )}
       </div>
+
+      {/* 5. DELETE CONFIRMATION MODAL */}
+      <AnimatePresence>
+        {productToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                if (!isDeleting) setProductToDelete(null);
+              }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="relative w-full max-w-md bg-[#141311] border border-[rgba(242,238,231,0.12)] p-6 sm:p-7 shadow-2xl rounded-sm z-10 space-y-5"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-rose-950/50 border border-rose-500/40 flex items-center justify-center text-rose-400 shrink-0">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                      Delete Fragrance
+                    </h3>
+                    <p className="text-[11px] text-[#777169] uppercase tracking-wider">
+                      Permanent Catalog Removal
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => setProductToDelete(null)}
+                  className="p-1.5 text-[#AAA49B] hover:text-[#F2EEE7] transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Product Snippet */}
+              <div className="flex items-center space-x-3 p-3 bg-[#0D0D0C] border border-[rgba(242,238,231,0.06)] rounded-sm">
+                <div className="w-12 h-14 bg-[#181714] border border-[rgba(242,238,231,0.08)] overflow-hidden shrink-0">
+                  <img
+                    src={productToDelete.primary_image || productToDelete.image}
+                    alt={productToDelete.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-serif text-base text-[#F2EEE7] truncate">
+                    {productToDelete.name}
+                  </p>
+                  <p className="text-[11px] font-mono text-[#AAA49B] truncate">
+                    /{productToDelete.slug} • PKR {Number(productToDelete.price || 0).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs font-sans text-[#AAA49B] leading-relaxed">
+                Are you sure you want to delete <strong className="text-[#F2EEE7]">{productToDelete.name}</strong>? This action will permanently remove this fragrance, all its bottle size variants, and gallery images from your storefront. This cannot be undone.
+              </p>
+
+              {deleteError && (
+                <div className="p-3 bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs rounded-sm">
+                  {deleteError}
+                </div>
+              )}
+
+              <div className="flex items-center justify-end space-x-3 pt-2">
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => setProductToDelete(null)}
+                  className="px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] transition-colors min-h-[42px] cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={handleDeleteProduct}
+                  className="px-5 py-2.5 text-xs uppercase font-sans tracking-[0.18em] bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-500/60 flex items-center space-x-2 font-medium transition-all shadow-lg min-h-[42px] disabled:opacity-50 cursor-pointer"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>DELETING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>DELETE FRAGRANCE</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -696,3 +696,96 @@ export async function deleteProductImageAdmin(storagePath) {
     return { data: null, error: err };
   }
 }
+
+/**
+ * Delete an entire product, its variants, gallery images, and cleanly dissociate historical orders
+ */
+export async function deleteProductAdmin(id) {
+  if (!id) return { success: false, error: new Error("Product ID is required") };
+
+  if (!isSupabaseConfigured || !supabase) {
+    const items = getLocalProductsStore();
+    const filtered = items.filter((p) => p.id !== id && p.slug !== id);
+    saveLocalProductsStore(filtered);
+    notifyCatalogChange();
+    return { success: true, error: null };
+  }
+
+  try {
+    // 0. Resolve actual product ID in case slug was passed
+    let targetId = id;
+    const { data: prod } = await supabase
+      .from("products")
+      .select("id")
+      .or(`id.eq.${id},slug.eq.${id}`)
+      .maybeSingle();
+
+    if (prod && prod.id) {
+      targetId = prod.id;
+    }
+
+    // 1. Fetch and clean up image storage files
+    try {
+      const { data: imgRows } = await supabase
+        .from("product_images")
+        .select("storage_path")
+        .eq("product_id", targetId);
+
+      if (imgRows && imgRows.length > 0) {
+        const paths = imgRows.map((r) => r.storage_path).filter(Boolean);
+        if (paths.length > 0) {
+          await deleteProductImageAdmin(paths);
+        }
+      }
+    } catch (imgErr) {
+      console.warn("Non-fatal: could not clean up image storage files:", imgErr);
+    }
+
+    // 2. Fetch variants for this product
+    const { data: variants } = await supabase
+      .from("product_variants")
+      .select("id")
+      .eq("product_id", targetId);
+
+    const variantIds = (variants || []).map((v) => v.id);
+
+    // 3. Dissociate past order_items so trigger and foreign key don't block deletion
+    if (variantIds.length > 0) {
+      await supabase
+        .from("order_items")
+        .update({ variant_id: null })
+        .in("variant_id", variantIds);
+    }
+
+    await supabase
+      .from("order_items")
+      .update({ product_id: null })
+      .eq("product_id", targetId);
+
+    // 4. Delete image rows and variants rows
+    await supabase.from("product_images").delete().eq("product_id", targetId);
+    await supabase.from("product_variants").delete().eq("product_id", targetId);
+
+    // 5. Delete the product itself
+    const { error: delErr } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", targetId);
+
+    if (delErr) throw delErr;
+
+    // 6. Update local cache as well so fallback stays in sync
+    const items = getLocalProductsStore();
+    const filtered = items.filter(
+      (p) => p.id !== targetId && p.slug !== targetId && p.id !== id && p.slug !== id
+    );
+    saveLocalProductsStore(filtered);
+
+    notifyCatalogChange();
+    return { success: true, error: null };
+  } catch (err) {
+    console.error(`Failed to delete product ${id}:`, err);
+    return { success: false, error: err };
+  }
+}
+

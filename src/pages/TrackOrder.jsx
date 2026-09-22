@@ -52,7 +52,7 @@ export default function TrackOrder() {
     if (isFromConfirmation && initialRef && initialPhone) {
       try {
         window.history.replaceState({}, document.title, location.pathname);
-      } catch (e) {}
+      } catch (e) { }
 
       setIsLoading(true);
       setErrorMessage("");
@@ -548,19 +548,18 @@ export default function TrackOrder() {
 
               <div className="flex flex-wrap items-center gap-3">
                 <span
-                  className={`inline-block text-[10px] uppercase tracking-[0.18em] px-3.5 py-1.5 border font-medium ${
-                    isCancelled
+                  className={`inline-block text-[10px] uppercase tracking-[0.18em] px-3.5 py-1.5 border font-medium ${isCancelled
                       ? "bg-rose-950/40 text-rose-300 border-rose-500/40"
                       : orderData.status === "delivered"
-                      ? "bg-emerald-950/60 text-emerald-200 border-emerald-500/40"
-                      : orderData.status === "shipped"
-                      ? "bg-emerald-950/40 text-emerald-300 border-emerald-500/30"
-                      : orderData.status === "processing"
-                      ? "bg-purple-950/40 text-purple-300 border-purple-500/30"
-                      : orderData.status === "confirmed"
-                      ? "bg-sky-950/40 text-sky-300 border-sky-500/30"
-                      : "bg-[#181714] text-[#BFA27A] border-[#BFA27A]/40"
-                  }`}
+                        ? "bg-emerald-950/60 text-emerald-200 border-emerald-500/40"
+                        : orderData.status === "shipped"
+                          ? "bg-emerald-950/40 text-emerald-300 border-emerald-500/30"
+                          : orderData.status === "processing"
+                            ? "bg-purple-950/40 text-purple-300 border-purple-500/30"
+                            : orderData.status === "confirmed"
+                              ? "bg-sky-950/40 text-sky-300 border-sky-500/30"
+                              : "bg-[#181714] text-[#BFA27A] border-[#BFA27A]/40"
+                    }`}
                 >
                   {isCancelled ? "CANCELLED" : orderData.status.toUpperCase()}
                 </span>
@@ -678,17 +677,16 @@ export default function TrackOrder() {
                           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                             <div className="flex items-center space-x-2">
                               <p
-                                className={`text-xs sm:text-sm uppercase tracking-wider font-medium ${
-                                  m.state === "terminal"
+                                className={`text-xs sm:text-sm uppercase tracking-wider font-medium ${m.state === "terminal"
                                     ? "text-rose-300 font-semibold"
                                     : m.state === "current"
-                                    ? "text-[#F2EEE7]"
-                                    : m.state === "completed"
-                                    ? "text-[#AAA49B]"
-                                    : isCancelled && (m.key === "shipped" || m.key === "delivered" || m.state === "inactive")
-                                    ? "text-[#55514B]"
-                                    : "text-[#66615B]"
-                                }`}
+                                      ? "text-[#F2EEE7]"
+                                      : m.state === "completed"
+                                        ? "text-[#AAA49B]"
+                                        : isCancelled && (m.key === "shipped" || m.key === "delivered" || m.state === "inactive")
+                                          ? "text-[#55514B]"
+                                          : "text-[#66615B]"
+                                  }`}
                               >
                                 {m.label}
                               </p>
@@ -709,9 +707,8 @@ export default function TrackOrder() {
                             {/* Milestone Timestamp (Real database timestamp only - never fabricated) */}
                             {m.date && (
                               <span
-                                className={`text-[10.5px] font-mono shrink-0 ${
-                                  m.state === "terminal" ? "text-rose-400" : "text-[#BFA27A]"
-                                }`}
+                                className={`text-[10.5px] font-mono shrink-0 ${m.state === "terminal" ? "text-rose-400" : "text-[#BFA27A]"
+                                  }`}
                               >
                                 {m.date}
                               </span>
@@ -719,13 +716,12 @@ export default function TrackOrder() {
                           </div>
 
                           <p
-                            className={`text-xs font-light mt-0.5 leading-relaxed ${
-                              m.state === "terminal"
+                            className={`text-xs font-light mt-0.5 leading-relaxed ${m.state === "terminal"
                                 ? "text-rose-300/80"
                                 : isCancelled && (m.key === "shipped" || m.key === "delivered" || m.state === "inactive")
-                                ? "text-[#55514B]"
-                                : "text-[#777169]"
-                            }`}
+                                  ? "text-[#55514B]"
+                                  : "text-[#777169]"
+                              }`}
                           >
                             {m.desc}
                           </p>
