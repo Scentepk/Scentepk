@@ -503,7 +503,7 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen pb-24 lg:pb-0">
+    <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen pb-8 lg:pb-0">
       <SEO
         title={`${product.name} — ${resolvedClassification} (${selectedSize})`}
         description={`${cleanedDescription ? cleanedDescription.slice(0, 155) : (product.tagline || product.subtitle || product.name)}. Handcrafted in Pakistan with pure perfume oils. Cash on Delivery available.`}

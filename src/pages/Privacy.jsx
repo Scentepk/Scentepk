@@ -36,7 +36,7 @@ export default function Privacy() {
           <ScrollReveal delay={0.19} className="bg-[#121110] p-8 sm:p-10 border border-[rgba(242,238,231,0.08)] space-y-3">
             <h3 className="font-serif text-xl font-light text-[#F2EEE7]">3. Data Security & Concierge Enquiries</h3>
             <p>
-              All digital transactions and private concierge messages are protected using modern encryption standards. For inquiries regarding your stored personal data, please contact concierge@scente.pk.
+              All digital transactions and private concierge messages are protected using modern encryption standards. For inquiries regarding your stored personal data, please contact scentepk@gmail.com.
             </p>
           </ScrollReveal>
         </div>

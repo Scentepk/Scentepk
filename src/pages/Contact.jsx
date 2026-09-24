@@ -216,10 +216,10 @@ export default function Contact() {
                     Direct Email
                   </span>
                   <a
-                    href="mailto:concierge@scente-parfums.com"
+                    href="mailto:scentepk@gmail.com"
                     className="text-[#F2EEE7] hover:text-[#BFA27A] transition-colors"
                   >
-                    concierge@scente-parfums.com
+                    scentepk@gmail.com
                   </a>
                 </div>
 
@@ -227,9 +227,14 @@ export default function Contact() {
                   <span className="text-[10px] uppercase tracking-micro text-[#777169] block mb-1">
                     Concierge WhatsApp / Hotline
                   </span>
-                  <span className="text-[#F2EEE7] font-mono">
-                    +92 300 0000000 (10:00 AM – 7:00 PM PKT)
-                  </span>
+                  <a
+                    href="https://wa.me/923258833171"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#F2EEE7] font-mono hover:text-[#BFA27A] transition-colors inline-block"
+                  >
+                    +92 325 8833171 (10:00 AM – 7:00 PM PKT)
+                  </a>
                 </div>
 
                 <div>
@@ -237,7 +242,7 @@ export default function Contact() {
                     Atelier Location
                   </span>
                   <span className="text-[#F2EEE7]">
-                    Sector F-7/2, Islamabad, Pakistan
+                    DHA Phase 7, Lahore, Pakistan
                   </span>
                 </div>
               </div>

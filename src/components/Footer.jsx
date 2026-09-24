@@ -1,12 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ScrollReveal from "./ScrollReveal";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  const isProductPage = location.pathname.startsWith("/product/");
 
   return (
-    <footer className="bg-[#080807] text-[#F2EEE7] pt-16 sm:pt-20 pb-10 sm:pb-12 border-t border-[rgba(242,238,231,0.06)]">
+    <footer
+      className={`bg-[#080807] text-[#F2EEE7] pt-16 sm:pt-20 ${
+        isProductPage ? "pb-32 sm:pb-12" : "pb-12 sm:pb-12"
+      } border-t border-[rgba(242,238,231,0.06)]`}
+    >
       <div className="layout-container space-y-12 sm:space-y-16">
         {/* Main Footer Grid Layout (Brand + Explore + Client Care + Legal) */}
         <ScrollReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 md:gap-8 lg:gap-12 xl:gap-14 items-start pb-12 sm:pb-16 border-b border-[rgba(242,238,231,0.06)]">
@@ -127,8 +133,8 @@ export default function Footer() {
 
         </ScrollReveal>
 
-        {/* BOTTOM BAR (Copyright Left, Social Icons Right) */}
-        <div className="flex flex-col sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2 text-center sm:text-left">
+        {/* BOTTOM BAR (Copyright Left, Social Icons Right on desktop; Icons on top on mobile) */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2 text-center sm:text-left">
           <div className="flex items-center space-x-3">
             <p>© {currentYear} SCENTÉPK PARFUMS. ALL RIGHTS RESERVED.</p>
           </div>
@@ -178,7 +184,7 @@ export default function Footer() {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/"
+              href="https://wa.me/923258833171"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="SCENTÉPK WhatsApp Concierge"
