@@ -19,6 +19,9 @@ import {
   Send,
   FileCheck,
   Package,
+  ChevronLeft,
+  ChevronRight,
+  GripVertical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -57,6 +60,8 @@ export default function AdminHeroManagement() {
   // Preview Mode: 'desktop' | 'mobile'
   const [previewDevice, setPreviewDevice] = useState("desktop");
   const [availableProducts, setAvailableProducts] = useState([]);
+  const [draggedSlideIdx, setDraggedSlideIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
 
   // Load existing hero settings, draft & products on mount
   useEffect(() => {
@@ -208,6 +213,29 @@ export default function AdminHeroManagement() {
     setNotification({
       type: "info",
       message: `Slide 0${newSlideNumber} added to working draft. Adjust crop/text and click 'Save Draft' or 'Publish Changes'.`,
+    });
+  };
+
+  // Shift / reorder slide positions (Move Left, Move Right, or Drag-and-Drop)
+  const handleMoveSlide = (currentIndex, targetIndex, e) => {
+    e?.stopPropagation();
+    if (targetIndex < 0 || targetIndex >= slides.length || currentIndex === targetIndex) return;
+
+    const newSlides = [...slides];
+    const [movedSlide] = newSlides.splice(currentIndex, 1);
+    newSlides.splice(targetIndex, 0, movedSlide);
+
+    setFormData((prev) => ({
+      ...prev,
+      slides: newSlides,
+    }));
+
+    // Keep active slide focused on the moved slide
+    setActiveSlideIndex(targetIndex);
+
+    setNotification({
+      type: "info",
+      message: `Shifted slide to Position 0${targetIndex + 1}! Click 'Publish Changes' when done.`,
     });
   };
 
@@ -546,7 +574,7 @@ export default function AdminHeroManagement() {
             </h2>
           </div>
           <span className="text-[11px] font-sans text-[#AAA49B]">
-            Select a slide card below to edit its visual crop or copy.
+            Drag cards or click ◀ ▶ arrows to swap or shift slide order. Click card to edit.
           </span>
         </div>
 
@@ -554,31 +582,86 @@ export default function AdminHeroManagement() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-1">
           {slides.map((slide, idx) => {
             const isSelected = idx === activeSlideIndex;
+            const isDraggedOver = dragOverIdx === idx;
+            const isBeingDragged = draggedSlideIdx === idx;
+
             return (
               <div
                 key={slide.id || idx}
+                draggable={true}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", String(idx));
+                  setDraggedSlideIdx(idx);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (dragOverIdx !== idx) setDragOverIdx(idx);
+                }}
+                onDragLeave={() => {
+                  if (dragOverIdx === idx) setDragOverIdx(null);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOverIdx(null);
+                  setDraggedSlideIdx(null);
+                  const sourceIdx = Number(e.dataTransfer.getData("text/plain"));
+                  if (!isNaN(sourceIdx) && sourceIdx !== idx) {
+                    handleMoveSlide(sourceIdx, idx);
+                  }
+                }}
+                onDragEnd={() => {
+                  setDraggedSlideIdx(null);
+                  setDragOverIdx(null);
+                }}
                 onClick={() => setActiveSlideIndex(idx)}
-                className={`relative rounded-xl overflow-hidden border p-3 flex flex-col justify-between transition-all duration-300 cursor-pointer group select-none ${isSelected
+                className={`relative rounded-xl overflow-hidden border p-3 flex flex-col justify-between transition-all duration-300 cursor-pointer group select-none ${
+                  isDraggedOver
+                    ? "bg-[#25221B] border-[#BFA27A] ring-2 ring-[#BFA27A] scale-[1.02] shadow-[0_0_25px_rgba(191,162,122,0.3)]"
+                    : isSelected
                     ? "bg-[#1C1B18] border-[#BFA27A] shadow-[0_0_20px_rgba(191,162,122,0.15)] ring-1 ring-[#BFA27A]"
                     : "bg-[#161513] border-white/10 hover:border-white/25 hover:bg-[#1A1916]"
-                  }`}
+                } ${isBeingDragged ? "opacity-35 scale-95" : "opacity-100"}`}
               >
                 {/* Thumbnail Image with Crop Applied */}
                 <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 mb-2.5">
                   <img
                     src={slide.image_url}
                     alt=""
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover pointer-events-none"
                     style={{
                       objectPosition: `${slide.desktop_crop?.x ?? 50}% ${slide.desktop_crop?.y ?? 50}%`,
                       transform: `scale(${slide.desktop_crop?.zoom ?? 1.0})`,
                       transformOrigin: `${slide.desktop_crop?.x ?? 50}% ${slide.desktop_crop?.y ?? 50}%`,
                     }}
                   />
-                  <div className="absolute top-2 left-2">
-                    <span className="text-[9px] uppercase font-mono font-semibold px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#BFA27A] border border-white/10">
+
+                  {/* Top Left: Slide Number & Quick Reorder Shift Arrows */}
+                  <div className="absolute top-2 left-2 flex items-center gap-1 z-10">
+                    <span className="text-[9px] uppercase font-mono font-semibold px-2 py-0.5 rounded bg-black/85 backdrop-blur-md text-[#BFA27A] border border-white/15 shadow-sm">
                       0{idx + 1}
                     </span>
+
+                    {/* Move Left Button */}
+                    <button
+                      type="button"
+                      disabled={idx === 0}
+                      onClick={(e) => handleMoveSlide(idx, idx - 1, e)}
+                      className="w-6 h-6 rounded bg-black/85 hover:bg-[#BFA27A] hover:text-[#0D0D0C] text-[#AAA49B] disabled:opacity-20 disabled:hover:bg-black/85 disabled:hover:text-[#AAA49B] flex items-center justify-center border border-white/15 backdrop-blur-md transition-all shadow-md cursor-pointer disabled:cursor-not-allowed"
+                      title={idx === 0 ? "Already at beginning" : `Shift Slide 0${idx + 1} to Position 0${idx}`}
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Move Right Button */}
+                    <button
+                      type="button"
+                      disabled={idx === slides.length - 1}
+                      onClick={(e) => handleMoveSlide(idx, idx + 1, e)}
+                      className="w-6 h-6 rounded bg-black/85 hover:bg-[#BFA27A] hover:text-[#0D0D0C] text-[#AAA49B] disabled:opacity-20 disabled:hover:bg-black/85 disabled:hover:text-[#AAA49B] flex items-center justify-center border border-white/15 backdrop-blur-md transition-all shadow-md cursor-pointer disabled:cursor-not-allowed"
+                      title={idx === slides.length - 1 ? "Already at end" : `Shift Slide 0${idx + 1} to Position 0${idx + 2}`}
+                    >
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
 
                   {/* Delete Slide Button */}
@@ -586,7 +669,7 @@ export default function AdminHeroManagement() {
                     <button
                       type="button"
                       onClick={(e) => handleDeleteSlide(idx, e)}
-                      className="absolute top-2 right-2 w-7 h-7 rounded-md bg-rose-950/90 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                      className="absolute top-2 right-2 w-7 h-7 rounded-md bg-rose-950/90 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 flex items-center justify-center transition-all shadow-md cursor-pointer z-10"
                       title={`Delete Slide 0${idx + 1} from Hero Carousel`}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -604,16 +687,21 @@ export default function AdminHeroManagement() {
                   </h4>
                 </div>
 
-                {/* Selected Pill Indicator */}
-                <div className="pt-2 flex items-center justify-between text-[10px] uppercase font-sans tracking-wider">
+                {/* Selected Pill Indicator & Drag Grip */}
+                <div className="pt-2 flex items-center justify-between text-[10px] uppercase font-sans tracking-wider border-t border-white/[0.06] mt-2">
                   <span className={isSelected ? "text-[#BFA27A] font-semibold" : "text-[#777169]"}>
                     {isSelected ? "● Currently Editing" : "Click to edit"}
                   </span>
-                  {slide.mobile_image_url && (
-                    <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                      Mobile Art
+                  <div className="flex items-center gap-1.5">
+                    {slide.mobile_image_url && (
+                      <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                        Mobile Art
+                      </span>
+                    )}
+                    <span className="text-[#777169] group-hover:text-[#BFA27A] flex items-center text-[9px] font-mono transition-colors" title="Drag this card to reorder position">
+                      <GripVertical className="w-3 h-3" />
                     </span>
-                  )}
+                  </div>
                 </div>
               </div>
             );
