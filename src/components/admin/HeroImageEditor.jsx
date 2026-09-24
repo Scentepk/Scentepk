@@ -31,9 +31,8 @@ export default function HeroImageEditor({
 }) {
   // Active Tab: 'desktop' | 'mobile'
   const [activeTab, setActiveTab] = useState("desktop");
-
-  // Show live text overlay over the canvas
-  const [showOverlay, setShowOverlay] = useState(true);
+  // Show live text overlay over the canvas (default false for clear flacon framing)
+  const [showOverlay, setShowOverlay] = useState(false);
   // Show rule of thirds grid
   const [showGrid, setShowGrid] = useState(true);
 
@@ -301,7 +300,7 @@ export default function HeroImageEditor({
       </div>
 
       {/* 3. INTERACTIVE CANVAS VIEWPORT */}
-      <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#080807] shadow-2xl flex flex-col items-center justify-center p-3 sm:p-6">
+      <div className="relative rounded-2xl overflow-hidden border border-white/[0.12] bg-[#080807] shadow-2xl flex flex-col items-center justify-center p-3 sm:p-5">
         {/* Canvas Frame Container */}
         <div
           ref={canvasRef}
@@ -310,7 +309,7 @@ export default function HeroImageEditor({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onWheel={handleWheel}
-          className={`relative overflow-hidden border-2 border-[#BFA27A]/60 shadow-[0_0_40px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing transition-all rounded-xl ${
+          className={`relative overflow-hidden border border-[#BFA27A]/40 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.9)] cursor-grab active:cursor-grabbing transition-all rounded-xl ${
             activeTab === "desktop"
               ? "w-full aspect-[16/9] max-h-[460px]"
               : "w-[270px] xs:w-[310px] sm:w-[340px] aspect-[9/16] max-h-[520px]"
@@ -337,7 +336,7 @@ export default function HeroImageEditor({
             </div>
           )}
 
-          {/* B. Vignette luxury gradients (exactly matching storefront) */}
+          {/* B. Vignette luxury gradients (matching storefront) */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#090908]/90 via-[#090908]/60 to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#090908]/85 via-transparent to-black/30 pointer-events-none" />
 
@@ -350,15 +349,15 @@ export default function HeroImageEditor({
               <div className="border-r border-b border-[#BFA27A]/20" />
               <div className="border-r border-b border-[#BFA27A]/20" />
               <div className="border-b border-[#BFA27A]/20" />
-              <div className="border-r border-[#BFA27A]/20" />
-              <div className="border-r border-[#BFA27A]/20" />
+              <div className="border-r border-b border-[#BFA27A]/20" />
+              <div className="border-r border-b border-[#BFA27A]/20" />
               <div className="" />
             </div>
           )}
 
-          {/* D. Live SCENTÉ Luxury Text & CTA Overlay Preview */}
+          {/* D. Live SCENTÉ Luxury Text & CTA Overlay Preview (Toggleable) */}
           {showOverlay && (
-            <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-center p-4 sm:p-7">
+            <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-center p-4 sm:p-7 bg-black/20">
               <div className="max-w-[78%] sm:max-w-[70%] space-y-1.5 sm:space-y-2.5 drop-shadow-md">
                 {/* Eyebrow & Badge */}
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -411,8 +410,39 @@ export default function HeroImageEditor({
             </div>
           )}
 
-          {/* E. Interactive Drag Hint Watermark */}
-          <div className="absolute bottom-2 right-2.5 z-30 pointer-events-none bg-black/70 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 text-[9px] font-mono text-[#BFA27A] flex items-center gap-1.5">
+          {/* E. Floating Canvas Quick Toggles (Top Right Glass Pill) */}
+          <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5 bg-[#0D0D0C]/85 backdrop-blur-md p-1 rounded-xl border border-white/15 shadow-xl">
+            <button
+              type="button"
+              onClick={() => setShowOverlay((prev) => !prev)}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-sans uppercase tracking-wider flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                showOverlay
+                  ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold"
+                  : "text-[#AAA49B] hover:text-[#F2EEE7] hover:bg-white/5"
+              }`}
+              title="Toggle Live Copy & Headline Preview on Canvas"
+            >
+              {showOverlay ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+              <span>Text Overlay</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowGrid((prev) => !prev)}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-sans uppercase tracking-wider flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                showGrid
+                  ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold"
+                  : "text-[#AAA49B] hover:text-[#F2EEE7] hover:bg-white/5"
+              }`}
+              title="Toggle Rule-of-Thirds Grid Overlay"
+            >
+              <Grid className="w-3.5 h-3.5" />
+              <span>Grid</span>
+            </button>
+          </div>
+
+          {/* F. Interactive Drag Hint Watermark (Bottom Right Glass Pill) */}
+          <div className="absolute bottom-3 right-3 z-30 pointer-events-none bg-[#0D0D0C]/85 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 text-[9.5px] font-mono text-[#BFA27A] flex items-center gap-1.5 shadow-lg">
             <Move className="w-3 h-3 text-[#BFA27A]" />
             <span>DRAG TO REPOSITION</span>
           </div>
@@ -424,158 +454,96 @@ export default function HeroImageEditor({
         </p>
       </div>
 
-      {/* 4. TOOLBAR CONTROLS: ZOOM, POSITION COORDINATES, PRESETS & OVERLAYS */}
-      <div className="p-4 rounded-xl bg-[#171614] border border-white/[0.06] space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-          {/* A. Zoom Slider Control (Cols 5) */}
-          <div className="md:col-span-5 space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] font-sans">
-              <span className="uppercase tracking-wider text-[#AAA49B] font-medium flex items-center gap-1.5">
-                <Maximize2 className="w-3 h-3 text-[#BFA27A]" />
-                Scale / Zoom: <strong className="text-[#F2EEE7] font-mono">{(activeCrop.zoom ?? 1.0).toFixed(2)}x</strong>
-              </span>
-              <span className="text-[10px] text-[#777169]">1.00x – 3.00x</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() =>
-                  handleCropUpdate({
-                    zoom: Math.max(1.0, parseFloat(((activeCrop.zoom ?? 1.0) - 0.1).toFixed(2))),
-                  })
-                }
-                className="w-7 h-7 rounded-md bg-[#201F1B] hover:bg-[#2A2924] text-[#AAA49B] hover:text-[#F2EEE7] flex items-center justify-center border border-white/10 transition-colors cursor-pointer"
-                title="Zoom Out"
-              >
-                <ZoomOut className="w-3.5 h-3.5" />
-              </button>
-
-              <input
-                type="range"
-                min="1.0"
-                max="3.0"
-                step="0.05"
-                value={activeCrop.zoom ?? 1.0}
-                onChange={(e) => handleCropUpdate({ zoom: parseFloat(e.target.value) })}
-                className="flex-1 accent-[#BFA27A] cursor-pointer h-1.5 bg-white/10 rounded-lg"
-              />
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleCropUpdate({
-                    zoom: Math.min(3.0, parseFloat(((activeCrop.zoom ?? 1.0) + 0.1).toFixed(2))),
-                  })
-                }
-                className="w-7 h-7 rounded-md bg-[#201F1B] hover:bg-[#2A2924] text-[#AAA49B] hover:text-[#F2EEE7] flex items-center justify-center border border-white/10 transition-colors cursor-pointer"
-                title="Zoom In"
-              >
-                <ZoomIn className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* B. Focal Presets (Cols 4) */}
-          <div className="md:col-span-4 space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] font-sans">
-              <span className="uppercase tracking-wider text-[#AAA49B] font-medium">
-                Flacon Composition Presets
-              </span>
-              <span className="text-[10px] font-mono text-[#BFA27A]">
-                X: {activeCrop.x ?? 50}% · Y: {activeCrop.y ?? 50}%
-              </span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-1">
-              <button
-                type="button"
-                onClick={() => applyPreset(30, 30)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#BFA27A] border border-white/5 text-[10px] font-sans text-[#AAA49B] transition-colors cursor-pointer text-center"
-              >
-                Top Left
-              </button>
-              <button
-                type="button"
-                onClick={() => applyPreset(50, 30)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#BFA27A] border border-white/5 text-[10px] font-sans text-[#AAA49B] transition-colors cursor-pointer text-center"
-              >
-                Top Center
-              </button>
-              <button
-                type="button"
-                onClick={() => applyPreset(70, 30)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#BFA27A] border border-white/5 text-[10px] font-sans text-[#AAA49B] transition-colors cursor-pointer text-center"
-              >
-                Top Right
-              </button>
-
+      {/* 4. ULTRA-MINIMAL LUXURY FRAMING BAR */}
+      <div className="bg-[#141312] border border-white/10 rounded-2xl p-3 sm:p-4 shadow-xl">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 lg:gap-6">
+          {/* A. 3-Position Flacon Alignment Segmented Control */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[10.5px] uppercase font-sans tracking-[0.16em] text-[#AAA49B] font-medium whitespace-nowrap">
+              Focus:
+            </span>
+            <div className="flex items-center bg-[#1C1B18] p-1 rounded-xl border border-white/10 shrink-0">
               <button
                 type="button"
                 onClick={() => applyPreset(30, 50)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#BFA27A] border border-white/5 text-[10px] font-sans text-[#AAA49B] transition-colors cursor-pointer text-center"
+                className={`px-3 py-1.5 rounded-lg text-xs font-sans tracking-wide transition-all cursor-pointer whitespace-nowrap ${
+                  (activeCrop.x ?? 50) <= 35 && (activeCrop.y ?? 50) === 50
+                    ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold shadow-sm"
+                    : "text-[#AAA49B] hover:text-[#F2EEE7]"
+                }`}
+                title="Position flacon on the left"
               >
-                Center Left
+                Left
               </button>
+
               <button
                 type="button"
                 onClick={() => applyPreset(50, 50)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#BFA27A] border border-white/5 text-[10px] font-sans text-[#AAA49B] transition-colors cursor-pointer text-center font-medium"
+                className={`px-3 py-1.5 rounded-lg text-xs font-sans tracking-wide transition-all cursor-pointer whitespace-nowrap ${
+                  (activeCrop.x ?? 50) === 50 && (activeCrop.y ?? 50) === 50
+                    ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold shadow-sm"
+                    : "text-[#AAA49B] hover:text-[#F2EEE7]"
+                }`}
+                title="Position flacon in the center"
               >
                 Center
               </button>
+
               <button
                 type="button"
                 onClick={() => applyPreset(72, 50)}
-                className="px-2 py-1 rounded bg-[#201F1B] hover:bg-[#BFA27A] hover:text-[#0D0D0C] border border-[#BFA27A]/30 text-[10px] font-sans text-[#BFA27A] font-semibold transition-colors cursor-pointer text-center"
-                title="Ideal for Desktop: keeps flacon in open space right of text"
+                className={`px-3 py-1.5 rounded-lg text-xs font-sans tracking-wide transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  (activeCrop.x ?? 50) >= 65 && (activeCrop.y ?? 50) === 50
+                    ? "bg-[#BFA27A] text-[#0D0D0C] font-semibold shadow-sm"
+                    : "text-[#AAA49B] hover:text-[#F2EEE7]"
+                }`}
+                title="Position flacon on the right (Recommended for Desktop so it sits clear of headline)"
               >
-                Right (Flacon)
+                <span>Right</span>
+                <span
+                  className={`text-[8.5px] uppercase font-mono px-1 rounded ${
+                    (activeCrop.x ?? 50) >= 65 && (activeCrop.y ?? 50) === 50
+                      ? "bg-black/20 text-[#0D0D0C]"
+                      : "text-[#BFA27A] bg-[#BFA27A]/15"
+                  }`}
+                >
+                  Best
+                </span>
               </button>
             </div>
           </div>
 
-          {/* C. Toggles & Reset Position (Cols 3) */}
-          <div className="md:col-span-3 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              {/* Overlay Toggle */}
-              <button
-                type="button"
-                onClick={() => setShowOverlay((prev) => !prev)}
-                className={`flex-1 px-2.5 py-1.5 rounded-lg border text-[10px] uppercase font-sans tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                  showOverlay
-                    ? "bg-[#2A2720] border-[#BFA27A]/50 text-[#BFA27A]"
-                    : "bg-[#201F1B] border-white/10 text-[#777169]"
-                }`}
-              >
-                {showOverlay ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                <span>Text Overlay</span>
-              </button>
+          {/* B. Zoom Scale Slider */}
+          <div className="flex-1 flex items-center gap-3 min-w-0">
+            <span className="text-[10.5px] uppercase font-sans tracking-[0.16em] text-[#AAA49B] font-medium whitespace-nowrap shrink-0">
+              Zoom:
+            </span>
 
-              {/* Grid Toggle */}
-              <button
-                type="button"
-                onClick={() => setShowGrid((prev) => !prev)}
-                className={`px-2.5 py-1.5 rounded-lg border text-[10px] uppercase font-sans tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                  showGrid
-                    ? "bg-[#2A2720] border-[#BFA27A]/50 text-[#BFA27A]"
-                    : "bg-[#201F1B] border-white/10 text-[#777169]"
-                }`}
-                title="Toggle Rule-of-Thirds Grid"
-              >
-                <Grid className="w-3 h-3" />
-                <span>Grid</span>
-              </button>
-            </div>
+            <input
+              type="range"
+              min="1.0"
+              max="3.0"
+              step="0.05"
+              value={activeCrop.zoom ?? 1.0}
+              onChange={(e) => handleCropUpdate({ zoom: parseFloat(e.target.value) })}
+              className="flex-1 accent-[#BFA27A] cursor-pointer h-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-all min-w-[80px]"
+            />
 
-            {/* Reset Position Button */}
+            <span className="font-mono text-xs text-[#BFA27A] bg-[#1C1B18] px-2 py-1 rounded-md border border-[#BFA27A]/25 font-semibold whitespace-nowrap shrink-0">
+              {(activeCrop.zoom ?? 1.0).toFixed(2)}x
+            </span>
+          </div>
+
+          {/* C. Reset Button */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={handleResetPosition}
-              className="w-full px-3 py-1.5 rounded-lg bg-[#201F1B] hover:bg-[#2D2B26] hover:text-[#F2EEE7] border border-white/10 text-[10.5px] uppercase font-sans tracking-wider text-[#AAA49B] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl bg-[#1C1B18] hover:bg-[#252420] hover:text-[#F2EEE7] hover:border-[#BFA27A]/40 border border-white/10 text-xs font-sans text-[#AAA49B] flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer shadow-sm"
+              title="Reset Zoom & Alignment to Center"
             >
-              <RotateCcw className="w-3 h-3 text-[#BFA27A]" />
-              <span>Reset Position</span>
+              <RotateCcw className="w-3.5 h-3.5 text-[#BFA27A]" />
+              <span>Reset</span>
             </button>
           </div>
         </div>
