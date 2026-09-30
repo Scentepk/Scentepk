@@ -22,11 +22,57 @@ import {
   Image as ImageIcon,
   Star,
   X,
+  Check,
+  Sparkles,
+  Crop,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
 import Input from "../../components/Input";
 import Textarea from "../../components/Textarea";
+import ImageCropModal from "../../components/admin/ImageCropModal";
+
+// Controlled Taxonomy for Fragrance Recommendation Engine
+const SCENT_FAMILY_OPTIONS = [
+  { value: "woody", label: "Woody" },
+  { value: "oriental_amber", label: "Oriental & Amber" },
+  { value: "fresh_citrus", label: "Fresh & Citrus" },
+  { value: "floral", label: "Floral" },
+  { value: "leather_smoky", label: "Leather & Smoky" },
+  { value: "clean_musk", label: "Clean & Musk" },
+  { value: "gourmand", label: "Gourmand" },
+];
+
+const INTENSITY_OPTIONS = [
+  { value: "subtle", label: "Subtle", desc: "Intimate skin scent" },
+  { value: "moderate", label: "Moderate", desc: "Balanced everyday sillage" },
+  { value: "intense", label: "Intense", desc: "Commanding room-filling trail" },
+];
+
+const MOOD_OPTIONS = [
+  { value: "mysterious", label: "Mysterious & Dark" },
+  { value: "warm_enveloping", label: "Warm & Enveloping" },
+  { value: "clean_timeless", label: "Clean & Timeless" },
+  { value: "regal_opulent", label: "Regal & Opulent" },
+  { value: "luminous_fresh", label: "Luminous & Fresh" },
+  { value: "bold_magnetic", label: "Bold & Magnetic" },
+  { value: "romantic", label: "Romantic" },
+  { value: "dramatic", label: "Dramatic" },
+];
+
+const OCCASION_OPTIONS = [
+  { value: "daily_office", label: "Daily & Office" },
+  { value: "evening_date", label: "Evening & Date Night" },
+  { value: "special_event", label: "Weddings & Special Events" },
+  { value: "signature_all_day", label: "Signature / All-Day" },
+  { value: "party", label: "Parties & Social" },
+];
+
+const SEASON_OPTIONS = [
+  { value: "all_year", label: "All Year" },
+  { value: "spring_summer", label: "Spring / Summer" },
+  { value: "fall_winter", label: "Fall / Winter" },
+];
 
 export default function AdminProductForm() {
   const { id } = useParams();
@@ -41,6 +87,11 @@ export default function AdminProductForm() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteModalError, setDeleteModalError] = useState("");
+  // Image Crop & Positioning Modal States
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropQueue, setCropQueue] = useState([]);
+  const [cropQueueIndex, setCropQueueIndex] = useState(0);
+  const [isCropUploading, setIsCropUploading] = useState(false);
 
   // Product form data
   const [formData, setFormData] = useState({
@@ -53,6 +104,7 @@ export default function AdminProductForm() {
     volume: "50ml / 1.7 FL. OZ.",
     family: "unisex",
     olfactive_family: "",
+    mood: "",
     price: 12500,
     stock_quantity: 50,
     primary_image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
@@ -60,6 +112,13 @@ export default function AdminProductForm() {
     topNotes: "Bergamot, Cardamom",
     heartNotes: "Cedarwood, Birch Tar",
     baseNotes: "Oud, Amber Resins",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
     is_active: true,
     status: "active",
   });
@@ -108,10 +167,17 @@ export default function AdminProductForm() {
         description: data.description || "",
         concentration: data.concentration || "30% Pure Perfume Oil",
         volume: data.volume || "50ml / 1.7 FL. OZ.",
-        family: ["men", "women", "unisex"].includes((data.family || "").toLowerCase())
-          ? (data.family || "").toLowerCase()
-          : (data.family === "woody" ? "men" : data.family === "floral" ? "women" : "unisex"),
+        family: (() => {
+          const raw = (data.family || "").toLowerCase();
+          if (["men", "women", "unisex", "waxes", "testers"].includes(raw)) return raw;
+          if (raw === "wax") return "waxes";
+          if (raw === "tester") return "testers";
+          if (raw === "woody") return "men";
+          if (raw === "floral") return "women";
+          return "unisex";
+        })(),
         olfactive_family: data.olfactive_family || data.olfactiveFamily || "",
+        mood: data.mood || "",
         price: data.price || 12500,
         stock_quantity: data.stock_quantity ?? 50,
         primary_image: data.primary_image || data.image || "",
@@ -119,6 +185,21 @@ export default function AdminProductForm() {
         topNotes: data.notes?.top ? data.notes.top.join(", ") : "",
         heartNotes: data.notes?.heart ? data.notes.heart.join(", ") : "",
         baseNotes: data.notes?.base ? data.notes.base.join(", ") : "",
+        fragranceProfile: {
+          scentFamilies: Array.isArray(data.fragranceProfile?.scentFamilies)
+            ? data.fragranceProfile.scentFamilies
+            : (Array.isArray(data.fragrance_profile?.scent_families) ? data.fragrance_profile.scent_families : []),
+          intensity: data.fragranceProfile?.intensity ?? data.fragrance_profile?.intensity ?? null,
+          moods: Array.isArray(data.fragranceProfile?.moods)
+            ? data.fragranceProfile.moods
+            : (Array.isArray(data.fragrance_profile?.moods) ? data.fragrance_profile.moods : []),
+          occasions: Array.isArray(data.fragranceProfile?.occasions)
+            ? data.fragranceProfile.occasions
+            : (Array.isArray(data.fragrance_profile?.occasions) ? data.fragrance_profile.occasions : []),
+          seasons: Array.isArray(data.fragranceProfile?.seasons)
+            ? data.fragranceProfile.seasons
+            : (Array.isArray(data.fragrance_profile?.seasons) ? data.fragrance_profile.seasons : []),
+        },
         is_active: data.is_active !== false,
         status: data.status || (data.is_active === false ? "inactive" : (data.stock_quantity === 0 ? "out_of_stock" : "active")),
       });
@@ -164,6 +245,34 @@ export default function AdminProductForm() {
 
     loadProduct();
   }, [id, isEditing]);
+
+  // Handle multi-select toggle for recommendation profile arrays
+  const handleToggleProfileArray = (field, value) => {
+    setFormData((prev) => {
+      const current = prev.fragranceProfile?.[field] || [];
+      const updated = current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value];
+      return {
+        ...prev,
+        fragranceProfile: {
+          ...prev.fragranceProfile,
+          [field]: updated,
+        },
+      };
+    });
+  };
+
+  // Handle single-select / toggle for intensity
+  const handleSelectIntensity = (val) => {
+    setFormData((prev) => ({
+      ...prev,
+      fragranceProfile: {
+        ...prev.fragranceProfile,
+        intensity: prev.fragranceProfile?.intensity === val ? null : val,
+      },
+    }));
+  };
 
   // Auto-generate URL slug when product name changes (only in Add mode)
   const handleNameChange = (e) => {
@@ -217,51 +326,166 @@ export default function AdminProductForm() {
     setVariants((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  // Upload multiple images to Supabase Storage
-  const handleFileUpload = async (e) => {
+  // Handle multiple file selection: enqueue into visual Crop & Positioning Modal
+  const handleFileUpload = (e) => {
     const fileList = Array.from(e.target.files || []);
     if (fileList.length === 0) return;
 
-    setIsUploading(true);
     setErrorMsg("");
 
-    const uploadedNewImages = [];
-    const errors = [];
+    // Validate size limit (5MB)
+    const validFiles = [];
+    const oversizeErrors = [];
 
     for (const file of fileList) {
-      const { url, path, error } = await uploadProductImageAdmin(file);
-      if (error) {
-        errors.push(`${file.name}: ${error.message || "Upload failed"}`);
-      } else if (url) {
-        uploadedNewImages.push({
-          id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-          public_url: url,
-          storage_path: path,
-          is_primary: false,
-          isNewlyUploaded: true,
-        });
+      if (file.size > 5 * 1024 * 1024) {
+        oversizeErrors.push(`${file.name} exceeds 5MB limit`);
+      } else {
+        validFiles.push(file);
       }
     }
 
-    setIsUploading(false);
-
-    if (errors.length > 0) {
-      setErrorMsg(errors.join(" • "));
+    if (oversizeErrors.length > 0) {
+      setErrorMsg(oversizeErrors.join(" • "));
     }
 
-    if (uploadedNewImages.length > 0) {
-      setImages((prev) => {
-        const combined = [...prev, ...uploadedNewImages];
-        return combined.map((img, idx) => ({
-          ...img,
-          is_primary: idx === 0,
-        }));
-      });
-      setSuccessMsg(`${uploadedNewImages.length} photo${uploadedNewImages.length > 1 ? "s" : ""} added to product gallery.`);
-      setTimeout(() => setSuccessMsg(""), 3500);
+    if (validFiles.length === 0) {
+      e.target.value = "";
+      return;
     }
+
+    const queueItems = validFiles.map((file) => ({
+      file,
+      fileName: file.name,
+      isNewUpload: true,
+    }));
+
+    setCropQueue(queueItems);
+    setCropQueueIndex(0);
+    setCropModalOpen(true);
 
     e.target.value = "";
+  };
+
+  // Open Crop & Framing Modal for an existing gallery image
+  const handleOpenCropForExistingImage = (idx) => {
+    const targetImage = images[idx];
+    if (!targetImage?.public_url) return;
+
+    setCropQueue([
+      {
+        file: targetImage.public_url,
+        fileName: `product-image-${idx + 1}.jpg`,
+        existingIndex: idx,
+        isNewUpload: false,
+      },
+    ]);
+    setCropQueueIndex(0);
+    setCropModalOpen(true);
+  };
+
+  // Close the crop modal and clear queue
+  const handleCloseCropModal = () => {
+    setCropModalOpen(false);
+    setCropQueue([]);
+    setCropQueueIndex(0);
+    setIsCropUploading(false);
+  };
+
+  // Apply crop result, upload to Supabase Storage, and update gallery
+  const handleApplyCrop = async (cropResult) => {
+    const currentItem = cropQueue[cropQueueIndex];
+    if (!currentItem) return;
+
+    // Handle skip to next image
+    if (cropResult?.skip) {
+      if (cropQueueIndex < cropQueue.length - 1) {
+        setCropQueueIndex((prev) => prev + 1);
+      } else {
+        handleCloseCropModal();
+      }
+      return;
+    }
+
+    const { file: croppedFile, cropMetadata } = cropResult;
+    if (!croppedFile) return;
+
+    setIsCropUploading(true);
+    setErrorMsg("");
+
+    const { url, path, error } = await uploadProductImageAdmin(croppedFile);
+
+    setIsCropUploading(false);
+
+    if (error) {
+      setErrorMsg(`Upload failed: ${error.message || "Failed to upload cropped image"}`);
+      return;
+    }
+
+    if (url) {
+      if (currentItem.existingIndex !== undefined) {
+        // Replacing framing of existing gallery image
+        const idx = currentItem.existingIndex;
+        const oldImage = images[idx];
+        if (oldImage?.storage_path && oldImage.isNewlyUploaded) {
+          deleteProductImageAdmin(oldImage.storage_path).catch(() => {});
+        }
+
+        setImages((prev) => {
+          const updated = [...prev];
+          updated[idx] = {
+            ...updated[idx],
+            public_url: url,
+            storage_path: path,
+            isNewlyUploaded: true,
+            crop_metadata: cropMetadata,
+          };
+          return updated;
+        });
+
+        if (idx === 0) {
+          setFormData((prev) => ({ ...prev, primary_image: url }));
+        }
+
+        setSuccessMsg("Product image framing updated successfully.");
+        setTimeout(() => setSuccessMsg(""), 3000);
+        handleCloseCropModal();
+      } else {
+        // Newly uploaded photo from device
+        const newImg = {
+          id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          public_url: url,
+          storage_path: path,
+          is_primary: images.length === 0,
+          isNewlyUploaded: true,
+          crop_metadata: cropMetadata,
+        };
+
+        setImages((prev) => {
+          const combined = [...prev, newImg];
+          return combined.map((img, i) => ({
+            ...img,
+            is_primary: i === 0,
+          }));
+        });
+
+        if (images.length === 0) {
+          setFormData((prev) => ({ ...prev, primary_image: url }));
+        }
+
+        if (cropQueueIndex < cropQueue.length - 1) {
+          // Advance to next image in batch
+          setCropQueueIndex((prev) => prev + 1);
+        } else {
+          // Queue finished
+          setSuccessMsg(
+            `${cropQueue.length} photo${cropQueue.length > 1 ? "s" : ""} framed & added to product gallery.`
+          );
+          setTimeout(() => setSuccessMsg(""), 3500);
+          handleCloseCropModal();
+        }
+      }
+    }
   };
 
   // Add image by direct Web URL
@@ -350,6 +574,8 @@ export default function AdminProductForm() {
 
     const payload = {
       ...formData,
+      family: formData.family,
+      families: [formData.family],
       price: Number(formData.price),
       stock_quantity: calculatedTotalStock,
       notes: {
@@ -357,6 +583,7 @@ export default function AdminProductForm() {
         heart: formData.heartNotes.split(",").map((s) => s.trim()).filter(Boolean),
         base: formData.baseNotes.split(",").map((s) => s.trim()).filter(Boolean),
       },
+      fragrance_profile: formData.fragranceProfile,
     };
 
     const cleanPrimary = images[0]?.public_url || formData.primary_image || "";
@@ -402,11 +629,11 @@ export default function AdminProductForm() {
     <>
       <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10 pb-16 max-w-5xl mx-auto w-full min-w-0">
       {/* 1. TOP HEADER & ACTIONS */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 sm:pb-6 border-b border-[rgba(242,238,231,0.06)] gap-4">
-        <div className="space-y-1">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 sm:pb-6 border-b border-[rgba(242,238,231,0.06)] gap-4">
+        <div className="space-y-1 min-w-0 flex-1 pr-2">
           <Link
             to="/admin/products"
-            className="inline-flex items-center text-[10.5px] uppercase font-sans tracking-[0.2em] text-[#777169] hover:text-[#BFA27A] transition-colors mb-2 min-h-[36px]"
+            className="inline-flex items-center text-[10.5px] uppercase font-sans tracking-[0.2em] text-[#777169] hover:text-[#BFA27A] transition-colors mb-1.5 min-h-[30px]"
           >
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5 stroke-[1.5]" />
             <span>Back to Product Catalog</span>
@@ -415,21 +642,21 @@ export default function AdminProductForm() {
             <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-1 font-medium">
               {isEditing ? "FORMULATION EDITOR" : "NEW FORMULATION ARCHITECTURE"}
             </span>
-            <h1 className="font-serif font-light text-2xl sm:text-3xl text-[#F2EEE7] tracking-headline leading-tight">
-              {isEditing ? (formData.name || "Edit Fragrance") : "Craft New Fragrance"}
+            <h1 className="font-serif font-light text-2xl sm:text-3xl text-[#F2EEE7] tracking-headline leading-tight truncate">
+              {formData.name || (isEditing ? "Edit Fragrance" : "Craft New Fragrance")}
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 sm:space-x-2.5 self-stretch sm:self-auto flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap self-start md:self-center">
           {isEditing && (
             <Link
               to={`/product/${formData.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] hover:border-[#BFA27A] transition-colors flex items-center justify-center space-x-1.5 min-h-[44px]"
+              className="px-3 sm:px-4 py-2 text-xs uppercase font-sans tracking-[0.16em] text-[#AAA49B] hover:text-[#F2EEE7] border border-[rgba(242,238,231,0.1)] hover:border-[#BFA27A] transition-colors flex items-center justify-center space-x-1.5 min-h-[40px] rounded-sm whitespace-nowrap"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#BFA27A]" />
               <span>Storefront</span>
             </Link>
           )}
@@ -441,7 +668,7 @@ export default function AdminProductForm() {
                 setDeleteModalError("");
                 setShowDeleteModal(true);
               }}
-              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2.5 text-xs uppercase font-sans tracking-[0.16em] text-rose-400 hover:text-white bg-rose-950/20 hover:bg-rose-900/60 border border-rose-500/30 transition-all flex items-center justify-center space-x-1.5 min-h-[44px] cursor-pointer"
+              className="px-3 sm:px-4 py-2 text-xs uppercase font-sans tracking-[0.16em] text-rose-400 hover:text-white bg-rose-950/20 hover:bg-rose-900/60 border border-rose-500/30 transition-all flex items-center justify-center space-x-1.5 min-h-[40px] rounded-sm cursor-pointer whitespace-nowrap"
               title="Delete this fragrance"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -452,11 +679,11 @@ export default function AdminProductForm() {
           <button
             type="submit"
             disabled={isSaving}
-            className="flex-1 sm:flex-initial bg-[#181714] text-[#F2EEE7] border border-[#BFA27A]/60 px-5 sm:px-6 py-2.5 text-xs uppercase font-sans tracking-[0.2em] hover:bg-[#BFA27A] hover:text-[#0D0D0C] transition-all flex items-center justify-center space-x-2 cursor-pointer font-medium disabled:opacity-40 shadow-md min-h-[44px]"
+            className="bg-[#BFA27A] hover:bg-[#A88B65] text-[#0D0D0C] font-semibold px-4 sm:px-5 py-2 text-xs uppercase font-sans tracking-[0.18em] transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-md disabled:opacity-40 min-h-[40px] rounded-sm whitespace-nowrap"
           >
             {isSaving ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#BFA27A]" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0D0D0C]" />
                 <span>SAVING...</span>
               </>
             ) : (
@@ -589,10 +816,10 @@ export default function AdminProductForm() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-xs font-sans">
-          {/* Target Audience */}
+          {/* Product Category / Target Audience */}
           <div>
             <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] mb-1.5 font-medium">
-              Target Audience <span className="text-[#BFA27A]">*</span>
+              Category / Target Audience <span className="text-[#BFA27A]">*</span>
             </label>
             <CustomSelect
               value={formData.family}
@@ -601,10 +828,12 @@ export default function AdminProductForm() {
                 { value: "men", label: "Men" },
                 { value: "women", label: "Women" },
                 { value: "unisex", label: "Unisex" },
+                { value: "waxes", label: "Waxes" },
+                { value: "testers", label: "Testers" },
               ]}
             />
             <p className="text-[11px] text-[#777169] mt-1.5 font-light leading-relaxed">
-              Choose the target audience this fragrance is curated for (Men, Women, or Unisex).
+              Choose the shop category for this product (Men, Women, Unisex, Waxes, or Testers).
             </p>
           </div>
 
@@ -653,6 +882,22 @@ export default function AdminProductForm() {
             />
             <p className="text-[11px] text-[#777169] mt-1.5 font-light leading-relaxed">
               Default bottle volume specification displayed on the product page.
+            </p>
+          </div>
+
+          {/* Mood / Editorial Description */}
+          <div className="md:col-span-2">
+            <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] mb-1.5 font-medium">
+              Mood / Editorial Description
+            </label>
+            <Input
+              type="text"
+              value={formData.mood}
+              onChange={(e) => setFormData({ ...formData, mood: e.target.value })}
+              placeholder="e.g. Smoky • Nocturnal • Magnetic"
+            />
+            <p className="text-[11px] text-[#777169] mt-1.5 font-light leading-relaxed">
+              Sensory keywords shown on product cards and marketing highlights (e.g. Warm • Radiant • Enveloping).
             </p>
           </div>
         </div>
@@ -720,12 +965,229 @@ export default function AdminProductForm() {
         </div>
       </div>
 
-      {/* SECTION 4: BOTTLE SIZES & PRICING */}
+      {/* SECTION 4: FRAGRANCE RECOMMENDATION PROFILE */}
+      <div className="bg-[#121110] p-4 sm:p-6 lg:p-8 border border-[rgba(242,238,231,0.06)] space-y-6 rounded-sm">
+        <div className="pb-3 border-b border-[rgba(242,238,231,0.06)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#BFA27A]" />
+              <h2 className="font-serif text-lg sm:text-xl lg:text-2xl text-[#F2EEE7] font-normal">
+                4. Fragrance Recommendation Profile
+              </h2>
+            </div>
+            <p className="text-xs font-sans text-[#777169] mt-0.5">
+              Used by Find Your Scent to recommend the most suitable SCENTÉ fragrances.
+            </p>
+          </div>
+          <span className="text-[10px] uppercase font-sans tracking-[0.16em] px-2.5 py-1 rounded-sm bg-[#BFA27A]/10 text-[#BFA27A] border border-[#BFA27A]/30 self-start sm:self-auto font-medium">
+            Recommendation Metadata
+          </span>
+        </div>
+
+        <div className="space-y-6 font-sans text-xs">
+          {/* 1. SCENT FAMILIES */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] font-medium">
+                Scent Families <span className="text-[10px] text-[#777169] font-normal lowercase">(select all that apply)</span>
+              </label>
+              <span className="text-[10px] text-[#BFA27A] font-medium">
+                {formData.fragranceProfile?.scentFamilies?.length || 0} selected
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {SCENT_FAMILY_OPTIONS.map((opt) => {
+                const isSelected = formData.fragranceProfile?.scentFamilies?.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleToggleProfileArray("scentFamilies", opt.value)}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs uppercase tracking-[0.1em] transition-all cursor-pointer select-none focus:outline-none focus:ring-1 focus:ring-[#BFA27A] ${
+                      isSelected
+                        ? "bg-[#BFA27A]/15 text-[#F2EEE7] border border-[#BFA27A] shadow-[0_0_12px_rgba(191,162,122,0.18)] font-medium"
+                        : "bg-[#0D0D0C] text-[#AAA49B] border border-[rgba(242,238,231,0.08)] hover:border-[#BFA27A]/40 hover:text-[#F2EEE7]"
+                    }`}
+                  >
+                    <span className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-colors ${
+                      isSelected ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]" : "border-white/20 bg-transparent"
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 2. INTENSITY */}
+          <div className="space-y-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] font-medium">
+                Intensity & Sillage <span className="text-[10px] text-[#777169] font-normal lowercase">(single choice)</span>
+              </label>
+              {formData.fragranceProfile?.intensity && (
+                <button
+                  type="button"
+                  onClick={() => handleSelectIntensity(formData.fragranceProfile.intensity)}
+                  className="text-[10px] text-[#777169] hover:text-[#BFA27A] underline cursor-pointer"
+                >
+                  Clear Selection
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {INTENSITY_OPTIONS.map((opt) => {
+                const isSelected = formData.fragranceProfile?.intensity === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleSelectIntensity(opt.value)}
+                    className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between space-y-1.5 focus:outline-none focus:ring-1 focus:ring-[#BFA27A] ${
+                      isSelected
+                        ? "bg-[#181714] border-[#BFA27A] shadow-[0_0_15px_rgba(191,162,122,0.15)] ring-1 ring-[#BFA27A]/40"
+                        : "bg-[#0D0D0C] border-[rgba(242,238,231,0.08)] hover:border-[#BFA27A]/30"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs uppercase tracking-wider font-medium ${
+                        isSelected ? "text-[#BFA27A]" : "text-[#F2EEE7]"
+                      }`}>
+                        {opt.label}
+                      </span>
+                      <span className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                        isSelected ? "border-[#BFA27A] bg-[#BFA27A]" : "border-white/20"
+                      }`}>
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#0D0D0C]" />}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#777169] leading-relaxed">
+                      {opt.desc}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. MOOD / VIBE */}
+          <div className="space-y-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] font-medium">
+                Mood / Vibe <span className="text-[10px] text-[#777169] font-normal lowercase">(select all that match)</span>
+              </label>
+              <span className="text-[10px] text-[#BFA27A] font-medium">
+                {formData.fragranceProfile?.moods?.length || 0} selected
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {MOOD_OPTIONS.map((opt) => {
+                const isSelected = formData.fragranceProfile?.moods?.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleToggleProfileArray("moods", opt.value)}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs uppercase tracking-[0.1em] transition-all cursor-pointer select-none focus:outline-none focus:ring-1 focus:ring-[#BFA27A] ${
+                      isSelected
+                        ? "bg-[#BFA27A]/15 text-[#F2EEE7] border border-[#BFA27A] shadow-[0_0_12px_rgba(191,162,122,0.18)] font-medium"
+                        : "bg-[#0D0D0C] text-[#AAA49B] border border-[rgba(242,238,231,0.08)] hover:border-[#BFA27A]/40 hover:text-[#F2EEE7]"
+                    }`}
+                  >
+                    <span className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-colors ${
+                      isSelected ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]" : "border-white/20 bg-transparent"
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 4. OCCASIONS */}
+          <div className="space-y-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] font-medium">
+                Best Occasions <span className="text-[10px] text-[#777169] font-normal lowercase">(select all that match)</span>
+              </label>
+              <span className="text-[10px] text-[#BFA27A] font-medium">
+                {formData.fragranceProfile?.occasions?.length || 0} selected
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {OCCASION_OPTIONS.map((opt) => {
+                const isSelected = formData.fragranceProfile?.occasions?.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleToggleProfileArray("occasions", opt.value)}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs uppercase tracking-[0.1em] transition-all cursor-pointer select-none focus:outline-none focus:ring-1 focus:ring-[#BFA27A] ${
+                      isSelected
+                        ? "bg-[#BFA27A]/15 text-[#F2EEE7] border border-[#BFA27A] shadow-[0_0_12px_rgba(191,162,122,0.18)] font-medium"
+                        : "bg-[#0D0D0C] text-[#AAA49B] border border-[rgba(242,238,231,0.08)] hover:border-[#BFA27A]/40 hover:text-[#F2EEE7]"
+                    }`}
+                  >
+                    <span className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-colors ${
+                      isSelected ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]" : "border-white/20 bg-transparent"
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 5. SEASONS */}
+          <div className="space-y-2 pt-2 border-t border-[rgba(242,238,231,0.04)]">
+            <div className="flex items-center justify-between">
+              <label className="block text-[10.5px] uppercase tracking-[0.16em] text-[#AAA49B] font-medium">
+                Ideal Seasons <span className="text-[10px] text-[#777169] font-normal lowercase">(select all that match)</span>
+              </label>
+              <span className="text-[10px] text-[#BFA27A] font-medium">
+                {formData.fragranceProfile?.seasons?.length || 0} selected
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {SEASON_OPTIONS.map((opt) => {
+                const isSelected = formData.fragranceProfile?.seasons?.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleToggleProfileArray("seasons", opt.value)}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs uppercase tracking-[0.1em] transition-all cursor-pointer select-none focus:outline-none focus:ring-1 focus:ring-[#BFA27A] ${
+                      isSelected
+                        ? "bg-[#BFA27A]/15 text-[#F2EEE7] border border-[#BFA27A] shadow-[0_0_12px_rgba(191,162,122,0.18)] font-medium"
+                        : "bg-[#0D0D0C] text-[#AAA49B] border border-[rgba(242,238,231,0.08)] hover:border-[#BFA27A]/40 hover:text-[#F2EEE7]"
+                    }`}
+                  >
+                    <span className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-colors ${
+                      isSelected ? "bg-[#BFA27A] border-[#BFA27A] text-[#0D0D0C]" : "border-white/20 bg-transparent"
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 5: BOTTLE SIZES & PRICING */}
       <div className="bg-[#121110] p-4 sm:p-6 lg:p-8 border border-[rgba(242,238,231,0.06)] space-y-5 rounded-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[rgba(242,238,231,0.06)] gap-2">
           <div>
             <h2 className="font-serif text-lg sm:text-xl lg:text-2xl text-[#F2EEE7] font-normal">
-              4. Bottle Sizes & Pricing
+              5. Bottle Sizes & Pricing
             </h2>
             <p className="text-xs font-sans text-[#777169] mt-0.5">
               Add the bottle sizes you want customers to be able to purchase. Each row represents a bottle size with its own price and available stock.
@@ -928,12 +1390,12 @@ export default function AdminProductForm() {
         </div>
       </div>
 
-      {/* SECTION 5: PRODUCT IMAGES & GALLERY */}
+      {/* SECTION 6: PRODUCT IMAGES & GALLERY */}
       <div className="bg-[#121110] p-4 sm:p-6 lg:p-8 border border-[rgba(242,238,231,0.06)] space-y-6 rounded-sm">
         <div className="pb-3 border-b border-[rgba(242,238,231,0.06)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <h2 className="font-serif text-lg sm:text-xl lg:text-2xl text-[#F2EEE7] font-normal flex items-center gap-2">
-              <span>5. Product Gallery & Images</span>
+              <span>6. Product Gallery & Images</span>
               <span className="text-xs font-sans px-2.5 py-0.5 rounded-full bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30">
                 {images.length} {images.length === 1 ? "Image" : "Images"}
               </span>
@@ -1062,25 +1524,51 @@ export default function AdminProductForm() {
                         }}
                       />
 
-                      {/* Top Badges / Delete Button */}
-                      <div className="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+                      {/* Top Badges & Action Buttons */}
+                      <div className="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none z-20">
                         <span className="bg-black/80 backdrop-blur-sm text-white/90 text-[9px] font-mono px-1.5 py-0.5 rounded border border-white/10">
                           #{idx + 1}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(idx)}
-                          className="pointer-events-auto p-1.5 bg-black/80 hover:bg-rose-950/90 text-[#AAA49B] hover:text-rose-400 rounded-sm border border-white/10 transition-colors cursor-pointer shadow-sm"
-                          title="Remove image"
-                          aria-label={`Remove image ${idx + 1}`}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center gap-1 pointer-events-auto">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenCropForExistingImage(idx)}
+                            className="p-1.5 bg-black/80 hover:bg-[#BFA27A] text-[#AAA49B] hover:text-[#0D0D0C] rounded-sm border border-white/10 transition-colors cursor-pointer shadow-sm"
+                            title="Crop & Position image framing"
+                            aria-label={`Crop and frame image ${idx + 1}`}
+                          >
+                            <Crop className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(idx)}
+                            className="p-1.5 bg-black/80 hover:bg-rose-950/90 text-[#AAA49B] hover:text-rose-400 rounded-sm border border-white/10 transition-colors cursor-pointer shadow-sm"
+                            title="Remove image"
+                            aria-label={`Remove image ${idx + 1}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
+
+                      {/* Center Adjust Framing hover action */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenCropForExistingImage(idx)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute inset-0 bg-black/50 backdrop-blur-[1px] flex flex-col items-center justify-center gap-1.5 text-center p-2 cursor-pointer z-10"
+                        title="Adjust visual crop & composition"
+                      >
+                        <div className="p-2 rounded-full bg-[#BFA27A] text-[#0D0D0C] shadow-lg transform group-hover:scale-110 transition-transform">
+                          <Crop className="w-4 h-4" />
+                        </div>
+                        <span className="text-[9.5px] uppercase font-sans tracking-widest text-[#F2EEE7] font-medium drop-shadow">
+                          Adjust Framing
+                        </span>
+                      </button>
 
                       {/* Primary badge tag */}
                       {isPrimary && (
-                        <div className="absolute bottom-2 left-2 right-2 bg-[#BFA27A] text-[#0D0D0C] px-2 py-1 rounded-sm text-[9.5px] uppercase tracking-wider font-semibold flex items-center justify-center gap-1 shadow-md">
+                        <div className="absolute bottom-2 left-2 right-2 bg-[#BFA27A] text-[#0D0D0C] px-2 py-1 rounded-sm text-[9.5px] uppercase tracking-wider font-semibold flex items-center justify-center gap-1 shadow-md z-20 pointer-events-none">
                           <Star className="w-3 h-3 fill-current" />
                           <span>Primary Cover</span>
                         </div>
@@ -1111,11 +1599,11 @@ export default function AdminProductForm() {
         </div>
       </div>
 
-      {/* SECTION 6: PRODUCT STATUS & AVAILABILITY */}
+      {/* SECTION 7: PRODUCT STATUS & AVAILABILITY */}
       <div className="bg-[#121110] p-4 sm:p-6 lg:p-8 border border-[rgba(242,238,231,0.06)] space-y-5 rounded-sm">
         <div className="pb-3 border-b border-[rgba(242,238,231,0.06)]">
           <h2 className="font-serif text-lg sm:text-xl lg:text-2xl text-[#F2EEE7] font-normal">
-            6. Product Status & Visibility
+            7. Product Status & Visibility
           </h2>
           <p className="text-xs font-sans text-[#777169] mt-0.5">
             Controls whether customers can currently see and purchase this fragrance.
@@ -1370,6 +1858,21 @@ export default function AdminProductForm() {
         </div>
       )}
     </AnimatePresence>
+
+    {/* IMAGE CROP & POSITIONING MODAL */}
+    <ImageCropModal
+      isOpen={cropModalOpen}
+      onClose={handleCloseCropModal}
+      imageSource={cropQueue[cropQueueIndex]?.file}
+      imageFileName={cropQueue[cropQueueIndex]?.fileName}
+      productName={formData.name || "Crafted Fragrance"}
+      productSubtitle={formData.subtitle || "Extrait de Parfum"}
+      productPrice={formData.price || 12500}
+      queueIndex={cropQueueIndex}
+      queueTotal={cropQueue.length}
+      onApplyCrop={handleApplyCrop}
+      isProcessing={isCropUploading}
+    />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { PRODUCTS } from "../data/products";
-import { getActiveProducts } from "../services/products";
+import { getActiveProducts, getVerifiedCachedActiveProducts } from "../services/products";
+import { getPublishedReviews } from "../services/reviews";
 import {
   getHeroSettings,
   HERO_UPDATE_EVENT,
@@ -92,54 +92,58 @@ const EDITORIAL_COLLECTIONS = {
 
 
 
-// =============================================================================
-// SOCIAL PROOF DATA (Verified Patron Reflections)
-// =============================================================================
-const TESTIMONIALS = [
-  {
-    id: 1,
-    name: "Bilal K.",
-    city: "Lahore",
-    fragrance: "SCENTÉ NOIR",
-    quote:
-      "SCENTÉ NOIR is simply on another level. The leather and smoked cardamom projection lasted through a 10-hour workday in Lahore and was still noticeable the next morning. Rivals the finest Parisian niche extraits.",
-  },
-  {
-    id: 2,
-    name: "Ayesha M.",
-    city: "Karachi",
-    fragrance: "SCENTÉ AMBER",
-    quote:
-      "Finally, a Pakistani atelier delivering genuine Extrait de Parfum strength. SCENTÉ AMBER is warm, opulent, and received endless compliments at an evening dinner. Truly exceptional quiet luxury.",
-  },
-  {
-    id: 3,
-    name: "Hamza R.",
-    city: "Islamabad",
-    fragrance: "SCENTÉ OUD",
-    quote:
-      "The bottle weight, magnetic cap feel, and the rare Assam oud note are extraordinary. Arrived in Islamabad within 48 hours via COD. Superb artistry and flawless presentation.",
-  },
-];
+
 
 export default function Home() {
-  // Live Product State (localStorage cache + Supabase sync)
-  const [activeProducts, setActiveProducts] = useState(() => {
-    try {
-      const saved = localStorage.getItem("scente_admin_products_cache");
-      if (saved) {
-        return JSON.parse(saved).filter((p) => p.status !== "inactive" && p.is_active !== false);
-      }
-    } catch (e) { }
-    return PRODUCTS.filter((p) => p.status !== "inactive" && p.is_active !== false);
-  });
+  // Live Product State (verified cache + Supabase sync)
+  const verifiedInitial = useMemo(() => getVerifiedCachedActiveProducts(), []);
+  const [activeProducts, setActiveProducts] = useState(() => verifiedInitial || []);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(() => !verifiedInitial || verifiedInitial.length === 0);
 
   useEffect(() => {
-    getActiveProducts().then(({ data }) => {
-      if (data && data.length > 0) {
-        setActiveProducts(data);
+    let isMounted = true;
+    getActiveProducts()
+      .then(({ data }) => {
+        if (isMounted) {
+          if (data && data.length > 0) {
+            setActiveProducts(data);
+          }
+          setIsLoadingProducts(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Home: could not load active products:", err);
+        if (isMounted) setIsLoadingProducts(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Database-backed published patron impressions / reviews
+  const [publishedReviews, setPublishedReviews] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getPublishedReviews().then(({ data }) => {
+      if (isMounted && data) {
+        setPublishedReviews(data);
       }
     });
+
+    const handleReviewsUpdated = () => {
+      getPublishedReviews().then(({ data }) => {
+        if (isMounted && data) {
+          setPublishedReviews(data);
+        }
+      });
+    };
+
+    window.addEventListener("scente_reviews_updated", handleReviewsUpdated);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("scente_reviews_updated", handleReviewsUpdated);
+    };
   }, []);
 
   // Cart Context for Quick Add
@@ -612,7 +616,35 @@ export default function Home() {
 
           {/* 4 Clean Modern Product Cards on Desktop & Tablets, Responsive Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 min-[880px]:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4.5 lg:gap-5">
-            {activeProducts.slice(0, 4).map((product) => {
+            {isLoadingProducts && activeProducts.length === 0 ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="group flex flex-col h-full bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] animate-pulse select-none"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden bg-[#141311] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full border border-white/[0.05] flex items-center justify-center opacity-30">
+                      <span className="font-serif text-[11px] text-[#BFA27A]/40 tracking-widest pl-0.5">S</span>
+                    </div>
+                  </div>
+                  <div className="p-3 sm:p-3.5 lg:p-4 flex flex-col flex-grow justify-between space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="h-2 bg-white/[0.05] rounded-full w-14" />
+                        <div className="h-2 bg-white/[0.05] rounded-full w-8" />
+                      </div>
+                      <div className="h-3.5 bg-white/[0.08] rounded-full w-24" />
+                      <div className="h-2.5 bg-white/[0.05] rounded-full w-20" />
+                    </div>
+                    <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between">
+                      <div className="h-3 bg-white/[0.07] rounded-full w-16" />
+                      <div className="h-7 bg-white/[0.06] rounded-lg w-20" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              activeProducts.slice(0, 4).map((product) => {
               const primaryImg = product.image || product.primary_image;
               const secondaryImg = product.secondaryImage || product.secondary_image;
               const isAdded = addedItemKey === product.id;
@@ -701,7 +733,7 @@ export default function Home() {
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
         </div>
       </section>
@@ -808,56 +840,116 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* =======================================================================
-          8. CUSTOMER REVIEWS (Refined Social Proof)
+          6. FIND YOUR SCENT (Discovery Section)
           ======================================================================= */}
-      <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
-        <div className="layout-container">
-          <SectionHeading
-            eyebrow="PATRON IMPRESSIONS"
-            title="What Our Customers Say"
-            subtitle="Verified reviews from fragrance connoisseurs and patrons across Pakistan."
-            align="center"
-          />
+      <section className="relative py-20 sm:py-28 lg:py-32 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
+        {/* Atmospheric Champagne Ambient Light */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[380px] bg-radial from-[#BFA27A]/12 via-[#BFA27A]/[0.03] to-transparent rounded-full blur-[110px] pointer-events-none" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-16">
-            {TESTIMONIALS.map((review) => (
-              <div
-                key={review.id}
-                className="p-5 sm:p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-1 text-[#BFA27A]">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-[#BFA27A] stroke-none" />
-                    ))}
-                  </div>
+        <div className="layout-container relative z-10 max-w-3xl mx-auto space-y-6 sm:space-y-7">
+          <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] font-semibold block">
+            FIND YOUR SCENT
+          </span>
 
-                  <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic">
-                    "{review.quote}"
-                  </p>
-                </div>
+          <h2 className="font-serif font-light text-3xl xs:text-4xl sm:text-5xl md:text-6xl text-[#F2EEE7] leading-[1.08] tracking-tight">
+            Let Your Scent <span className="italic font-normal">Find You.</span>
+          </h2>
 
-                <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                  <div>
-                    <h4 className="font-sans font-semibold text-sm text-[#F2EEE7]">
-                      {review.name}
-                    </h4>
-                    <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#888279] block">
-                      {review.city} • Verified Patron
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] bg-[#181714] px-2.5 py-1 rounded-full border border-[rgba(191,162,122,0.2)]">
-                    {review.fragrance}
-                  </span>
-                </div>
-              </div>
-            ))}
+          <p className="text-sm sm:text-base font-sans text-[#AAA49B] font-light leading-relaxed max-w-xl mx-auto">
+            Tell us how you want your fragrance to feel, and discover the SCENTÉ creation that fits.
+          </p>
+
+          <div className="pt-2 flex items-center justify-center">
+            <Link
+              to="/find-your-scent"
+              className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#BFA27A] text-[#090908] hover:bg-[#D4BA94] hover:shadow-[0_0_35px_rgba(191,162,122,0.3)] text-xs font-sans uppercase tracking-[0.18em] font-semibold transition-all duration-300 shadow-xl shadow-black/50 group"
+            >
+              <span>Find Your Scent</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-2.5 transition-transform duration-300 group-hover:translate-x-1.5 stroke-[2]" />
+            </Link>
+          </div>
+
+          {/* Micro Consultation Pillars */}
+          <div className="pt-6 sm:pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[10px] sm:text-[11px] font-sans tracking-[0.16em] uppercase text-[#777169] font-light border-t border-white/[0.05] max-w-lg mx-auto">
+            <span className="flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
+              05 Questions
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
+              Bespoke Consultation
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
+              Instant Matching
+            </span>
           </div>
         </div>
       </section>
+
+      {/* =======================================================================
+          8. CUSTOMER REVIEWS (Refined Social Proof — Database Backed)
+          ======================================================================= */}
+      {publishedReviews.length > 0 && (
+        <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
+          <div className="layout-container">
+            <SectionHeading
+              eyebrow="PATRON IMPRESSIONS"
+              title="What Our Customers Say"
+              subtitle="Verified reviews from fragrance connoisseurs and patrons across Pakistan."
+              align="center"
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-16">
+              {publishedReviews.map((review) => {
+                const fragranceLabel =
+                  review.productName || review.product?.name || (review.productId ? "Extrait de Parfum" : null);
+
+                return (
+                  <div
+                    key={review.id}
+                    className="p-5 sm:p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
+                  >
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-1 text-[#BFA27A]">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3.5 h-3.5 ${
+                              i < review.rating ? "fill-[#BFA27A] stroke-none" : "stroke-white/20 fill-none"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic">
+                        "{review.reviewText}"
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                      <div>
+                        <h4 className="font-sans font-semibold text-sm text-[#F2EEE7]">
+                          {review.customerName}
+                        </h4>
+                        <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#888279] block">
+                          {review.location ? `${review.location} • ` : ""}Verified Patron
+                        </span>
+                      </div>
+                      {fragranceLabel && (
+                        <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] bg-[#181714] px-2.5 py-1 rounded-full border border-[rgba(191,162,122,0.2)]">
+                          {fragranceLabel}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* =======================================================================
           9. FINAL CAMPAIGN BANNER (Find Your Signature)

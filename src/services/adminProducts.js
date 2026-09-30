@@ -13,6 +13,31 @@ export function notifyCatalogChange() {
 }
 
 /**
+ * Sanitizes and guarantees a valid fragrance_profile object structure
+ */
+export function sanitizeFragranceProfile(raw) {
+  if (!raw || typeof raw !== "object") {
+    return {
+      scent_families: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    };
+  }
+
+  return {
+    scent_families: Array.isArray(raw.scent_families)
+      ? raw.scent_families
+      : (Array.isArray(raw.scentFamilies) ? raw.scentFamilies : []),
+    intensity: raw.intensity || null,
+    moods: Array.isArray(raw.moods) ? raw.moods : [],
+    occasions: Array.isArray(raw.occasions) ? raw.occasions : [],
+    seasons: Array.isArray(raw.seasons) ? raw.seasons : [],
+  };
+}
+
+/**
  * Initializes and retrieves the local prototype products list
  */
 function getLocalProductsStore() {
@@ -29,6 +54,7 @@ function getLocalProductsStore() {
           status,
           is_active: status !== "inactive",
           stock_quantity: status === "out_of_stock" ? 0 : (p.stock_quantity ?? 50),
+          fragrance_profile: sanitizeFragranceProfile(p.fragrance_profile || p.fragranceProfile),
         };
       });
     }
@@ -54,6 +80,7 @@ function getLocalProductsStore() {
     secondary_image: p.secondaryImage || null,
     mood: p.mood || "",
     notes: p.notes || { top: [], heart: [], base: [] },
+    fragrance_profile: sanitizeFragranceProfile(p.fragrance_profile || p.fragranceProfile),
     stock_quantity: 50,
     is_active: true,
     status: "active",
@@ -103,7 +130,17 @@ export async function getAllProductsAdmin({ search = "", family = "all", status 
     }
 
     if (family !== "all") {
-      items = items.filter((p) => p.family === family || (p.families && p.families.includes(family)));
+      items = items.filter((p) => {
+        const pf = (p.family || "").toLowerCase();
+        const pfs = Array.isArray(p.families) ? p.families.map((f) => String(f).toLowerCase()) : [];
+        if (family === "waxes") {
+          return pf === "waxes" || pf === "wax" || pfs.includes("waxes") || pfs.includes("wax");
+        }
+        if (family === "testers") {
+          return pf === "testers" || pf === "tester" || pfs.includes("testers") || pfs.includes("tester");
+        }
+        return pf === family || pfs.includes(family);
+      });
     }
 
     if (status === "active") {
@@ -128,7 +165,13 @@ export async function getAllProductsAdmin({ search = "", family = "all", status 
     }
 
     if (family !== "all") {
-      query = query.eq("family", family);
+      if (family === "waxes") {
+        query = query.in("family", ["waxes", "wax"]);
+      } else if (family === "testers") {
+        query = query.in("family", ["testers", "tester"]);
+      } else {
+        query = query.eq("family", family);
+      }
     }
 
     if (status === "active") {
@@ -223,6 +266,7 @@ export async function createProductAdmin(productData, variants = [], images = []
     secondary_image: cleanImages[1]?.public_url || productData.secondary_image || null,
     mood: productData.mood || "",
     notes: productData.notes || { top: [], heart: [], base: [] },
+    fragrance_profile: sanitizeFragranceProfile(productData.fragrance_profile || productData.fragranceProfile),
     stock_quantity: Number(productData.stock_quantity) || 0,
     is_active: productData.status ? productData.status !== "inactive" : (productData.is_active !== undefined ? productData.is_active : true),
     status: productData.status || (productData.is_active === false ? "inactive" : (productData.stock_quantity === 0 ? "out_of_stock" : "active")),
@@ -346,6 +390,7 @@ export async function updateProductAdmin(id, productData, variants = [], images 
     secondary_image: cleanImages && cleanImages.length > 1 ? cleanImages[1].public_url : (productData.secondary_image || null),
     mood: productData.mood || "",
     notes: productData.notes || { top: [], heart: [], base: [] },
+    fragrance_profile: sanitizeFragranceProfile(productData.fragrance_profile || productData.fragranceProfile),
     stock_quantity: Number(productData.stock_quantity) || 0,
     is_active: productData.status ? productData.status !== "inactive" : (productData.is_active !== undefined ? productData.is_active : true),
     status: productData.status || (productData.is_active === false ? "inactive" : (productData.stock_quantity === 0 ? "out_of_stock" : "active")),

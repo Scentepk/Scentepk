@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { PRODUCTS } from "../data/products";
-import { getProductBySlug, getActiveProducts, normalizeProduct } from "../services/products";
+import { getProductBySlug, getActiveProducts, normalizeProduct, getVerifiedCachedActiveProducts } from "../services/products";
 import { useCart } from "../context/CartContext";
 import SectionHeading from "../components/SectionHeading";
 import ProductCard from "../components/ProductCard";
@@ -41,22 +41,15 @@ export default function ProductDetails() {
   const [openAccordion, setOpenAccordion] = useState("notes"); // "notes" | "ritual" | "delivery" | null
   const [showStickyBar, setShowStickyBar] = useState(false);
 
-  // Helper to find exact product match from local admin cache or static catalog
+  // Helper to find exact product match from verified storefront cache
   const findCachedProduct = (targetSlug) => {
     if (!targetSlug) return null;
-    let raw = null;
-    try {
-      const saved = localStorage.getItem("scente_admin_products_cache");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        raw = parsed.find((p) => p.slug === targetSlug || p.id === targetSlug);
-      }
-    } catch (e) { }
-
-    if (!raw) {
-      raw = PRODUCTS.find((p) => p.slug === targetSlug || p.id === targetSlug);
+    const verified = getVerifiedCachedActiveProducts();
+    if (verified && Array.isArray(verified)) {
+      const match = verified.find((p) => p.slug === targetSlug || p.id === targetSlug);
+      if (match) return match;
     }
-    return raw ? normalizeProduct(raw) : null;
+    return null;
   };
 
   const [product, setProduct] = useState(() => findCachedProduct(slug));
@@ -307,15 +300,7 @@ export default function ProductDetails() {
 
   // Recommendations
   const [catalogProducts, setCatalogProducts] = useState(() => {
-    try {
-      const saved = localStorage.getItem("scente_admin_products_cache");
-      if (saved) {
-        return JSON.parse(saved)
-          .filter((p) => p.status !== "inactive" && p.is_active !== false)
-          .map(normalizeProduct);
-      }
-    } catch (e) { }
-    return PRODUCTS.filter((p) => p.status !== "inactive" && p.is_active !== false).map(normalizeProduct);
+    return getVerifiedCachedActiveProducts() || [];
   });
 
   useEffect(() => {
@@ -526,7 +511,12 @@ export default function ProductDetails() {
             THE COLLECTION
           </Link>
           <span>/</span>
-          <span className="text-[#BFA27A]">{product.family ? product.family.toUpperCase() : "ATELIER"}</span>
+          <Link
+            to={`/shop?audience=${product.family || "all"}`}
+            className="text-[#BFA27A] hover:underline transition-colors"
+          >
+            {product.family ? product.family.toUpperCase() : "ATELIER"}
+          </Link>
           <span>/</span>
           <span className="text-[#F2EEE7] font-medium">{product.name}</span>
         </motion.div>

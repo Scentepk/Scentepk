@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Tag,
   Image as ImageIcon,
+  Star,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUnreadInquiriesCount } from "../services/inquiries";
@@ -25,11 +26,17 @@ export default function AdminLayout() {
   const { lenis } = useSmoothScroll();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isDesktopHovered, setIsDesktopHovered] = useState(false);
+  const [isDesktopFocused, setIsDesktopFocused] = useState(false);
   const location = useLocation();
 
-  // Close mobile navigation drawer whenever route changes
+  const isExpanded = isDesktopHovered || isDesktopFocused;
+
+  // Close mobile navigation drawer and collapse desktop sidebar whenever route changes
   useEffect(() => {
     setMobileNavOpen(false);
+    setIsDesktopFocused(false);
+    setIsDesktopHovered(false);
   }, [location.pathname]);
 
   // Fetch live unread inquiries count
@@ -93,6 +100,11 @@ export default function AdminLayout() {
       icon: ShoppingBag,
     },
     {
+      name: "Reviews",
+      path: "/admin/reviews",
+      icon: Star,
+    },
+    {
       name: "Inquiries",
       path: "/admin/inquiries",
       icon: Mail,
@@ -102,28 +114,59 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0C] text-[#F2EEE7] flex flex-col md:flex-row w-full relative">
-      {/* 1. PERSISTENT DESKTOP / TABLET SIDEBAR (FIXED VIEWPORT ANCHOR) */}
+      {/* 1. PERSISTENT DESKTOP / TABLET SIDEBAR (TRUE OVERLAY HOVER-EXPAND) */}
       <aside
         data-lenis-prevent
-        className="hidden md:flex w-60 lg:w-72 bg-[#121110] border-r border-[rgba(242,238,231,0.06)] flex-col justify-between p-5 lg:p-6 shrink-0 h-screen fixed top-0 bottom-0 left-0 z-20 select-none"
+        onMouseEnter={() => setIsDesktopHovered(true)}
+        onMouseLeave={() => setIsDesktopHovered(false)}
+        onFocusCapture={() => setIsDesktopFocused(true)}
+        onBlurCapture={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            setIsDesktopFocused(false);
+          }
+        }}
+        className={`hidden md:flex bg-[#121110] border-r border-[rgba(242,238,231,0.06)] flex-col justify-between shrink-0 h-screen fixed top-0 bottom-0 left-0 z-30 select-none transition-[width,box-shadow,padding] duration-250 ease-out overflow-hidden ${
+          isExpanded
+            ? "w-[260px] p-5 shadow-[8px_0_35px_rgba(0,0,0,0.7)]"
+            : "w-[76px] px-2.5 py-5 shadow-none"
+        }`}
+        aria-label="Admin navigation sidebar"
       >
-        <div className="flex-1 flex flex-col min-h-0 space-y-6">
+        <div className="flex-1 flex flex-col min-h-0 space-y-5">
           {/* Brand Wordmark (Pinned Top) */}
-          <div className="space-y-1 pb-5 border-b border-[rgba(242,238,231,0.06)] shrink-0">
-            <Link to="/admin" className="block focus:outline-none group">
-              <span className="font-serif text-2xl lg:text-3xl font-medium tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors block">
-                SCENTÉPK
-              </span>
-              <span className="text-[8px] uppercase font-sans tracking-[0.32em] text-[#BFA27A] block font-medium">
-                ATELIER CONTROL ROOM
-              </span>
+          <div className="pb-4 border-b border-[rgba(242,238,231,0.06)] shrink-0 overflow-hidden">
+            <Link
+              to="/admin"
+              className="block focus:outline-none group"
+              title="SCENTÉ Atelier Control Room"
+              aria-label="SCENTÉ Atelier Control Room"
+            >
+              {isExpanded ? (
+                <div className="transition-opacity duration-200">
+                  <span className="font-serif text-2xl font-medium tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors block whitespace-nowrap">
+                    SCENTÉPK
+                  </span>
+                  <span className="text-[8px] uppercase font-sans tracking-[0.32em] text-[#BFA27A] block font-medium whitespace-nowrap">
+                    ATELIER CONTROL ROOM
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-1 transition-opacity duration-200">
+                  <span className="font-serif text-xl font-medium tracking-[0.18em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors block">
+                    SC
+                  </span>
+                  <span className="text-[7.5px] uppercase font-sans tracking-[0.26em] text-[#BFA27A] block font-medium mt-0.5">
+                    ADM
+                  </span>
+                </div>
+              )}
             </Link>
           </div>
 
           {/* Navigation Links (Independently Scrollable if height is constrained) */}
           <nav
             data-lenis-prevent
-            className="space-y-1.5 font-sans flex-1 overflow-y-auto pr-1"
+            className="space-y-1.5 font-sans flex-1 overflow-y-auto overflow-x-hidden pr-0.5"
             aria-label="Admin desktop navigation"
           >
             {navItems.map((item) => {
@@ -136,18 +179,30 @@ export default function AdminLayout() {
                 <NavLink
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center justify-between px-4 py-3 text-xs uppercase tracking-[0.18em] transition-all rounded-sm min-h-[44px] ${isActive
+                  title={!isExpanded ? item.name : undefined}
+                  aria-label={item.name}
+                  className={`flex items-center ${
+                    isExpanded ? "justify-between px-3.5" : "justify-center px-0"
+                  } py-2.5 text-xs uppercase tracking-[0.18em] transition-all duration-150 rounded-sm min-h-[44px] group relative ${
+                    isActive
                       ? "bg-[#181714] text-[#F2EEE7] border-l-2 border-[#BFA27A] font-medium"
                       : "text-[#AAA49B] hover:text-[#F2EEE7] hover:bg-[#161513]"
-                    }`}
+                  }`}
                 >
-                  <div className="flex items-center space-x-3">
-                    <Icon className={`w-4 h-4 ${isActive ? "text-[#BFA27A]" : "text-[#777169]"}`} />
-                    <span>{item.name}</span>
+                  <div className={`flex items-center ${isExpanded ? "space-x-3 min-w-0" : "justify-center w-full"}`}>
+                    <div className="relative shrink-0 flex items-center justify-center">
+                      <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-[#BFA27A]" : "text-[#777169] group-hover:text-[#AAA49B]"}`} />
+                      {!isExpanded && item.badge > 0 && (
+                        <span className="absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-[#121110] animate-pulse" />
+                      )}
+                    </div>
+                    {isExpanded && (
+                      <span className="truncate whitespace-nowrap">{item.name}</span>
+                    )}
                   </div>
 
-                  {item.badge > 0 && (
-                    <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-medium bg-amber-950/80 text-amber-300 border border-amber-500/40">
+                  {isExpanded && item.badge > 0 && (
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-[9.5px] font-mono font-medium bg-amber-950/80 text-amber-300 border border-amber-500/40 shrink-0">
                       {item.badge}
                     </span>
                   )}
@@ -158,40 +213,61 @@ export default function AdminLayout() {
         </div>
 
         {/* Bottom Section: Admin Profile & Storefront Link (Pinned Bottom) */}
-        <div className="space-y-4 pt-5 border-t border-[rgba(242,238,231,0.06)] font-sans shrink-0">
+        <div className="space-y-3.5 pt-4 border-t border-[rgba(242,238,231,0.06)] font-sans shrink-0 overflow-hidden">
           {/* Storefront Link */}
           <Link
             to="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[#AAA49B] hover:text-[#BFA27A] transition-colors min-h-[40px]"
+            title={!isExpanded ? "View Storefront" : undefined}
+            aria-label="View Storefront"
+            className={`flex items-center ${
+              isExpanded ? "justify-between px-3" : "justify-center px-0"
+            } py-2 text-[11px] uppercase tracking-[0.16em] text-[#AAA49B] hover:text-[#BFA27A] transition-colors min-h-[40px] rounded-sm group`}
           >
-            <span>View Storefront</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            {isExpanded && <span className="whitespace-nowrap">View Storefront</span>}
+            <ExternalLink className="w-3.5 h-3.5 shrink-0 group-hover:translate-x-0.5 transition-transform" />
           </Link>
 
           {/* Admin User Card */}
-          <div className="p-3.5 bg-[#0D0D0C] border border-[rgba(242,238,231,0.04)] flex items-center justify-between">
-            <div className="space-y-0.5 max-w-[150px] lg:max-w-[180px] truncate">
-              <div className="flex items-center space-x-1.5">
-                <Shield className="w-3 h-3 text-[#BFA27A]" />
-                <span className="text-[9px] uppercase tracking-wider text-[#BFA27A] font-medium">
-                  {profile?.role || "ADMIN"}
-                </span>
-              </div>
-              <p className="text-[11px] text-[#F2EEE7] truncate" title={user?.email}>
-                {user?.email || "admin@scente-parfums.com"}
-              </p>
-            </div>
+          <div
+            className={`p-2.5 bg-[#0D0D0C] border border-[rgba(242,238,231,0.04)] flex items-center ${
+              isExpanded ? "justify-between" : "justify-center"
+            } rounded-sm overflow-hidden`}
+          >
+            {isExpanded ? (
+              <>
+                <div className="space-y-0.5 max-w-[160px] truncate mr-2">
+                  <div className="flex items-center space-x-1.5">
+                    <Shield className="w-3 h-3 text-[#BFA27A] shrink-0" />
+                    <span className="text-[9px] uppercase tracking-wider text-[#BFA27A] font-medium">
+                      {profile?.role || "ADMIN"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#F2EEE7] truncate" title={user?.email}>
+                    {user?.email || "admin@scente-parfums.com"}
+                  </p>
+                </div>
 
-            <button
-              onClick={signOut}
-              className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
-              title="Sign Out"
-              aria-label="Sign out of admin"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={signOut}
+                  className="p-1.5 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center shrink-0"
+                  title="Sign Out"
+                  aria-label="Sign out of admin"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={signOut}
+                className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer flex items-center justify-center"
+                title={`Sign Out (${user?.email || "Admin"})`}
+                aria-label="Sign out of admin"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </aside>
@@ -367,7 +443,7 @@ export default function AdminLayout() {
       </AnimatePresence>
 
       {/* 4. MAIN CONTENT WORKSPACE (SCROLLS NATURALLY WITH WINDOW & LENIS) */}
-      <main className="flex-1 min-w-0 md:ml-60 lg:ml-72 p-3.5 sm:p-6 md:p-8 lg:p-12 xl:p-14 w-full">
+      <main className="flex-1 min-w-0 md:ml-[76px] p-3.5 sm:p-6 md:p-8 lg:p-12 xl:p-14 w-full">
         <div className="max-w-[1600px] w-full mx-auto min-w-0">
           <Outlet />
         </div>

@@ -17,6 +17,14 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
     mood,
   } = product;
 
+  const fam = (product.family || "").toLowerCase();
+  const defaultCardSubtitle =
+    fam === "waxes" || fam === "wax"
+      ? "Artisan Scented Wax"
+      : fam === "testers" || fam === "tester"
+      ? "Discovery Tester"
+      : "Extrait de Parfum";
+
   const activeVariants = Array.isArray(product.variants)
     ? product.variants.filter((v) => v.isActive !== false && v.is_active !== false)
     : [];
@@ -80,7 +88,7 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
           {/* Scentara Centered Meta */}
           <div className="space-y-0.5 xs:space-y-1 px-1 sm:px-2 pb-2">
             <span className="text-[10px] xs:text-[11px] sm:text-xs font-sans text-[#AAA49B] font-light tracking-wide line-clamp-1">
-              {olfactiveFamily || subtitle || "Extrait de Parfum"}
+              {olfactiveFamily || subtitle || defaultCardSubtitle}
             </span>
             <h3 className="font-sans font-bold text-sm xs:text-base sm:text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 tracking-tight line-clamp-1">
               {name}
@@ -143,7 +151,7 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
                   compact ? "text-[8.5px] sm:text-[9px]" : "text-[8.5px] sm:text-[10px]"
                 } uppercase tracking-[0.12em] sm:tracking-[0.18em] text-[#AAA49B] font-light truncate mr-1`}
               >
-                {subtitle || "Extrait de Parfum"}
+                {subtitle || defaultCardSubtitle}
               </span>
               <span
                 className={`${

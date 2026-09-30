@@ -3,8 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ShoppingBag, ArrowRight, Search, Shield } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { PRODUCTS } from "../data/products";
-import { getActiveProducts } from "../services/products";
+import { getActiveProducts, getVerifiedCachedActiveProducts } from "../services/products";
 import { LUXURY_EASE, SUBTLE_EASE } from "../lib/animations";
 
 export default function Navbar() {
@@ -12,8 +11,8 @@ export default function Navbar() {
   const isScrolledRef = useRef(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Live Catalog State (initialized with fallback products, then synced with live database/cache)
-  const [catalogProducts, setCatalogProducts] = useState(PRODUCTS);
+  // Live Catalog State (initialized with verified cache, then synced with live database)
+  const [catalogProducts, setCatalogProducts] = useState(() => getVerifiedCachedActiveProducts() || []);
 
   // Search State
   const [searchQuery, setSearchQuery] = useState("");
@@ -205,6 +204,7 @@ export default function Navbar() {
   const primaryNavLinks = [
     { name: "HOME", path: "/" },
     { name: "SHOP", path: "/shop" },
+    { name: "FIND YOUR SCENT", path: "/find-your-scent" },
     { name: "TRACK ORDER", path: "/track" },
   ];
 
@@ -253,7 +253,7 @@ export default function Navbar() {
                 SCENTÉPK
               </span>
               <span className="text-[7px] xs:text-[7.5px] uppercase font-sans tracking-[0.28em] xs:tracking-[0.35em] text-[#AAA49B] -mt-0.5 xs:-mt-1 font-light opacity-80">
-                Premium Perfumes
+                Premium Fragrances
               </span>
             </Link>
           </div>

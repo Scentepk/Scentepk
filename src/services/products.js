@@ -92,21 +92,29 @@ export const normalizeProduct = (dbRow) => {
         },
       ];
 
+  const rawFam = (dbRow.family || "").toLowerCase();
+  const isWaxProduct = rawFam === "waxes" || rawFam === "wax";
+  const isTesterProduct = rawFam === "testers" || rawFam === "tester";
+
+  const defaultSubtitle = isWaxProduct ? "Artisan Scented Wax" : isTesterProduct ? "Discovery Tester" : "Extrait de Parfum";
+  const defaultConcentration = isWaxProduct ? "Pure Scented Wax" : isTesterProduct ? "Atelier Tester Vial" : "30% Pure Perfume Oil";
+  const defaultVolume = isWaxProduct ? "100g / 3.5 OZ." : isTesterProduct ? "5ml / 0.17 FL. OZ." : "50ml / 1.7 FL. OZ.";
+
   return {
     id: dbRow.id,
     slug: dbRow.slug,
     name: dbRow.name,
-    subtitle: dbRow.subtitle || "Extrait de Parfum",
+    subtitle: dbRow.subtitle || defaultSubtitle,
     tagline: dbRow.tagline || "",
     description: dbRow.description || "",
-    concentration: dbRow.concentration || "30% Pure Perfume Oil",
+    concentration: dbRow.concentration || defaultConcentration,
     family: dbRow.family,
     families: Array.isArray(dbRow.families) ? dbRow.families : [dbRow.family],
     olfactiveFamily: dbRow.olfactive_family || dbRow.olfactiveFamily || "",
     olfactive_family: dbRow.olfactive_family || dbRow.olfactiveFamily || "",
     price: dbRow.price,
     formattedPrice: dbRow.formattedPrice || `PKR ${Number(dbRow.price || 0).toLocaleString()}`,
-    volume: dbRow.volume || "50ml / 1.7 FL. OZ.",
+    volume: dbRow.volume || defaultVolume,
     image: resolvedPrimary,
     primary_image: resolvedPrimary,
     secondaryImage: resolvedSecondary,
@@ -115,6 +123,28 @@ export const normalizeProduct = (dbRow) => {
     product_images: normalizedImages,
     mood: dbRow.mood || "",
     notes: dbRow.notes || { top: [], heart: [], base: [] },
+    fragranceProfile: {
+      scentFamilies: Array.isArray(dbRow.fragrance_profile?.scent_families)
+        ? dbRow.fragrance_profile.scent_families
+        : (Array.isArray(dbRow.fragranceProfile?.scentFamilies) ? dbRow.fragranceProfile.scentFamilies : []),
+      intensity: dbRow.fragrance_profile?.intensity ?? dbRow.fragranceProfile?.intensity ?? null,
+      moods: Array.isArray(dbRow.fragrance_profile?.moods)
+        ? dbRow.fragrance_profile.moods
+        : (Array.isArray(dbRow.fragranceProfile?.moods) ? dbRow.fragranceProfile.moods : []),
+      occasions: Array.isArray(dbRow.fragrance_profile?.occasions)
+        ? dbRow.fragrance_profile.occasions
+        : (Array.isArray(dbRow.fragranceProfile?.occasions) ? dbRow.fragranceProfile.occasions : []),
+      seasons: Array.isArray(dbRow.fragrance_profile?.seasons)
+        ? dbRow.fragrance_profile.seasons
+        : (Array.isArray(dbRow.fragranceProfile?.seasons) ? dbRow.fragranceProfile.seasons : []),
+    },
+    fragrance_profile: dbRow.fragrance_profile || {
+      scent_families: Array.isArray(dbRow.fragranceProfile?.scentFamilies) ? dbRow.fragranceProfile.scentFamilies : [],
+      intensity: dbRow.fragranceProfile?.intensity ?? null,
+      moods: Array.isArray(dbRow.fragranceProfile?.moods) ? dbRow.fragranceProfile.moods : [],
+      occasions: Array.isArray(dbRow.fragranceProfile?.occasions) ? dbRow.fragranceProfile.occasions : [],
+      seasons: Array.isArray(dbRow.fragranceProfile?.seasons) ? dbRow.fragranceProfile.seasons : [],
+    },
     stockQuantity: totalCalculatedStock,
     stock_quantity: totalCalculatedStock,
     isActive: !isInactive,
@@ -127,8 +157,39 @@ export const normalizeProduct = (dbRow) => {
   };
 };
 
+export const STOREFRONT_PRODUCTS_CACHE_KEY = "scente_verified_catalog_v1";
+
+/**
+ * Validates and retrieves previously confirmed live Supabase products from localStorage.
+ * Strictly guarantees that unverified prototype or hardcoded dummy products are rejected,
+ * preventing any flash of false items on initial mount.
+ */
+export function getVerifiedCachedActiveProducts() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STOREFRONT_PRODUCTS_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      parsed.source === "supabase" &&
+      Array.isArray(parsed.data) &&
+      parsed.data.length > 0
+    ) {
+      return parsed.data.filter((p) => p.status !== "inactive" && p.is_active !== false);
+    }
+  } catch (e) {
+    console.warn("Could not parse verified catalog cache:", e);
+  }
+  return null;
+}
+
 function getLocalActiveProducts() {
   try {
+    const verified = getVerifiedCachedActiveProducts();
+    if (verified && verified.length > 0) {
+      return verified;
+    }
     const saved = localStorage.getItem("scente_admin_products_cache");
     if (saved) {
       const items = JSON.parse(saved);
@@ -155,12 +216,17 @@ export function invalidateProductCache() {
   _activeProductsPromise = null;
   _productBySlugCache.clear();
   _productBySlugPromises.clear();
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STOREFRONT_PRODUCTS_CACHE_KEY);
+    }
+  } catch (e) {}
 }
 
 if (typeof window !== "undefined") {
   window.addEventListener("scente_catalog_updated", invalidateProductCache);
   window.addEventListener("storage", (e) => {
-    if (e.key === "scente_admin_products_cache") {
+    if (e.key === "scente_admin_products_cache" || e.key === STOREFRONT_PRODUCTS_CACHE_KEY) {
       invalidateProductCache();
     }
   });
@@ -196,9 +262,14 @@ export async function getActiveProducts() {
         .order("created_at", { ascending: true });
 
       if (error || !data || data.length === 0) {
+        const verified = getVerifiedCachedActiveProducts();
+        if (verified && verified.length > 0) {
+          _productsCache = { data: verified, timestamp: Date.now() };
+          return { data: verified, error: null };
+        }
         const local = getLocalActiveProducts();
         _productsCache = { data: local, timestamp: Date.now() };
-        return { data: local, error: null };
+        return { data: local, error: null, isFallback: true };
       }
 
       const filtered = data
@@ -206,6 +277,23 @@ export async function getActiveProducts() {
         .map(normalizeProduct);
 
       _productsCache = { data: filtered, timestamp: Date.now() };
+
+      // Persist verified Supabase catalog to storefront cache
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            STOREFRONT_PRODUCTS_CACHE_KEY,
+            JSON.stringify({
+              version: 1,
+              source: "supabase",
+              timestamp: Date.now(),
+              data: filtered,
+            })
+          );
+        }
+      } catch (e) {
+        console.warn("Could not save verified catalog cache:", e);
+      }
 
       // Pre-warm individual slug cache for instant product detail navigation
       for (const prod of filtered) {
@@ -217,8 +305,12 @@ export async function getActiveProducts() {
       return { data: filtered, error: null };
     } catch (err) {
       console.error("Failed to query products from Supabase:", err);
+      const verified = getVerifiedCachedActiveProducts();
+      if (verified && verified.length > 0) {
+        return { data: verified, error: null };
+      }
       const local = getLocalActiveProducts();
-      return { data: local, error: null };
+      return { data: local, error: null, isFallback: true };
     } finally {
       _activeProductsPromise = null;
     }

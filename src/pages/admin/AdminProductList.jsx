@@ -37,11 +37,29 @@ export default function AdminProductList() {
   const [deleteError, setDeleteError] = useState("");
 
   const audiences = [
-    { id: "all", label: "All Audiences" },
+    { id: "all", label: "All Categories" },
     { id: "men", label: "Men" },
     { id: "women", label: "Women" },
     { id: "unisex", label: "Unisex" },
+    { id: "waxes", label: "Waxes" },
+    { id: "testers", label: "Testers" },
   ];
+
+  // Evaluates whether a product has sufficient metadata for Find Your Scent recommendations
+  const isProfileReady = (prod) => {
+    const profile = prod.fragrance_profile || prod.fragranceProfile;
+    if (!profile || typeof profile !== "object") return false;
+    const families = profile.scent_families || profile.scentFamilies || [];
+    const intensity = profile.intensity;
+    const moods = profile.moods || [];
+    const occasions = profile.occasions || [];
+    return (
+      Array.isArray(families) && families.length > 0 &&
+      Boolean(intensity) &&
+      Array.isArray(moods) && moods.length > 0 &&
+      Array.isArray(occasions) && occasions.length > 0
+    );
+  };
 
   const loadProducts = async () => {
     setIsLoading(true);
@@ -317,10 +335,11 @@ export default function AdminProductList() {
                   <tr className="border-b border-[rgba(242,238,231,0.06)] text-[9.5px] uppercase tracking-[0.2em] text-[#777169] bg-[#0D0D0C]/40">
                     <th className="py-3.5 px-5 font-medium">Fragrance</th>
                     <th className="py-3.5 px-4 font-medium">Slug</th>
-                    <th className="py-3.5 px-4 font-medium">Audience</th>
+                    <th className="py-3.5 px-4 font-medium">Category</th>
                     <th className="py-3.5 px-4 font-medium">Price</th>
                     <th className="py-3.5 px-4 font-medium">Stock</th>
                     <th className="py-3.5 px-4 font-medium">Status</th>
+                    <th className="py-3.5 px-4 font-medium">Profile</th>
                     <th className="py-3.5 px-5 font-medium text-right">Actions</th>
                   </tr>
                 </thead>
@@ -400,6 +419,21 @@ export default function AdminProductList() {
                         </span>
                       </td>
 
+                      {/* Recommendation Profile Readiness */}
+                      <td className="py-3.5 px-4">
+                        {isProfileReady(prod) ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[9.5px] uppercase tracking-wider text-emerald-400 bg-emerald-950/30 border border-emerald-500/25 font-medium whitespace-nowrap">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            Profile Ready
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[9.5px] uppercase tracking-wider text-[#888279] bg-[#141311] border border-white/5 font-medium whitespace-nowrap">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#666057]" />
+                            Incomplete
+                          </span>
+                        )}
+                      </td>
+
                       {/* Actions */}
                       <td className="py-3.5 px-5 text-right">
                         <div className="flex items-center justify-end space-x-1.5">
@@ -462,10 +496,24 @@ export default function AdminProductList() {
                     </div>
 
                     <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] font-medium">
-                          {prod.family || "Unisex"}
-                        </span>
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] font-medium">
+                            {prod.family || "Unisex"}
+                          </span>
+                          <span className="text-[9px] text-[#777169]">•</span>
+                          {isProfileReady(prod) ? (
+                            <span className="inline-flex items-center gap-1 text-[8.5px] uppercase tracking-wider text-emerald-400 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              Ready
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[8.5px] uppercase tracking-wider text-[#888279] font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#666057]" />
+                              Incomplete
+                            </span>
+                          )}
+                        </div>
                         <span
                           className={`inline-block text-[9px] uppercase tracking-wider px-2 py-0.5 border shrink-0 ${getStatusBadge(
                             prod.status

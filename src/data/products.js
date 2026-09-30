@@ -23,6 +23,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1000&q=85",
     mood: "Smoky • Nocturnal • Magnetic",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
   {
     id: "scente-amber",
@@ -47,6 +54,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
     mood: "Warm • Radiant • Enveloping",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
   {
     id: "scente-musk",
@@ -71,6 +85,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=85",
     mood: "Clean • Sensual • Timeless",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
   {
     id: "scente-bloom",
@@ -95,6 +116,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
     mood: "Velvet • Dramatic • Enchanting",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
   {
     id: "scente-oud",
@@ -119,6 +147,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1000&q=85",
     mood: "Regal • Smoky • Intense",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
   {
     id: "scente-soleil",
@@ -143,6 +178,13 @@ export const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=85",
     secondaryImage: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85",
     mood: "Luminous • Vibrant • Refreshing",
+    fragranceProfile: {
+      scentFamilies: [],
+      intensity: null,
+      moods: [],
+      occasions: [],
+      seasons: [],
+    },
   },
 ];
 
@@ -151,6 +193,16 @@ export const AUDIENCES = [
   { id: "men", label: "MEN" },
   { id: "women", label: "WOMEN" },
   { id: "unisex", label: "UNISEX" },
+  { id: "waxes", label: "WAXES" },
+  { id: "testers", label: "TESTERS" },
+];
+
+export const SHOP_CATEGORIES = [
+  { id: "men", label: "MEN" },
+  { id: "women", label: "WOMEN" },
+  { id: "unisex", label: "UNISEX" },
+  { id: "waxes", label: "WAXES" },
+  { id: "testers", label: "TESTERS" },
 ];
 
 export const BRAND_VALUES = [

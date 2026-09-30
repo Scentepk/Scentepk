@@ -22,6 +22,7 @@ INSERT INTO public.products (
     secondary_image,
     mood,
     notes,
+    fragrance_profile,
     stock_quantity,
     is_active
 ) VALUES (
@@ -42,6 +43,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1000&q=85',
     'Smoky • Nocturnal • Magnetic',
     '{"top": ["Smoked Cardamom", "Calabrian Bergamot", "Pink Peppercorn"], "heart": ["Tuscan Leather", "Dark Plum", "Black Iris"], "base": ["Aged Oud", "Haitian Vetiver", "Smoky Amber Resins"]}'::jsonb,
+    '{"scent_families": [], "intensity": null, "moods": [], "occasions": [], "seasons": []}'::jsonb,
     50,
     true
 )
@@ -61,6 +63,7 @@ ON CONFLICT (id) DO UPDATE SET
     secondary_image = EXCLUDED.secondary_image,
     mood = EXCLUDED.mood,
     notes = EXCLUDED.notes,
+    fragrance_profile = COALESCE(products.fragrance_profile, EXCLUDED.fragrance_profile),
     is_active = EXCLUDED.is_active,
     updated_at = NOW();
 
@@ -83,6 +86,7 @@ INSERT INTO public.products (
     secondary_image,
     mood,
     notes,
+    fragrance_profile,
     stock_quantity,
     is_active
 ) VALUES (
@@ -103,6 +107,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85',
     'Warm • Radiant • Enveloping',
     '{"top": ["Sunlit Mandora", "Bitter Almond", "Spiced Amber Rum"], "heart": ["Ambergris Absolute", "Golden Honey", "Warm Cashmeran"], "base": ["Madagascar Vanilla Pod", "Roasted Tonka Bean", "Siam Benzoin"]}'::jsonb,
+    '{"scent_families": [], "intensity": null, "moods": [], "occasions": [], "seasons": []}'::jsonb,
     50,
     true
 )
@@ -122,6 +127,7 @@ ON CONFLICT (id) DO UPDATE SET
     secondary_image = EXCLUDED.secondary_image,
     mood = EXCLUDED.mood,
     notes = EXCLUDED.notes,
+    fragrance_profile = COALESCE(products.fragrance_profile, EXCLUDED.fragrance_profile),
     is_active = EXCLUDED.is_active,
     updated_at = NOW();
 
@@ -144,6 +150,7 @@ INSERT INTO public.products (
     secondary_image,
     mood,
     notes,
+    fragrance_profile,
     stock_quantity,
     is_active
 ) VALUES (
@@ -164,6 +171,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=85',
     'Clean • Sensual • Timeless',
     '{"top": ["White Aldehydes", "Bergamot Peel", "Pure Linen Accords"], "heart": ["Florentine Orris", "White Musk", "Heliotrope Petals"], "base": ["Iso E Super", "Virginian Cedarwood", "Warm Ambrette"]}'::jsonb,
+    '{"scent_families": [], "intensity": null, "moods": [], "occasions": [], "seasons": []}'::jsonb,
     50,
     true
 )
@@ -183,6 +191,7 @@ ON CONFLICT (id) DO UPDATE SET
     secondary_image = EXCLUDED.secondary_image,
     mood = EXCLUDED.mood,
     notes = EXCLUDED.notes,
+    fragrance_profile = COALESCE(products.fragrance_profile, EXCLUDED.fragrance_profile),
     is_active = EXCLUDED.is_active,
     updated_at = NOW();
 

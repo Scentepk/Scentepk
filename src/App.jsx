@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 // Secondary Storefront Routes (Lazy Loaded with Code Splitting)
 const Shop = lazy(() => import("./pages/Shop"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
+const FindYourScent = lazy(() => import("./pages/FindYourScent"));
 const About = lazy(() => import("./pages/About"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -37,6 +38,7 @@ const AdminInquiries = lazy(() => import("./pages/admin/AdminInquiries"));
 const AdminHeroManagement = lazy(() => import("./pages/admin/AdminHeroManagement"));
 const AdminEditorialBanner = lazy(() => import("./pages/admin/AdminEditorialBanner"));
 const AdminPromoCodes = lazy(() => import("./pages/admin/AdminPromoCodes"));
+const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 
 export default function App() {
@@ -53,6 +55,7 @@ export default function App() {
                     <Route index element={<Home />} />
                     <Route path="shop" element={<Shop />} />
                     <Route path="product/:slug" element={<ProductDetails />} />
+                    <Route path="find-your-scent" element={<FindYourScent />} />
                     <Route path="about" element={<About />} />
                     <Route path="story" element={<About />} />
                     <Route path="track" element={<TrackOrder />} />
@@ -99,6 +102,9 @@ export default function App() {
                     {/* Order Logistics Management */}
                     <Route path="orders" element={<AdminOrderList />} />
                     <Route path="orders/:id" element={<AdminOrderDetail />} />
+
+                    {/* Customer Testimonials & Reviews Management */}
+                    <Route path="reviews" element={<AdminReviews />} />
 
                     {/* Client Concierge Inquiries */}
                     <Route path="inquiries" element={<AdminInquiries />} />
