@@ -42,6 +42,24 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
   const optimizedPrimaryImg = getOptimizedImageUrl(primaryImg, { width: compact ? 450 : 600, quality: 80 });
   const optimizedSecImg = secImg ? getOptimizedImageUrl(secImg, { width: compact ? 450 : 600, quality: 75 }) : null;
 
+  const isOnSale = Boolean(
+    product.isOnSale ||
+    (product.compareAtPrice && product.price && Number(product.compareAtPrice) > Number(product.price)) ||
+    (product.compare_at_price && product.price && Number(product.compare_at_price) > Number(product.price))
+  );
+
+  const rawCompAt = product.compareAtPrice ?? product.compare_at_price;
+  const compareAtPrice = isOnSale ? Number(rawCompAt) : null;
+  const discountPercent =
+    product.discountPercent ||
+    (compareAtPrice && product.price
+      ? Math.round(((compareAtPrice - product.price) / compareAtPrice) * 100)
+      : 0);
+
+  const formattedCompareAtPrice =
+    product.formattedCompareAtPrice ||
+    (compareAtPrice ? `PKR ${compareAtPrice.toLocaleString()}` : null);
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 16 }}
@@ -75,6 +93,15 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
               />
             )}
 
+            {/* Subtle Luxury Sale Badge */}
+            {isOnSale && !isOutOfStock && (
+              <div className="absolute top-3 left-3 z-10">
+                <span className="text-[7.5px] uppercase font-sans tracking-[0.18em] bg-[#121110]/95 text-[#BFA27A] border border-[#BFA27A]/35 px-2 py-0.5 rounded-full font-medium shadow-md backdrop-blur-md">
+                  {discountPercent > 0 ? `${discountPercent}% OFF` : "Sale"}
+                </span>
+              </div>
+            )}
+
             {/* Out of Stock Luxury Badge */}
             {isOutOfStock && (
               <div className="absolute top-3 left-3 z-10">
@@ -93,9 +120,27 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
             <h3 className="font-sans font-bold text-sm xs:text-base sm:text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 tracking-tight line-clamp-1">
               {name}
             </h3>
-            <p className="font-sans font-semibold text-xs xs:text-sm sm:text-base text-[#F2EEE7] pt-0.5">
-              {formattedPrice}
-            </p>
+            <div className="pt-0.5">
+              {isOnSale && formattedCompareAtPrice ? (
+                <div className="flex items-baseline justify-center gap-1.5 flex-wrap">
+                  <span className="text-xs text-[#777169] line-through font-light font-sans">
+                    {formattedCompareAtPrice}
+                  </span>
+                  <p className="font-sans font-semibold text-xs xs:text-sm sm:text-base text-[#F2EEE7]">
+                    {formattedPrice}
+                  </p>
+                  {discountPercent > 0 && (
+                    <span className="text-[8px] uppercase tracking-wider font-semibold text-[#BFA27A] bg-[#BFA27A]/15 border border-[#BFA27A]/30 px-1 py-0.2 rounded-sm">
+                      {discountPercent}% OFF
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p className="font-sans font-semibold text-xs xs:text-sm sm:text-base text-[#F2EEE7]">
+                  {formattedPrice}
+                </p>
+              )}
+            </div>
           </div>
         </Link>
       ) : (
@@ -126,6 +171,15 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
               />
             )}
 
+            {/* Subtle Luxury Sale Badge */}
+            {isOnSale && !isOutOfStock && (
+              <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
+                <span className="text-[7.5px] sm:text-[8px] uppercase font-sans tracking-[0.16em] sm:tracking-[0.18em] bg-[#121110]/95 text-[#BFA27A] border border-[#BFA27A]/35 px-2 py-0.5 sm:px-2.5 sm:py-0.8 font-medium shadow-md backdrop-blur-md">
+                  {discountPercent > 0 ? `${discountPercent}% OFF` : "Sale"}
+                </span>
+              </div>
+            )}
+
             {/* Out of Stock Luxury Badge */}
             {isOutOfStock && (
               <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
@@ -145,7 +199,7 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
               compact ? "space-y-1 px-2 sm:px-3" : "space-y-1 sm:space-y-1.5 px-1.5 sm:px-4"
             }`}
           >
-            <div className="flex items-center justify-between font-sans min-h-[18px] sm:min-h-[22px]">
+            <div className="flex items-center justify-between font-sans min-h-[18px] sm:min-h-[22px] gap-1">
               <span
                 className={`${
                   compact ? "text-[8.5px] sm:text-[9px]" : "text-[8.5px] sm:text-[10px]"
@@ -153,13 +207,24 @@ function ProductCard({ product, index = 0, compact = false, variant = "default" 
               >
                 {subtitle || defaultCardSubtitle}
               </span>
-              <span
-                className={`${
-                  compact ? "text-xs sm:text-sm" : "text-[12px] sm:text-base md:text-lg"
-                } font-medium tracking-[0.02em] sm:tracking-[0.04em] text-[#F2EEE7] shrink-0`}
-              >
-                {formattedPrice}
-              </span>
+              <div className="flex items-baseline gap-1.5 shrink-0 flex-wrap justify-end">
+                {isOnSale && formattedCompareAtPrice && (
+                  <span
+                    className={`${
+                      compact ? "text-[10px] sm:text-[11px]" : "text-[11px] sm:text-xs md:text-sm"
+                    } font-light text-[#777169] line-through decoration-[#777169]/70`}
+                  >
+                    {formattedCompareAtPrice}
+                  </span>
+                )}
+                <span
+                  className={`${
+                    compact ? "text-xs sm:text-sm" : "text-[12px] sm:text-base md:text-lg"
+                  } font-medium tracking-[0.02em] sm:tracking-[0.04em] text-[#F2EEE7]`}
+                >
+                  {formattedPrice}
+                </span>
+              </div>
             </div>
 
             <h3

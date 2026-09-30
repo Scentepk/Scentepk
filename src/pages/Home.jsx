@@ -704,29 +704,31 @@ export default function Home() {
 
                     {/* Price & Modern Quick Add Button */}
                     <div className="pt-2 sm:pt-2.5 border-t border-white/[0.06] flex items-center justify-between gap-1.5 xs:gap-2">
-                      <span className="text-xs sm:text-sm font-sans font-semibold text-[#F2EEE7] tracking-tight shrink-0">
-                        {product.formattedPrice}
-                      </span>
+                      <div className="flex items-baseline gap-1.5 shrink-0 flex-wrap">
+                        {product.compareAtPrice && product.compareAtPrice > product.price && (
+                          <span className="text-[10px] sm:text-xs font-sans text-[#777169] line-through">
+                            {product.formattedCompareAtPrice}
+                          </span>
+                        )}
+                        <span className="text-xs sm:text-sm font-sans font-semibold text-[#F2EEE7] tracking-tight">
+                          {product.formattedPrice}
+                        </span>
+                      </div>
 
                       <button
                         onClick={(e) => handleQuickAdd(e, product)}
-                        aria-label={`Quick add ${product.name} to bag`}
-                        className={`inline-flex items-center gap-1 text-[8.5px] xs:text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.1em] xs:tracking-[0.14em] font-semibold px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-full transition-all duration-300 shrink-0 cursor-pointer ${
+                        aria-label={isAdded ? `Added ${product.name} to bag` : `Add ${product.name} to bag`}
+                        title={isAdded ? "Added to bag" : "Add to bag"}
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 ${
                           isAdded
                             ? "bg-emerald-800 text-emerald-100 border border-emerald-500/50"
                             : "bg-[#181714] text-[#F2EEE7] hover:bg-[#BFA27A] hover:text-[#090908] border border-white/10 hover:border-[#BFA27A]"
                         }`}
                       >
                         {isAdded ? (
-                          <>
-                            <Check className="w-2.5 h-2.5 stroke-[2.5] text-emerald-300" />
-                            <span>Added</span>
-                          </>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5] text-emerald-300" />
                         ) : (
-                          <>
-                            <Plus className="w-2.5 h-2.5 stroke-[2]" />
-                            <span>Add</span>
-                          </>
+                          <Plus className="w-3.5 h-3.5 stroke-[2]" />
                         )}
                       </button>
                     </div>
@@ -819,17 +821,31 @@ export default function Home() {
                     </div>
 
                     <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                      <span className="text-sm font-sans font-semibold text-[#F2EEE7]">
-                        {product.formattedPrice}
-                      </span>
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        {product.compareAtPrice && product.compareAtPrice > product.price && (
+                          <span className="text-xs font-sans text-[#777169] line-through">
+                            {product.formattedCompareAtPrice}
+                          </span>
+                        )}
+                        <span className="text-sm font-sans font-semibold text-[#F2EEE7]">
+                          {product.formattedPrice}
+                        </span>
+                      </div>
                       <button
                         onClick={(e) => handleQuickAdd(e, product)}
-                        className={`text-[9.5px] uppercase font-sans tracking-[0.14em] font-semibold px-3 py-1.5 rounded-full transition-colors ${isAdded
-                            ? "bg-emerald-800 text-emerald-100"
-                            : "bg-[#181714] text-[#AAA49B] hover:bg-[#BFA27A] hover:text-[#090908]"
-                          }`}
+                        aria-label={isAdded ? `Added ${product.name} to bag` : `Add ${product.name} to bag`}
+                        title={isAdded ? "Added to bag" : "Add to bag"}
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 ${
+                          isAdded
+                            ? "bg-emerald-800 text-emerald-100 border border-emerald-500/50"
+                            : "bg-[#181714] text-[#F2EEE7] hover:bg-[#BFA27A] hover:text-[#090908] border border-white/10 hover:border-[#BFA27A]"
+                        }`}
                       >
-                        {isAdded ? "Added ✓" : "Quick Add"}
+                        {isAdded ? (
+                          <Check className="w-3.5 h-3.5 stroke-[2.5] text-emerald-300" />
+                        ) : (
+                          <Plus className="w-3.5 h-3.5 stroke-[2]" />
+                        )}
                       </button>
                     </div>
                   </div>

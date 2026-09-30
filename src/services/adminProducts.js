@@ -74,6 +74,7 @@ function getLocalProductsStore() {
     families: p.families || [p.family || "unisex"],
     olfactive_family: p.olfactiveFamily || "",
     price: p.price || 12500,
+    compare_at_price: p.compare_at_price ?? p.compareAtPrice ?? null,
     currency: "PKR",
     volume: p.volume || "50ml / 1.7 FL. OZ.",
     primary_image: p.image,
@@ -93,6 +94,7 @@ function getLocalProductsStore() {
         size: "50ml",
         volume: "50ml / 1.7 FL. OZ.",
         price: p.price || 12500,
+        compare_at_price: p.compare_at_price ?? p.compareAtPrice ?? null,
         stock_quantity: 50,
         is_active: true,
       },
@@ -260,6 +262,12 @@ export async function createProductAdmin(productData, variants = [], images = []
     families: productData.families || [productData.family || "unisex"],
     olfactive_family: productData.olfactive_family || "",
     price: Number(productData.price) || 0,
+    compare_at_price:
+      productData.compare_at_price !== undefined && productData.compare_at_price !== null && productData.compare_at_price !== ""
+        ? Number(productData.compare_at_price)
+        : (productData.compareAtPrice !== undefined && productData.compareAtPrice !== null && productData.compareAtPrice !== ""
+            ? Number(productData.compareAtPrice)
+            : null),
     currency: "PKR",
     volume: productData.volume || "50ml / 1.7 FL. OZ.",
     primary_image: cleanImages[0]?.public_url || productData.primary_image || "",
@@ -281,15 +289,25 @@ export async function createProductAdmin(productData, variants = [], images = []
       return { data: null, error: new Error(`Product slug "${slug}" already exists. Please choose a unique slug.`) };
     }
 
-    const cleanVariants = variants.map((v, idx) => ({
-      id: v.id || `var-${id}-${idx}`,
-      product_id: id,
-      size: v.size || "50ml",
-      volume: v.volume || `${v.size} / 1.7 FL. OZ.`,
-      price: Number(v.price) || cleanProduct.price,
-      stock_quantity: Number(v.stock_quantity) || 50,
-      is_active: v.is_active !== false,
-    }));
+    const cleanVariants = variants.map((v, idx) => {
+      const rawCompAt = v.compare_at_price !== undefined ? v.compare_at_price : v.compareAtPrice;
+      const compare_at_price =
+        rawCompAt !== undefined && rawCompAt !== null && rawCompAt !== "" && !isNaN(Number(rawCompAt)) && Number(rawCompAt) > 0
+          ? Number(rawCompAt)
+          : null;
+
+      return {
+        id: v.id || `var-${id}-${idx}`,
+        product_id: id,
+        size: v.size || "50ml",
+        volume: v.volume || `${v.size} / 1.7 FL. OZ.`,
+        price: Number(v.price) || cleanProduct.price,
+        compare_at_price,
+        compareAtPrice: compare_at_price,
+        stock_quantity: Number(v.stock_quantity) || 50,
+        is_active: v.is_active !== false,
+      };
+    });
 
     const newEntry = {
       ...cleanProduct,
@@ -317,14 +335,23 @@ export async function createProductAdmin(productData, variants = [], images = []
 
     // 2. Insert variants if any
     if (variants.length > 0) {
-      const variantPayload = variants.map((v) => ({
-        product_id: id,
-        size: v.size,
-        volume: v.volume || `${v.size} / 1.7 FL. OZ.`,
-        price: Number(v.price) || cleanProduct.price,
-        stock_quantity: Number(v.stock_quantity) || 50,
-        is_active: v.is_active !== false,
-      }));
+      const variantPayload = variants.map((v) => {
+        const rawCompAt = v.compare_at_price !== undefined ? v.compare_at_price : v.compareAtPrice;
+        const compare_at_price =
+          rawCompAt !== undefined && rawCompAt !== null && rawCompAt !== "" && !isNaN(Number(rawCompAt)) && Number(rawCompAt) > 0
+            ? Number(rawCompAt)
+            : null;
+
+        return {
+          product_id: id,
+          size: v.size,
+          volume: v.volume || `${v.size} / 1.7 FL. OZ.`,
+          price: Number(v.price) || cleanProduct.price,
+          compare_at_price,
+          stock_quantity: Number(v.stock_quantity) || 50,
+          is_active: v.is_active !== false,
+        };
+      });
 
       await supabase.from("product_variants").insert(variantPayload);
     }
@@ -385,6 +412,12 @@ export async function updateProductAdmin(id, productData, variants = [], images 
     families: productData.families || [productData.family || "unisex"],
     olfactive_family: productData.olfactive_family || "",
     price: Number(productData.price) || 0,
+    compare_at_price:
+      productData.compare_at_price !== undefined && productData.compare_at_price !== null && productData.compare_at_price !== ""
+        ? Number(productData.compare_at_price)
+        : (productData.compareAtPrice !== undefined && productData.compareAtPrice !== null && productData.compareAtPrice !== ""
+            ? Number(productData.compareAtPrice)
+            : null),
     volume: productData.volume || "50ml / 1.7 FL. OZ.",
     primary_image: cleanImages && cleanImages.length > 0 ? cleanImages[0].public_url : (productData.primary_image || ""),
     secondary_image: cleanImages && cleanImages.length > 1 ? cleanImages[1].public_url : (productData.secondary_image || null),
@@ -462,11 +495,18 @@ export async function updateProductAdmin(id, productData, variants = [], images 
 
       // 3. Upsert / update active bottle sizes
       for (const v of variants) {
+        const rawCompAt = v.compare_at_price !== undefined ? v.compare_at_price : v.compareAtPrice;
+        const compare_at_price =
+          rawCompAt !== undefined && rawCompAt !== null && rawCompAt !== "" && !isNaN(Number(rawCompAt)) && Number(rawCompAt) > 0
+            ? Number(rawCompAt)
+            : null;
+
         const variantData = {
           product_id: id,
           size: v.size,
           volume: v.volume || `${v.size} / 1.7 FL. OZ.`,
           price: Number(v.price) || updatePayload.price,
+          compare_at_price,
           stock_quantity: Number(v.stock_quantity) || 0,
           is_active: v.is_active !== false,
           updated_at: new Date().toISOString(),

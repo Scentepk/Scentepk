@@ -46,6 +46,22 @@ export const normalizeProduct = (dbRow) => {
         .map((v) => {
           const stock = Number(v.stock_quantity ?? v.stockQuantity ?? 0);
           const price = Number(v.price) || Number(dbRow.price) || 0;
+          const rawCompAt = v.compare_at_price ?? v.compareAtPrice ?? null;
+          const compNum =
+            rawCompAt !== null &&
+            rawCompAt !== undefined &&
+            rawCompAt !== "" &&
+            !isNaN(Number(rawCompAt)) &&
+            Number(rawCompAt) > 0
+              ? Number(rawCompAt)
+              : null;
+          const compareAtPrice = compNum && compNum > price ? compNum : null;
+          const discountPercent = compareAtPrice
+            ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
+            : 0;
+          const formattedCompareAtPrice = compareAtPrice ? `PKR ${compareAtPrice.toLocaleString()}` : null;
+          const isOnSale = Boolean(compareAtPrice && discountPercent > 0);
+
           return {
             id: v.id || `var-${dbRow.id}-${v.size}`,
             product_id: dbRow.id,
@@ -53,6 +69,11 @@ export const normalizeProduct = (dbRow) => {
             volume: v.volume || `${v.size || "50ml"} / 1.7 FL. OZ.`,
             price,
             formattedPrice: `PKR ${price.toLocaleString()}`,
+            compareAtPrice,
+            compare_at_price: compareAtPrice,
+            formattedCompareAtPrice,
+            discountPercent,
+            isOnSale,
             stockQuantity: stock,
             stock_quantity: stock,
             isOutOfStock: stock <= 0,
@@ -74,6 +95,30 @@ export const normalizeProduct = (dbRow) => {
 
   const status = isInactive ? "inactive" : isOutOfStock ? "out_of_stock" : "active";
 
+  const rawBaseCompAt = dbRow.compare_at_price ?? dbRow.compareAtPrice ?? null;
+  const baseCompNum =
+    rawBaseCompAt !== null &&
+    rawBaseCompAt !== undefined &&
+    rawBaseCompAt !== "" &&
+    !isNaN(Number(rawBaseCompAt)) &&
+    Number(rawBaseCompAt) > 0
+      ? Number(rawBaseCompAt)
+      : null;
+  const basePrice = Number(dbRow.price) || (normalizedVariants[0]?.price ?? 0);
+
+  // If base product doesn't explicitly have compare-at price, check if primary variant does
+  const primaryVariantComp = normalizedVariants[0]?.compareAtPrice ?? null;
+  const compareAtPrice =
+    baseCompNum && baseCompNum > basePrice
+      ? baseCompNum
+      : (primaryVariantComp && primaryVariantComp > basePrice ? primaryVariantComp : null);
+
+  const discountPercent = compareAtPrice
+    ? Math.round(((compareAtPrice - basePrice) / compareAtPrice) * 100)
+    : 0;
+  const formattedCompareAtPrice = compareAtPrice ? `PKR ${compareAtPrice.toLocaleString()}` : null;
+  const isOnSale = Boolean(compareAtPrice && discountPercent > 0);
+
   const variants = hasVariants
     ? normalizedVariants
     : [
@@ -82,8 +127,13 @@ export const normalizeProduct = (dbRow) => {
           product_id: dbRow.id,
           size: "50ml",
           volume: dbRow.volume || "50ml / 1.7 FL. OZ.",
-          price: Number(dbRow.price) || 0,
-          formattedPrice: dbRow.formattedPrice || `PKR ${Number(dbRow.price || 0).toLocaleString()}`,
+          price: basePrice,
+          formattedPrice: dbRow.formattedPrice || `PKR ${basePrice.toLocaleString()}`,
+          compareAtPrice,
+          compare_at_price: compareAtPrice,
+          formattedCompareAtPrice,
+          discountPercent,
+          isOnSale,
           stockQuantity: totalCalculatedStock,
           stock_quantity: totalCalculatedStock,
           isOutOfStock,
@@ -112,8 +162,13 @@ export const normalizeProduct = (dbRow) => {
     families: Array.isArray(dbRow.families) ? dbRow.families : [dbRow.family],
     olfactiveFamily: dbRow.olfactive_family || dbRow.olfactiveFamily || "",
     olfactive_family: dbRow.olfactive_family || dbRow.olfactiveFamily || "",
-    price: dbRow.price,
-    formattedPrice: dbRow.formattedPrice || `PKR ${Number(dbRow.price || 0).toLocaleString()}`,
+    price: basePrice,
+    formattedPrice: dbRow.formattedPrice || `PKR ${basePrice.toLocaleString()}`,
+    compareAtPrice,
+    compare_at_price: compareAtPrice,
+    formattedCompareAtPrice,
+    discountPercent,
+    isOnSale,
     volume: dbRow.volume || defaultVolume,
     image: resolvedPrimary,
     primary_image: resolvedPrimary,

@@ -107,7 +107,7 @@ export default function AdminOrderList() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-6 right-6 z-50 bg-[#181714] border border-[#BFA27A]/50 text-[#F2EEE7] px-5 py-3 text-xs font-sans shadow-2xl flex items-center space-x-2 rounded-sm"
+            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-[#181714] border border-[#BFA27A]/50 text-[#F2EEE7] px-4 sm:px-5 py-2.5 sm:py-3 text-xs font-sans shadow-2xl flex items-center space-x-2 rounded-sm max-w-[calc(100vw-32px)]"
           >
             <CheckCircle2 className="w-4 h-4 text-[#BFA27A]" />
             <span>{toastMessage}</span>

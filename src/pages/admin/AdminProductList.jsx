@@ -149,7 +149,7 @@ export default function AdminProductList() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-6 right-6 z-50 bg-[#181714] border border-[#BFA27A]/50 text-[#F2EEE7] px-5 py-3 text-xs font-sans shadow-2xl flex items-center space-x-2"
+            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-[#181714] border border-[#BFA27A]/50 text-[#F2EEE7] px-4 sm:px-5 py-2.5 sm:py-3 text-xs font-sans shadow-2xl flex items-center space-x-2 rounded-lg max-w-[calc(100vw-32px)]"
           >
             <CheckCircle2 className="w-4 h-4 text-[#BFA27A]" />
             <span>{toastMessage}</span>
@@ -385,7 +385,29 @@ export default function AdminProductList() {
 
                       {/* Price */}
                       <td className="py-3.5 px-4 font-serif text-sm text-[#F2EEE7]">
-                        PKR {Number(prod.price || 0).toLocaleString()}
+                        {(() => {
+                          const comp = prod.compare_at_price ?? prod.compareAtPrice;
+                          const hasSale = comp && Number(comp) > Number(prod.price);
+                          if (hasSale) {
+                            const pct = Math.round(((Number(comp) - Number(prod.price)) / Number(comp)) * 100);
+                            return (
+                              <div className="space-y-0.5">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="line-through text-xs text-[#777169] font-light">
+                                    PKR {Number(comp).toLocaleString()}
+                                  </span>
+                                  <span className="text-[8.5px] uppercase tracking-wider px-1.5 py-0.2 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 rounded-sm font-sans font-medium">
+                                    {pct > 0 ? `${pct}% OFF` : "SALE"}
+                                  </span>
+                                </div>
+                                <span className="font-medium text-[#F2EEE7]">
+                                  PKR {Number(prod.price || 0).toLocaleString()}
+                                </span>
+                              </div>
+                            );
+                          }
+                          return <span>PKR {Number(prod.price || 0).toLocaleString()}</span>;
+                        })()}
                       </td>
 
                       {/* Stock (3-tier inventory indicators) */}

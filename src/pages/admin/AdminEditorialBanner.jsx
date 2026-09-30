@@ -16,6 +16,7 @@ import {
   Trash2,
   HelpCircle,
   Sliders,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -282,29 +283,32 @@ export default function AdminEditorialBanner() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className={`p-4 rounded-xl border flex items-center justify-between text-xs font-sans ${
+            className={`p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 text-xs font-sans ${
               notification.type === "success"
-                ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-200"
+                ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
                 : notification.type === "error"
                 ? "bg-rose-950/40 border-rose-500/40 text-rose-200"
                 : "bg-[#181714] border-[#BFA27A]/30 text-[#F2EEE7]"
             }`}
           >
-            <div className="flex items-center space-x-2.5">
+            <div className="flex items-start sm:items-center space-x-2.5 min-w-0 flex-1">
               {notification.type === "success" ? (
-                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
               ) : notification.type === "error" ? (
-                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5 sm:mt-0" />
               ) : (
-                <HelpCircle className="w-4 h-4 text-[#BFA27A] shrink-0" />
+                <HelpCircle className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5 sm:mt-0" />
               )}
-              <span>{notification.message}</span>
+              <span className="leading-relaxed">{notification.message}</span>
             </div>
             <button
+              type="button"
               onClick={() => setNotification(null)}
-              className="text-xs uppercase tracking-wider text-white/50 hover:text-white ml-4 cursor-pointer"
+              className="shrink-0 p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer flex items-center justify-center ml-2"
+              title="Dismiss notification"
+              aria-label="Dismiss notification"
             >
-              Dismiss
+              <X className="w-4 h-4" />
             </button>
           </motion.div>
         )}

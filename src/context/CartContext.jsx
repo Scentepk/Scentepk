@@ -72,10 +72,15 @@ export function CartProvider({ children }) {
     }
 
     const price = selectedVariant?.price ?? product.price;
+    const compareAtPrice = selectedVariant?.compareAtPrice ?? product.compareAtPrice ?? null;
     const formattedPrice =
       selectedVariant?.formattedPrice ??
       product.formattedPrice ??
       `PKR ${price.toLocaleString()}`;
+    const formattedCompareAtPrice =
+      selectedVariant?.formattedCompareAtPrice ??
+      product.formattedCompareAtPrice ??
+      (compareAtPrice ? `PKR ${Number(compareAtPrice).toLocaleString()}` : null);
     const variantId = selectedVariant?.id || null;
 
     setCartItems((prevItems) => {
@@ -88,7 +93,9 @@ export function CartProvider({ children }) {
         const newTotalQty = Math.min(availableStock, updated[existingIndex].quantity + quantity);
         updated[existingIndex].quantity = newTotalQty;
         updated[existingIndex].price = price;
+        updated[existingIndex].compareAtPrice = compareAtPrice;
         updated[existingIndex].formattedPrice = formattedPrice;
+        updated[existingIndex].formattedCompareAtPrice = formattedCompareAtPrice;
         updated[existingIndex].variantId = variantId;
         updated[existingIndex].variant = selectedVariant;
         updated[existingIndex].isUnavailable = false;
@@ -102,7 +109,9 @@ export function CartProvider({ children }) {
             size,
             quantity: cappedQty,
             price,
+            compareAtPrice,
             formattedPrice,
+            formattedCompareAtPrice,
             variantId,
             variant: selectedVariant,
             isUnavailable: false,
@@ -171,10 +180,15 @@ export function CartProvider({ children }) {
     }
 
     const price = Number(selectedVariant?.price ?? product.price) || 0;
+    const compareAtPrice = selectedVariant?.compareAtPrice ?? product.compareAtPrice ?? null;
     const formattedPrice =
       selectedVariant?.formattedPrice ??
       product.formattedPrice ??
       `PKR ${price.toLocaleString()}`;
+    const formattedCompareAtPrice =
+      selectedVariant?.formattedCompareAtPrice ??
+      product.formattedCompareAtPrice ??
+      (compareAtPrice ? `PKR ${Number(compareAtPrice).toLocaleString()}` : null);
     const variantId = selectedVariant?.id || null;
     const finalQuantity = Math.min(availableStock, Math.max(1, quantity));
 
@@ -183,7 +197,9 @@ export function CartProvider({ children }) {
       size,
       quantity: finalQuantity,
       price,
+      compareAtPrice,
       formattedPrice,
+      formattedCompareAtPrice,
       variantId,
       variant: selectedVariant,
       availableStock,

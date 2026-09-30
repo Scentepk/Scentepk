@@ -272,7 +272,7 @@ export default function AdminReviews() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-6 right-6 z-50 flex items-center space-x-2.5 bg-[#181714] border border-[#BFA27A]/40 text-[#F2EEE7] px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md"
+            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 flex items-center space-x-2.5 bg-[#181714] border border-[#BFA27A]/40 text-[#F2EEE7] px-4 py-2.5 sm:py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-[calc(100vw-32px)]"
           >
             <CheckCircle2 className="w-4 h-4 text-[#BFA27A] shrink-0" />
             <span className="text-xs font-sans tracking-wide">{toastMessage}</span>
@@ -373,10 +373,11 @@ export default function AdminReviews() {
         </div>
       ) : (
         <div className="bg-[#121110] rounded-xl border border-white/[0.06] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          {/* DESKTOP TABLE VIEW (>= 768px) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[760px]">
               <thead>
-                <tr className="border-b border-white/[0.08] text-[10px] sm:text-[11px] font-sans uppercase tracking-[0.16em] text-[#777169] bg-[#181714]">
+                <tr className="border-b border-white/[0.08] text-[10px] sm:text-[11px] font-sans uppercase tracking-[0.16em] text-[#777169] bg-[#181714] whitespace-nowrap">
                   <th className="py-3 px-4 font-medium">Customer</th>
                   <th className="py-3 px-4 font-medium">Rating</th>
                   <th className="py-3 px-4 font-medium">Testimonial</th>
@@ -494,6 +495,107 @@ export default function AdminReviews() {
               </tbody>
             </table>
           </div>
+
+          {/* MOBILE REVIEW CARDS VIEW (< 768px) */}
+          <div className="md:hidden divide-y divide-[rgba(242,238,231,0.06)] font-sans text-xs">
+            {filteredReviews.map((review) => {
+              const prodName =
+                review.productName || review.product?.name || (review.productId ? "Specific Perfume" : "General");
+
+              return (
+                <div key={review.id} className="p-4 space-y-3 bg-[#121110]">
+                  {/* Card Top: Customer Info + Star Rating & Order */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-serif text-base text-[#F2EEE7] font-normal leading-snug truncate">
+                        {review.customerName}
+                      </div>
+                      {review.location && (
+                        <div className="text-[11px] text-[#777169] font-light mt-0.5">
+                          {review.location}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="flex items-center space-x-0.5 text-[#BFA27A]">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3.5 h-3.5 ${
+                              i < review.rating ? "fill-[#BFA27A] stroke-none" : "stroke-white/20 fill-none"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-[#777169] font-mono">
+                        #{review.displayOrder}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Review Testimonial Quote */}
+                  <div className="p-3 bg-[#181714] rounded-lg border border-white/[0.04]">
+                    <p className="text-[#AAA49B] text-xs font-light leading-relaxed italic">
+                      "{review.reviewText}"
+                    </p>
+                  </div>
+
+                  {/* Card Footer: Fragrance Tag + Status Toggle + Edit/Delete */}
+                  <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+                    <span className="inline-block text-[10.5px] font-sans tracking-wide px-2.5 py-1 rounded bg-[#0D0D0C] border border-white/[0.08] text-[#BFA27A] truncate max-w-[150px]">
+                      {prodName}
+                    </span>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePublish(review)}
+                        className={`inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-full text-[9.5px] font-sans uppercase tracking-wider font-semibold transition-all cursor-pointer ${
+                          review.isPublished
+                            ? "bg-emerald-950/80 text-emerald-300 border border-emerald-500/30"
+                            : "bg-white/[0.04] text-[#8E887F] border border-white/10"
+                        }`}
+                        title="Click to toggle publish status"
+                      >
+                        {review.isPublished ? (
+                          <>
+                            <Eye className="w-3 h-3" />
+                            <span>Published</span>
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="w-3 h-3" />
+                            <span>Draft</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(review)}
+                        className="p-1.5 text-[#AAA49B] hover:text-[#BFA27A] transition-colors rounded hover:bg-white/[0.05] border border-white/10"
+                        title="Edit Review"
+                        aria-label={`Edit review from ${review.customerName}`}
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setDeleteTarget(review)}
+                        className="p-1.5 text-[#AAA49B] hover:text-red-400 transition-colors rounded hover:bg-white/[0.05] border border-white/10"
+                        title="Delete Review"
+                        aria-label={`Delete review from ${review.customerName}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -507,7 +609,7 @@ export default function AdminReviews() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg bg-[#141312] border border-white/[0.1] rounded-2xl p-6 sm:p-8 shadow-2xl text-[#F2EEE7]"
+              className="relative w-full max-w-lg bg-[#141312] border border-white/[0.1] rounded-2xl p-5 sm:p-8 shadow-2xl text-[#F2EEE7] max-h-[90vh] overflow-y-auto"
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 mb-6">

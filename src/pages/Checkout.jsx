@@ -810,9 +810,16 @@ export default function Checkout() {
                         {item.quantity} × {item.size} • {item.formattedPrice || item.product.formattedPrice}
                       </p>
                     </div>
-                    <span className="font-sans text-sm text-[#F2EEE7]">
-                      PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
-                    </span>
+                    <div className="text-right">
+                      {item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product.price) && (
+                        <div className="text-[10.5px] text-[#777169] line-through font-serif decoration-[#777169]/70">
+                          PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
+                        </div>
+                      )}
+                      <span className="font-sans text-sm text-[#F2EEE7]">
+                        PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

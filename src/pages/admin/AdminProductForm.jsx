@@ -31,6 +31,7 @@ import CustomSelect from "../../components/CustomSelect";
 import Input from "../../components/Input";
 import Textarea from "../../components/Textarea";
 import ImageCropModal from "../../components/admin/ImageCropModal";
+import { calculateDiscountPercent } from "../../lib/pricing";
 
 // Controlled Taxonomy for Fragrance Recommendation Engine
 const SCENT_FAMILY_OPTIONS = [
@@ -106,6 +107,7 @@ export default function AdminProductForm() {
     olfactive_family: "",
     mood: "",
     price: 12500,
+    compare_at_price: "",
     stock_quantity: 50,
     primary_image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
     secondary_image: "",
@@ -129,6 +131,7 @@ export default function AdminProductForm() {
       id: "var-default-50ml",
       size: "50ml",
       volume: "50ml / 1.7 FL. OZ.",
+      compare_at_price: "",
       price: 12500,
       stock_quantity: 50,
       is_active: true,
@@ -179,6 +182,7 @@ export default function AdminProductForm() {
         olfactive_family: data.olfactive_family || data.olfactiveFamily || "",
         mood: data.mood || "",
         price: data.price || 12500,
+        compare_at_price: data.compare_at_price ?? data.compareAtPrice ?? "",
         stock_quantity: data.stock_quantity ?? 50,
         primary_image: data.primary_image || data.image || "",
         secondary_image: data.secondary_image || data.secondaryImage || "",
@@ -206,7 +210,12 @@ export default function AdminProductForm() {
 
       const loadedVariants = data.product_variants || data.variants || [];
       if (loadedVariants.length > 0) {
-        setVariants(loadedVariants);
+        setVariants(
+          loadedVariants.map((v) => ({
+            ...v,
+            compare_at_price: v.compare_at_price ?? v.compareAtPrice ?? "",
+          }))
+        );
       }
 
       // Load all product images
@@ -297,6 +306,7 @@ export default function AdminProductForm() {
       id: `var-${Date.now()}`,
       size: "100ml",
       volume: "100ml / 3.4 FL. OZ.",
+      compare_at_price: "",
       price: Math.round(Number(formData.price || 12500) * 1.6),
       stock_quantity: 25,
       is_active: true,
@@ -309,9 +319,15 @@ export default function AdminProductForm() {
     setVariants((prev) =>
       prev.map((v, idx) => {
         if (idx !== index) return v;
+        let parsedValue = value;
+        if (field === "price" || field === "stock_quantity") {
+          parsedValue = value === "" ? "" : Number(value);
+        } else if (field === "compare_at_price") {
+          parsedValue = value === "" ? "" : Number(value);
+        }
         return {
           ...v,
-          [field]: field === "price" || field === "stock_quantity" ? Number(value) : value,
+          [field]: parsedValue,
         };
       })
     );
@@ -551,14 +567,38 @@ export default function AdminProductForm() {
       return;
     }
 
-    if (Number(formData.price) < 0) {
-      setErrorMsg("Price cannot be a negative number.");
+    if (Number(formData.price) < 0 || isNaN(Number(formData.price))) {
+      setErrorMsg("Main display price must be a valid positive number.");
       return;
     }
 
-    if (Number(formData.stock_quantity) < 0) {
+    if (formData.compare_at_price !== "" && formData.compare_at_price !== null) {
+      const comp = Number(formData.compare_at_price);
+      if (isNaN(comp) || comp < 0) {
+        setErrorMsg("Main display compare-at price cannot be negative.");
+        return;
+      }
+    }
+
+    if (Number(formData.stock_quantity) < 0 || isNaN(Number(formData.stock_quantity))) {
       setErrorMsg("Stock quantity cannot be a negative number.");
       return;
+    }
+
+    for (let i = 0; i < variants.length; i++) {
+      const v = variants[i];
+      const vPrice = Number(v.price);
+      if (isNaN(vPrice) || vPrice < 0) {
+        setErrorMsg(`Bottle size "${v.size || i + 1}" price must be a valid positive number.`);
+        return;
+      }
+      if (v.compare_at_price !== "" && v.compare_at_price !== null && v.compare_at_price !== undefined) {
+        const vComp = Number(v.compare_at_price);
+        if (isNaN(vComp) || vComp < 0) {
+          setErrorMsg(`Bottle size "${v.size || i + 1}" compare-at price cannot be negative.`);
+          return;
+        }
+      }
     }
 
     if (images.length === 0) {
@@ -572,11 +612,33 @@ export default function AdminProductForm() {
       ? variants.reduce((sum, v) => sum + (Number(v.stock_quantity) || 0), 0)
       : Number(formData.stock_quantity);
 
+    const cleanVariantsPayload = variants.map((v) => ({
+      ...v,
+      price: Number(v.price) || 0,
+      compare_at_price:
+        v.compare_at_price !== "" &&
+        v.compare_at_price !== null &&
+        v.compare_at_price !== undefined &&
+        !isNaN(Number(v.compare_at_price)) &&
+        Number(v.compare_at_price) > 0
+          ? Number(v.compare_at_price)
+          : null,
+      stock_quantity: Math.max(0, Number(v.stock_quantity) || 0),
+    }));
+
     const payload = {
       ...formData,
       family: formData.family,
       families: [formData.family],
       price: Number(formData.price),
+      compare_at_price:
+        formData.compare_at_price !== "" &&
+        formData.compare_at_price !== null &&
+        formData.compare_at_price !== undefined &&
+        !isNaN(Number(formData.compare_at_price)) &&
+        Number(formData.compare_at_price) > 0
+          ? Number(formData.compare_at_price)
+          : null,
       stock_quantity: calculatedTotalStock,
       notes: {
         top: formData.topNotes.split(",").map((s) => s.trim()).filter(Boolean),
@@ -595,13 +657,13 @@ export default function AdminProductForm() {
         ...payload,
         primary_image: cleanPrimary,
         secondary_image: cleanSecondary,
-      }, variants, images);
+      }, cleanVariantsPayload, images);
     } else {
       res = await createProductAdmin({
         ...payload,
         primary_image: cleanPrimary,
         secondary_image: cleanSecondary,
-      }, variants, images);
+      }, cleanVariantsPayload, images);
     }
 
     setIsSaving(false);
@@ -703,10 +765,21 @@ export default function AdminProductForm() {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="p-4 bg-rose-950/30 border border-rose-500/40 text-rose-300 text-xs font-sans flex items-center space-x-3 rounded-sm"
+            className="p-3.5 sm:p-4 bg-rose-950/30 border border-rose-500/40 text-rose-300 text-xs font-sans flex items-center justify-between gap-3 rounded-sm"
           >
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{errorMsg}</span>
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+              <span className="leading-relaxed">{errorMsg}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setErrorMsg("")}
+              className="p-1 text-rose-400/70 hover:text-rose-200 transition-colors shrink-0 cursor-pointer"
+              title="Dismiss error"
+              aria-label="Dismiss error"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </motion.div>
         )}
 
@@ -715,10 +788,21 @@ export default function AdminProductForm() {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="p-4 bg-[#181714] border border-[#BFA27A]/60 text-[#BFA27A] text-xs font-sans flex items-center space-x-3 rounded-sm"
+            className="p-3.5 sm:p-4 bg-[#181714] border border-[#BFA27A]/60 text-[#BFA27A] text-xs font-sans flex items-center justify-between gap-3 rounded-sm"
           >
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>{successMsg}</span>
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#BFA27A]" />
+              <span className="leading-relaxed">{successMsg}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSuccessMsg("")}
+              className="p-1 text-[#BFA27A]/70 hover:text-[#BFA27A] transition-colors shrink-0 cursor-pointer"
+              title="Dismiss notification"
+              aria-label="Dismiss notification"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1205,10 +1289,11 @@ export default function AdminProductForm() {
         </div>
 
         {/* Base Default Settings */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 p-4 bg-[#0D0D0C] border border-[rgba(242,238,231,0.04)] text-xs font-sans rounded-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 p-4 bg-[#0D0D0C] border border-[rgba(242,238,231,0.04)] text-xs font-sans rounded-sm">
+          {/* Main Display Selling Price */}
           <div>
             <label className="block text-[10px] uppercase tracking-wider text-[#AAA49B] mb-1.5 font-medium">
-              Main Display Price (PKR) <span className="text-[#BFA27A]">*</span>
+              Selling Price (PKR) <span className="text-[#BFA27A]">*</span>
             </label>
             <Input
               type="number"
@@ -1218,18 +1303,43 @@ export default function AdminProductForm() {
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
             />
             <p className="text-[11px] text-[#777169] mt-1 font-light">
-              Starting price shown on product cards across the website.
+              Authoritative starting price charged at checkout.
             </p>
           </div>
 
+          {/* Main Display Compare-at Price */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-[10px] uppercase tracking-wider text-[#AAA49B] font-medium">
-                Total Available Stock (Units) <span className="text-[#BFA27A]">*</span>
+                Compare-at Price (PKR)
+              </label>
+              {calculateDiscountPercent(formData.compare_at_price, formData.price) > 0 && (
+                <span className="text-[9.5px] uppercase tracking-wider font-semibold text-[#BFA27A] bg-[#BFA27A]/15 border border-[#BFA27A]/30 px-1.5 py-0.2 rounded-sm font-sans">
+                  {calculateDiscountPercent(formData.compare_at_price, formData.price)}% OFF
+                </span>
+              )}
+            </div>
+            <Input
+              type="number"
+              min="0"
+              placeholder="e.g. 3499 (optional original)"
+              value={formData.compare_at_price ?? ""}
+              onChange={(e) => setFormData({ ...formData, compare_at_price: e.target.value })}
+            />
+            <p className="text-[11px] text-[#777169] mt-1 font-light">
+              Original price shown crossed out (leave blank if no discount).
+            </p>
+          </div>
+
+          {/* Total Available Stock */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[10px] uppercase tracking-wider text-[#AAA49B] font-medium">
+                Total Stock Units <span className="text-[#BFA27A]">*</span>
               </label>
               {variants.length > 0 && (
                 <span className="text-[9.5px] uppercase tracking-wider text-[#BFA27A] font-sans">
-                  Auto-derived from {variants.length} size{variants.length > 1 ? "s" : ""}
+                  Auto-derived
                 </span>
               )}
             </div>
@@ -1247,9 +1357,7 @@ export default function AdminProductForm() {
               className={variants.length > 0 ? "opacity-80 bg-[#161513] cursor-not-allowed" : ""}
             />
             <p className="text-[11px] text-[#777169] mt-1 font-light">
-              {variants.length > 0
-                ? "Authoritative inventory source is the individual bottle size variants below."
-                : "Total number of bottles currently available in atelier storage."}
+              Total bottles available in atelier storage.
             </p>
           </div>
         </div>
@@ -1261,7 +1369,7 @@ export default function AdminProductForm() {
               Configured Bottle Sizes ({variants.length})
             </span>
             <span className="text-[10px] text-[#777169] font-light hidden sm:inline">
-              Source of truth: each size's stock determines availability.
+              Each size has its own selling price, compare-at price, and stock.
             </span>
           </div>
 
@@ -1274,17 +1382,24 @@ export default function AdminProductForm() {
                 ? { label: `Low Stock (${stockNum})`, badgeClass: "bg-amber-950/40 text-amber-400 border-amber-500/30" }
                 : { label: `In Stock (${stockNum})`, badgeClass: "bg-emerald-950/40 text-emerald-400 border-emerald-500/30" };
 
+            const discount = calculateDiscountPercent(v.compare_at_price, v.price);
+
             return (
               <div
                 key={v.id || idx}
                 className="p-4 bg-[#0D0D0C] border border-[rgba(242,238,231,0.06)] rounded-sm space-y-3"
               >
                 {/* Header row on mobile / desktop indicator */}
-                <div className="flex items-center justify-between sm:hidden pb-2 border-b border-[rgba(242,238,231,0.04)]">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between pb-2 border-b border-[rgba(242,238,231,0.04)]">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-medium text-[#BFA27A] uppercase tracking-wider">
                       Size #{idx + 1} ({v.size || "Variant"})
                     </span>
+                    {discount > 0 && (
+                      <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 border rounded-sm font-semibold bg-[#BFA27A]/15 text-[#BFA27A] border-[#BFA27A]/30">
+                        {discount}% OFF
+                      </span>
+                    )}
                     <span
                       className={`text-[8.5px] uppercase tracking-wider px-1.5 py-0.5 border rounded-sm ${stockTier.badgeClass}`}
                     >
@@ -1294,7 +1409,7 @@ export default function AdminProductForm() {
                   <button
                     type="button"
                     onClick={() => handleRemoveVariant(idx)}
-                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    className="p-2 text-[#777169] hover:text-rose-400 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
                     title="Remove this bottle size"
                     aria-label={`Remove bottle size ${v.size || idx + 1}`}
                   >
@@ -1303,9 +1418,9 @@ export default function AdminProductForm() {
                 </div>
 
                 {/* Input fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
                   {/* Bottle Size */}
-                  <div className="sm:col-span-3">
+                  <div className="sm:col-span-2">
                     <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] mb-1 font-medium">
                       Bottle Size
                     </label>
@@ -1334,10 +1449,33 @@ export default function AdminProductForm() {
                     />
                   </div>
 
-                  {/* Price PKR */}
+                  {/* Compare-at Price PKR */}
                   <div className="sm:col-span-2">
-                    <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] mb-1 font-medium">
-                      Price (PKR)
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] font-medium truncate">
+                        Compare-at
+                      </label>
+                      {discount > 0 && (
+                        <span className="text-[8px] uppercase tracking-wider text-[#BFA27A] font-semibold">
+                          {discount}%
+                        </span>
+                      )}
+                    </div>
+                    <Input
+                      type="number"
+                      min="0"
+                      size="compact"
+                      surface="elevated"
+                      placeholder="e.g. 3499"
+                      value={v.compare_at_price ?? ""}
+                      onChange={(e) => handleVariantChange(idx, "compare_at_price", e.target.value)}
+                    />
+                  </div>
+
+                  {/* Sale Price PKR */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] mb-1 font-medium truncate">
+                      Sale Price (PKR)
                     </label>
                     <Input
                       type="number"
@@ -1345,43 +1483,23 @@ export default function AdminProductForm() {
                       size="compact"
                       surface="elevated"
                       value={v.price}
-                      onChange={(e) => handleVariantChange(idx, "price", Number(e.target.value))}
+                      onChange={(e) => handleVariantChange(idx, "price", e.target.value)}
                     />
                   </div>
 
-                  {/* Stock with 3-tier status */}
+                  {/* Stock Units */}
                   <div className="sm:col-span-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] font-medium">
-                        Stock Units
-                      </label>
-                      <span
-                        className={`hidden sm:inline-block text-[8px] uppercase tracking-wider px-1.5 py-0.2 border rounded-sm font-medium ${stockTier.badgeClass}`}
-                      >
-                        {stockTier.label}
-                      </span>
-                    </div>
+                    <label className="block text-[9.5px] uppercase tracking-wider text-[#777169] mb-1 font-medium">
+                      Stock Units
+                    </label>
                     <Input
                       type="number"
                       min="0"
                       size="compact"
                       surface="elevated"
                       value={v.stock_quantity}
-                      onChange={(e) => handleVariantChange(idx, "stock_quantity", Number(e.target.value))}
+                      onChange={(e) => handleVariantChange(idx, "stock_quantity", e.target.value)}
                     />
-                  </div>
-
-                  {/* Desktop Delete Button */}
-                  <div className="hidden sm:flex sm:col-span-1 items-center justify-end">
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveVariant(idx)}
-                      className="p-2 text-[#777169] hover:text-rose-400 transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
-                      title="Remove this bottle size"
-                      aria-label={`Remove bottle size ${v.size || idx + 1}`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
               </div>

@@ -171,6 +171,23 @@ export default function ProductDetails() {
   const activeVariant = variants.find((v) => v.size === selectedSize) || variants[0];
   const currentPrice = activeVariant ? activeVariant.price : (product?.price || 14500);
   const currentFormattedPrice = activeVariant ? activeVariant.formattedPrice : (product?.formattedPrice || "PKR 14,500");
+
+  const rawVariantComp =
+    activeVariant?.compareAtPrice ??
+    activeVariant?.compare_at_price ??
+    (variants.length <= 1 ? (product?.compareAtPrice ?? product?.compare_at_price) : null);
+  const variantCompPrice =
+    rawVariantComp && !isNaN(Number(rawVariantComp)) && Number(rawVariantComp) > currentPrice
+      ? Number(rawVariantComp)
+      : null;
+  const isVariantOnSale = Boolean(variantCompPrice && variantCompPrice > currentPrice);
+  const variantDiscountPercent = isVariantOnSale
+    ? Math.round(((variantCompPrice - currentPrice) / variantCompPrice) * 100)
+    : 0;
+  const formattedVariantCompareAtPrice = variantCompPrice
+    ? `PKR ${variantCompPrice.toLocaleString("en-PK")}`
+    : null;
+
   const totalPrice = currentPrice * quantity;
   const formattedTotalPrice = "PKR " + Number(totalPrice).toLocaleString("en-PK");
 
@@ -664,10 +681,20 @@ export default function ProductDetails() {
 
               {/* Price Block */}
               <div className="mb-6 pb-6 border-b border-white/[0.08]">
-                <div className="flex items-baseline gap-3">
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1">
+                  {isVariantOnSale && formattedVariantCompareAtPrice && (
+                    <span className="font-serif text-xl sm:text-2xl text-[#777169] line-through decoration-[#777169]/70 font-light">
+                      {formattedVariantCompareAtPrice}
+                    </span>
+                  )}
                   <span className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal tracking-wide">
                     {currentFormattedPrice}
                   </span>
+                  {isVariantOnSale && variantDiscountPercent > 0 && (
+                    <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.16em] px-2.5 py-0.5 rounded-full bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium">
+                      {variantDiscountPercent}% OFF
+                    </span>
+                  )}
                   <span className="text-xs text-[#AAA49B] uppercase tracking-wider font-light">
                     / {selectedSize}
                   </span>
@@ -699,6 +726,7 @@ export default function ProductDetails() {
                   {variants.map((v) => {
                     const isSelected = selectedSize === v.size;
                     const isSoldOut = v.isOutOfStock || (v.stockQuantity !== undefined && v.stockQuantity <= 0);
+                    const vHasDiscount = Boolean(v.compareAtPrice && v.compareAtPrice > v.price);
                     return (
                       <button
                         key={v.id || v.size}
@@ -713,7 +741,14 @@ export default function ProductDetails() {
                         <span>{v.size}</span>
                         {v.formattedPrice && (
                           <span className="block text-[10px] text-[#777169] font-mono mt-0.5">
-                            {v.formattedPrice}
+                            {vHasDiscount && (
+                              <span className="line-through mr-1 opacity-70">
+                                {v.formattedCompareAtPrice || `PKR ${Number(v.compareAtPrice).toLocaleString()}`}
+                              </span>
+                            )}
+                            <span className={isSelected ? "text-[#BFA27A]" : "text-[#AAA49B]"}>
+                              {v.formattedPrice}
+                            </span>
                           </span>
                         )}
                       </button>

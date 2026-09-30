@@ -170,6 +170,11 @@ export default function Cart() {
 
                           {/* Product Price & Subtle Remove */}
                           <div className="text-right min-w-[90px] xs:min-w-[110px]">
+                            {item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product.price) && (
+                              <div className="text-[11px] sm:text-xs text-[#777169] line-through font-serif decoration-[#777169]/70">
+                                PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
+                              </div>
+                            )}
                             <div className="font-serif font-light text-base xs:text-lg sm:text-xl text-[#F2EEE7] tracking-tight">
                               PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
                             </div>
