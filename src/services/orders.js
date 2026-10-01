@@ -5,6 +5,7 @@ const LOCAL_STORAGE_ORDERS_KEY = "scente_admin_orders_cache";
 const LOCAL_STORAGE_PRODUCTS_KEY = "scente_admin_products_cache";
 
 import { incrementLocalPromoUsage } from "./promoCodes.js";
+import { verifyAndCalculateCustomOrderPrice } from "./customBuilder.js";
 
 /**
  * Submit Cash on Delivery Order
@@ -14,8 +15,54 @@ import { incrementLocalPromoUsage } from "./promoCodes.js";
 export async function createCodOrder(customerData, cartItems, promoDetails = null) {
   const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+  // Authoritative server-side/service-side price verification for any custom perfume items
+  const verifiedCustomItems = new Map();
+  for (const item of cartItems) {
+    if (item.isCustom) {
+      // Gather option IDs from selections or configuration
+      let optionIds = Array.isArray(item.selectedOptionIds) ? item.selectedOptionIds : [];
+      if (optionIds.length === 0 && item.selections) {
+        optionIds = Object.values(item.selections)
+          .flatMap((v) => (Array.isArray(v) ? v.map((o) => o?.id) : [v?.id]))
+          .filter(Boolean);
+      }
+
+      const verification = await verifyAndCalculateCustomOrderPrice(optionIds, item.selections || {});
+      if (!verification.isValid) {
+        throw new Error(
+          `Custom fragrance formulation issue: ${verification.error || "Please review your bespoke configuration."}`
+        );
+      }
+
+      // Stale cart price detection: ensure customer is informed if pricing changed since adding to bag
+      const clientUnitPrice = Math.max(0, Math.round(Number(item.price || 0)));
+      if (verification.finalPrice !== clientUnitPrice) {
+        throw new Error(
+          `Your custom fragrance pricing has been updated to PKR ${verification.finalPrice.toLocaleString()} due to recent atelier adjustments. Please review your order before continuing.`
+        );
+      }
+
+      verifiedCustomItems.set(item, {
+        finalPrice: verification.finalPrice,
+        snapshot: verification.snapshot,
+      });
+    }
+  }
+
   const itemsPayload = await Promise.all(
     cartItems.map(async (item) => {
+      if (item.isCustom) {
+        const verified = verifiedCustomItems.get(item);
+        return {
+          is_custom: true,
+          product_name: item.product?.name || "Custom SCENTÉ",
+          size: item.size || "Bespoke",
+          quantity: item.quantity || 1,
+          unit_price: verified?.finalPrice ?? item.price,
+          custom_configuration: verified?.snapshot ?? item.customConfiguration ?? null,
+        };
+      }
+
       let variantId =
         item.variantId ||
         item.variant?.id ||
@@ -41,6 +88,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
       }
 
       return {
+        is_custom: false,
         variant_id: variantId,
         product_id: item.product.id,
         size: item.size || "50ml",
@@ -172,9 +220,27 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     order_items: cartItems.map((item, idx) => {
+      if (item.isCustom) {
+        const verified = verifiedCustomItems.get(item);
+        const verifiedPrice = verified?.finalPrice ?? item.price;
+        return {
+          id: `item-${Date.now()}-${idx}`,
+          is_custom: true,
+          product_id: null,
+          product_name: item.product?.name || "Custom SCENTÉ",
+          product_slug: "custom-scente",
+          size: item.size || "Bespoke",
+          quantity: item.quantity,
+          unit_price: verifiedPrice,
+          line_total: verifiedPrice * item.quantity,
+          custom_configuration: verified?.snapshot ?? item.customConfiguration ?? null,
+        };
+      }
+
       const itemPrice = item.price ?? item.product.price;
       return {
         id: `item-${Date.now()}-${idx}`,
+        is_custom: false,
         product_id: item.product.id,
         product_name: item.product.name,
         product_slug: item.product.slug,
@@ -182,6 +248,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
         quantity: item.quantity,
         unit_price: itemPrice,
         line_total: itemPrice * item.quantity,
+        custom_configuration: null,
       };
     }),
     isRemote: false,
@@ -193,10 +260,11 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
     existingOrders.unshift(localOrder);
     localStorage.setItem(LOCAL_STORAGE_ORDERS_KEY, JSON.stringify(existingOrders));
 
-    // Deduct stock in local products cache
+    // Deduct stock in local products cache (only for standard catalog products)
     const existingProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PRODUCTS_KEY) || "[]");
     if (existingProducts.length > 0) {
       cartItems.forEach((cartItem) => {
+        if (cartItem.isCustom) return; // Custom bespoke perfumes do not deduct catalog inventory
         const prod = existingProducts.find((p) => p.id === cartItem.product.id);
         if (prod) {
           // Decrement specific variant stock
@@ -314,6 +382,8 @@ export async function trackOrderPublic(reference, phone) {
               quantity: i.quantity,
               unit_price: i.unit_price,
               line_total: i.line_total,
+              is_custom: Boolean(i.is_custom),
+              custom_configuration: i.custom_configuration || null,
             })),
           },
           error: null,

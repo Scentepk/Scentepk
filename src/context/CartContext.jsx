@@ -123,21 +123,70 @@ export function CartProvider({ children }) {
     return true;
   };
 
-  // Remove from cart
-  const removeFromCart = (productId, size) => {
+  // Add custom perfume item to bag
+  const addCustomToCart = ({
+    customConfiguration,
+    selections = {},
+    finalPrice = 0,
+    size = "Bespoke",
+    quantity = 1,
+    imageUrl = null,
+  }) => {
+    const verifiedPrice = Math.max(0, Math.round(Number(finalPrice || 0)));
+    const formattedPrice = `PKR ${verifiedPrice.toLocaleString("en-PK")}`;
+    const cartItemId = `custom_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+    const customCartItem = {
+      cartItemId,
+      isCustom: true,
+      product: {
+        id: "custom-scente",
+        name: "Custom SCENTÉ",
+        slug: "custom-scente",
+        subtitle: "Bespoke Extrait Formulation",
+        price: verifiedPrice,
+        formattedPrice,
+        image: imageUrl || null,
+      },
+      size: size || "Bespoke",
+      quantity: Math.max(1, Math.round(Number(quantity) || 1)),
+      price: verifiedPrice,
+      compareAtPrice: null,
+      formattedPrice,
+      formattedCompareAtPrice: null,
+      variantId: null,
+      variant: null,
+      isUnavailable: false,
+      availableStock: 99,
+      selections,
+      customConfiguration,
+    };
+
+    setCartItems((prevItems) => [...prevItems, customCartItem]);
+    return customCartItem;
+  };
+
+  // Remove from cart (supports both standard product ID + size, and custom cartItemId)
+  const removeFromCart = (productIdOrCartItemId, size) => {
     setCartItems((prevItems) =>
-      prevItems.filter(
-        (item) => !(item.product.id === productId && item.size === size)
-      )
+      prevItems.filter((item) => {
+        if (item.cartItemId && item.cartItemId === productIdOrCartItemId) {
+          return false;
+        }
+        return !(item.product.id === productIdOrCartItemId && item.size === size);
+      })
     );
   };
 
   // Update quantity (with strict minimum = 1, prevent <= 0 through decrement)
-  const updateQuantity = (productId, size, newQty) => {
+  const updateQuantity = (productIdOrCartItemId, size, newQty) => {
     if (newQty < 1) return; // Prevent quantity becoming 0 via decrement
     setCartItems((prevItems) =>
       prevItems.map((item) => {
-        if (item.product.id === productId && item.size === size) {
+        if (
+          (item.cartItemId && item.cartItemId === productIdOrCartItemId) ||
+          (item.product.id === productIdOrCartItemId && item.size === size)
+        ) {
           return { ...item, quantity: newQty };
         }
         return item;
@@ -307,7 +356,7 @@ export function CartProvider({ children }) {
           item.product.formattedPrice ||
           `PKR ${itemPrice.toLocaleString()}`;
         return {
-          productId: item.product.id,
+          productId: item.isCustom ? null : item.product.id,
           productName: item.product.name,
           slug: item.product.slug,
           size: item.size,
@@ -317,6 +366,8 @@ export function CartProvider({ children }) {
           formattedUnitPrice: itemFormattedPrice,
           lineTotal: itemPrice * item.quantity,
           formattedLineTotal: `PKR ${(itemPrice * item.quantity).toLocaleString()}`,
+          isCustom: Boolean(item.isCustom),
+          customConfiguration: item.customConfiguration || null,
         };
       }),
       formattedTotal: `PKR ${orderPayload.total.toLocaleString()}`,
@@ -342,6 +393,7 @@ export function CartProvider({ children }) {
         buyNowItem,
         clearBuyNow,
         addToCart,
+        addCustomToCart,
         buyNow,
         removeFromCart,
         updateQuantity,

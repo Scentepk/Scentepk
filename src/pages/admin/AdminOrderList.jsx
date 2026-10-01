@@ -11,7 +11,6 @@ import {
   Loader2,
   CheckCircle2,
   MapPin,
-  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
@@ -21,6 +20,7 @@ export default function AdminOrderList() {
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [isLoading, setIsLoading] = useState(true);
   const [orderToDelete, setOrderToDelete] = useState(null);
@@ -35,8 +35,14 @@ export default function AdminOrderList() {
     { value: "lowest", label: "Lowest Total" },
   ];
 
+  const typeOptions = [
+    { id: "all", label: "All Formulations" },
+    { id: "bespoke", label: "Bespoke Orders" },
+    { id: "standard", label: "Catalog Only" },
+  ];
+
   const statuses = [
-    { id: "all", label: "All Orders" },
+    { id: "all", label: "All Statuses" },
     { id: "pending", label: "Pending" },
     { id: "confirmed", label: "Confirmed" },
     { id: "processing", label: "Processing" },
@@ -45,13 +51,19 @@ export default function AdminOrderList() {
     { id: "cancelled", label: "Cancelled" },
   ];
 
+  const [loadError, setLoadError] = useState("");
+
   const loadOrders = async () => {
     setIsLoading(true);
-    const { data } = await getAllOrdersAdmin({
+    setLoadError("");
+    const { data, error } = await getAllOrdersAdmin({
       search,
       status: statusFilter,
       sortBy,
     });
+    if (error) {
+      setLoadError("Unable to synchronize orders with atelier database. Please refresh.");
+    }
     if (data) setOrders(data);
     setIsLoading(false);
   };
@@ -97,6 +109,16 @@ export default function AdminOrderList() {
         return "bg-zinc-800 text-zinc-300 border-zinc-700";
     }
   };
+
+  const displayedOrders = orders.filter((ord) => {
+    if (typeFilter === "bespoke") {
+      return ord.order_items?.some((i) => Boolean(i.is_custom));
+    }
+    if (typeFilter === "standard") {
+      return !ord.order_items?.some((i) => Boolean(i.is_custom));
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6 sm:space-y-8 w-full min-w-0">
@@ -155,15 +177,24 @@ export default function AdminOrderList() {
           />
         </div>
 
-        {/* Status Dropdown & Sorting */}
-        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
+        {/* Status Dropdown, Type Filter & Sorting */}
+        <div className="grid grid-cols-1 sm:flex sm:items-center gap-2 sm:gap-3">
           {/* Status filter */}
           <CustomSelect
             value={statusFilter}
             onChange={setStatusFilter}
             options={statuses}
             size="sm"
-            className="w-full sm:w-44"
+            className="w-full sm:w-40"
+          />
+
+          {/* Type filter */}
+          <CustomSelect
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={typeOptions}
+            size="sm"
+            className="w-full sm:w-40"
           />
 
           {/* Sort By */}
@@ -172,73 +203,144 @@ export default function AdminOrderList() {
             onChange={setSortBy}
             options={sortOptions}
             size="sm"
-            className="w-full sm:w-44"
+            className="w-full sm:w-40"
             align="right"
           />
         </div>
       </div>
 
+      {/* 2B. ERROR NOTIFICATION */}
+      {loadError && (
+        <div className="bg-rose-950/30 border border-rose-500/40 text-rose-200 px-4 py-3 text-xs rounded-sm flex items-center space-x-2 font-sans">
+          <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+          <span>{loadError}</span>
+        </div>
+      )}
+
       {/* 3. ORDERS VIEW (DESKTOP TABLE & MOBILE CARDS) */}
       <div className="bg-[#121110] border border-[rgba(242,238,231,0.06)] shadow-2xl overflow-hidden rounded-sm">
-        {orders.length > 0 ? (
-          <>
-            {/* DESKTOP TABLE VIEW (>= 768px) */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-left text-xs font-sans">
-                <thead>
-                  <tr className="border-b border-[rgba(242,238,231,0.06)] text-[9.5px] uppercase tracking-[0.2em] text-[#777169] bg-[#0D0D0C]/40">
-                    <th className="py-3.5 px-5 font-medium">Reference</th>
-                    <th className="py-3.5 px-4 font-medium">Customer</th>
-                    <th className="py-3.5 px-4 font-medium">City</th>
-                    <th className="py-3.5 px-4 font-medium">Date</th>
-                    <th className="py-3.5 px-4 font-medium">Total</th>
-                    <th className="py-3.5 px-4 font-medium">Status</th>
-                    <th className="py-3.5 px-5 font-medium text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[rgba(242,238,231,0.04)]">
-                  {orders.map((ord) => (
-                    <tr key={ord.id || ord.reference} className="hover:bg-[#181714]/60 transition-colors">
-                      {/* Reference */}
-                      <td className="py-3.5 px-5 font-mono text-[#F2EEE7] font-medium">
-                        <Link
-                          to={`/admin/orders/${ord.id || ord.reference}`}
-                          className="hover:text-[#BFA27A]"
-                        >
-                          {ord.reference}
-                        </Link>
-                      </td>
+            {displayedOrders.length > 0 ? (
+              <>
+                {/* DESKTOP TABLE VIEW (>= 768px) */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-xs font-sans">
+                    <thead>
+                      <tr className="border-b border-[rgba(242,238,231,0.06)] text-[9.5px] uppercase tracking-[0.2em] text-[#777169] bg-[#0D0D0C]/40">
+                        <th className="py-3.5 px-5 font-medium">Reference</th>
+                        <th className="py-3.5 px-4 font-medium">Customer</th>
+                        <th className="py-3.5 px-4 font-medium">City</th>
+                        <th className="py-3.5 px-4 font-medium">Date</th>
+                        <th className="py-3.5 px-4 font-medium">Total</th>
+                        <th className="py-3.5 px-4 font-medium">Status</th>
+                        <th className="py-3.5 px-5 font-medium text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[rgba(242,238,231,0.04)]">
+                      {displayedOrders.map((ord) => (
+                        <tr key={ord.id || ord.reference} className="hover:bg-[#181714]/60 transition-colors">
+                          {/* Reference */}
+                          <td className="py-3.5 px-5 font-mono text-[#F2EEE7] font-medium">
+                            <div className="flex items-center space-x-2">
+                              <Link
+                                to={`/admin/orders/${ord.id || ord.reference}`}
+                                className="hover:text-[#BFA27A]"
+                              >
+                                {ord.reference}
+                              </Link>
+                              {ord.order_items?.some((i) => Boolean(i.is_custom)) && (
+                                <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">
+                                  BESPOKE
+                                </span>
+                              )}
+                            </div>
+                          </td>
 
-                      {/* Customer Info */}
-                      <td className="py-3.5 px-4">
-                        <p className="font-serif text-sm text-[#F2EEE7] font-normal">
-                          {ord.customer_full_name}
-                        </p>
-                        <p className="text-[10px] text-[#777169] font-mono">
-                          {ord.customer_phone}
-                        </p>
-                      </td>
+                          {/* Customer Info */}
+                          <td className="py-3.5 px-4">
+                            <p className="font-serif text-sm text-[#F2EEE7] font-normal">
+                              {ord.customer_full_name}
+                            </p>
+                            <p className="text-[10px] text-[#777169] font-mono">
+                              {ord.customer_phone}
+                            </p>
+                          </td>
 
-                      {/* City */}
-                      <td className="py-3.5 px-4 text-[#AAA49B]">
-                        {ord.city}
-                      </td>
+                          {/* City */}
+                          <td className="py-3.5 px-4 text-[#AAA49B]">
+                            {ord.city}
+                          </td>
 
-                      {/* Date */}
-                      <td className="py-3.5 px-4 text-[#777169] text-[10.5px]">
-                        {new Date(ord.created_at).toLocaleDateString("en-PK", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </td>
+                          {/* Date */}
+                          <td className="py-3.5 px-4 text-[#777169] text-[10.5px]">
+                            {new Date(ord.created_at).toLocaleDateString("en-PK", {
+                              day: "numeric",
+                              month: "short",
+                            })}
+                          </td>
 
-                      {/* Amount */}
-                      <td className="py-3.5 px-4 font-serif text-sm text-[#F2EEE7]">
-                        PKR {Number(ord.total || 0).toLocaleString()}
-                      </td>
+                          {/* Amount */}
+                          <td className="py-3.5 px-4 font-serif text-sm text-[#F2EEE7]">
+                            PKR {Number(ord.total || 0).toLocaleString()}
+                          </td>
 
-                      {/* Status */}
-                      <td className="py-3.5 px-4">
+                          {/* Status */}
+                          <td className="py-3.5 px-4">
+                            <span
+                              className={`inline-block text-[9px] uppercase tracking-wider px-2 py-0.5 border ${getStatusBadge(
+                                ord.status
+                              )}`}
+                            >
+                              {ord.status}
+                            </span>
+                          </td>
+
+                          {/* Action */}
+                          <td className="py-3.5 px-5 text-right whitespace-nowrap">
+                            <div className="inline-flex items-center space-x-1.5 justify-end">
+                              <Link
+                                to={`/admin/orders/${ord.id || ord.reference}`}
+                                className="p-1.5 text-[#AAA49B] hover:text-[#BFA27A] transition-colors inline-block"
+                                title="View order details"
+                                aria-label={`View order ${ord.reference}`}
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setDeleteError("");
+                                  setOrderToDelete(ord);
+                                }}
+                                className="p-1.5 text-[#AAA49B] hover:text-rose-400 transition-colors inline-block cursor-pointer"
+                                title="Delete order"
+                                aria-label={`Delete order ${ord.reference}`}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE ORDER CARDS VIEW (< 768px) */}
+                <div className="md:hidden divide-y divide-[rgba(242,238,231,0.06)] font-sans text-xs">
+                  {displayedOrders.map((ord) => (
+                    <div key={ord.id || ord.reference} className="p-4 space-y-3">
+                      {/* Card Header: Reference + Status */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-mono text-[#F2EEE7] font-medium text-sm">
+                            {ord.reference}
+                          </span>
+                          {ord.order_items?.some((i) => Boolean(i.is_custom)) && (
+                            <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">
+                              BESPOKE
+                            </span>
+                          )}
+                        </div>
                         <span
                           className={`inline-block text-[9px] uppercase tracking-wider px-2 py-0.5 border ${getStatusBadge(
                             ord.status
@@ -246,56 +348,7 @@ export default function AdminOrderList() {
                         >
                           {ord.status}
                         </span>
-                      </td>
-
-                      {/* Action */}
-                      <td className="py-3.5 px-5 text-right whitespace-nowrap">
-                        <div className="inline-flex items-center space-x-1.5 justify-end">
-                          <Link
-                            to={`/admin/orders/${ord.id || ord.reference}`}
-                            className="p-1.5 text-[#AAA49B] hover:text-[#BFA27A] transition-colors inline-block"
-                            title="View order details"
-                            aria-label={`View order ${ord.reference}`}
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setDeleteError("");
-                              setOrderToDelete(ord);
-                            }}
-                            className="p-1.5 text-[#AAA49B] hover:text-rose-400 transition-colors inline-block cursor-pointer"
-                            title="Delete order"
-                            aria-label={`Delete order ${ord.reference}`}
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* MOBILE ORDER CARDS VIEW (< 768px) */}
-            <div className="md:hidden divide-y divide-[rgba(242,238,231,0.06)] font-sans text-xs">
-              {orders.map((ord) => (
-                <div key={ord.id || ord.reference} className="p-4 space-y-3">
-                  {/* Card Header: Reference + Status */}
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[#F2EEE7] font-medium text-sm">
-                      {ord.reference}
-                    </span>
-                    <span
-                      className={`inline-block text-[9px] uppercase tracking-wider px-2 py-0.5 border ${getStatusBadge(
-                        ord.status
-                      )}`}
-                    >
-                      {ord.status}
-                    </span>
-                  </div>
+                      </div>
 
                   {/* Customer & Destination */}
                   <div className="space-y-1">

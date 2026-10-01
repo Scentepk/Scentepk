@@ -18,6 +18,7 @@ import {
   Save,
   Clock,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
@@ -254,6 +255,12 @@ export default function AdminOrderDetail() {
             >
               {currentStatus}
             </span>
+            {items.some((i) => Boolean(i.is_custom)) && (
+              <span className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.16em] px-2.5 py-1 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/40 font-medium rounded-xs">
+                <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                <span>BESPOKE CREATION</span>
+              </span>
+            )}
           </div>
           <p className="text-xs font-sans text-[#AAA49B] font-light">
             Placed on{" "}
@@ -582,59 +589,230 @@ export default function AdminOrderDetail() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(242,238,231,0.04)]">
-                  {items.map((item, idx) => (
-                    <tr key={item.id || idx}>
-                      <td className="py-4">
-                        <p className="font-serif text-base text-[#F2EEE7]">
-                          {item.product_name}
-                        </p>
-                        <p className="text-[10px] font-mono text-[#777169]">
-                          /{item.product_slug}
-                        </p>
-                      </td>
-                      <td className="py-4 uppercase text-[#AAA49B]">
-                        {item.size || "50ml"}
-                      </td>
-                      <td className="py-4 text-center font-mono text-[#F2EEE7]">
-                        {item.quantity}
-                      </td>
-                      <td className="py-4 text-right font-serif text-[#AAA49B]">
-                        PKR {Number(item.unit_price || 0).toLocaleString()}
-                      </td>
-                      <td className="py-4 text-right font-serif text-[#F2EEE7] font-medium">
-                        PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
+                  {items.map((item, idx) => {
+                    const isCustom = Boolean(item.is_custom);
+                    const config = item.custom_configuration;
+                    return (
+                      <tr key={item.id || idx} className="align-top">
+                        <td className="py-4">
+                          <div className="flex items-center space-x-2">
+                            <p className="font-serif text-base text-[#F2EEE7]">
+                              {item.product_name}
+                            </p>
+                            {isCustom && (
+                              <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">
+                                BESPOKE
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] font-mono text-[#777169]">
+                            /{item.product_slug || (isCustom ? "custom-scente" : "product")}
+                          </p>
+
+                          {/* Bespoke Formulation Specification */}
+                          {isCustom && (
+                            <div className="mt-3 p-3.5 bg-[#0D0D0C] border border-[#BFA27A]/30 rounded-xs space-y-3 font-sans text-xs max-w-xl">
+                              <div className="flex items-center justify-between border-b border-[rgba(242,238,231,0.06)] pb-2">
+                                <span className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#BFA27A] flex items-center gap-1.5">
+                                  <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                                  <span>ATELIER FORMULATION SPECIFICATION</span>
+                                </span>
+                                {config?.formatted_total_price && (
+                                  <span className="text-[9.5px] uppercase tracking-wider text-[#AAA49B] font-mono">
+                                    Verified: {config.formatted_total_price}
+                                  </span>
+                                )}
+                              </div>
+
+                              {config?.summary && (
+                                <p className="text-[11px] text-[#F2EEE7] font-serif italic border-l-2 border-[#BFA27A] pl-2.5 py-0.5">
+                                  "{config.summary}"
+                                </p>
+                              )}
+
+                              {config?.groups && config.groups.length > 0 ? (
+                                <div className="space-y-2 pt-1">
+                                  {config.groups.map((grp, gIdx) => (
+                                    <div key={grp.group_id || grp.group_slug || gIdx} className="space-y-1">
+                                      <span className="text-[9.5px] uppercase tracking-wider text-[#8E887F] block font-medium">
+                                        {grp.group_name}
+                                      </span>
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-1">
+                                        {grp.selected_options?.map((opt, oIdx) => (
+                                          <div
+                                            key={opt.id || opt.slug || oIdx}
+                                            className="flex items-center justify-between text-xs bg-[#141311] px-2.5 py-1.5 border border-[rgba(242,238,231,0.04)]"
+                                          >
+                                            <span className="text-[#F2EEE7] font-light">
+                                              • {opt.name}
+                                            </span>
+                                            {Number(opt.price_adjustment) > 0 ? (
+                                              <span className="text-[10px] font-mono text-[#BFA27A] ml-2 shrink-0">
+                                                +PKR {Number(opt.price_adjustment).toLocaleString()}
+                                              </span>
+                                            ) : (
+                                              <span className="text-[9px] text-[#777169] uppercase tracking-wider ml-2 shrink-0">
+                                                Included
+                                              </span>
+                                            )}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-[11px] text-[#AAA49B] font-light italic">
+                                  Bespoke fragrance creation (Standard formulation parameters apply).
+                                </p>
+                              )}
+
+                              {/* Historical Price Composition */}
+                              {config && (
+                                <div className="border-t border-[rgba(242,238,231,0.06)] pt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#AAA49B]">
+                                  <div className="flex items-center space-x-3">
+                                    <span>
+                                      Base:{" "}
+                                      <strong className="font-mono text-[#F2EEE7]">
+                                        PKR {Number(config.base_price || 0).toLocaleString()}
+                                      </strong>
+                                    </span>
+                                    {Number(config.total_price) > Number(config.base_price) && (
+                                      <span>
+                                        Adjustments:{" "}
+                                        <strong className="font-mono text-[#BFA27A]">
+                                          +PKR {(Number(config.total_price) - Number(config.base_price)).toLocaleString()}
+                                        </strong>
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <span>Verified Total: </span>
+                                    <strong className="font-mono text-[#F2EEE7]">
+                                      PKR {Number(item.unit_price || config.total_price || 0).toLocaleString()}
+                                    </strong>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-4 uppercase text-[#AAA49B]">
+                          {item.size || "50ml"}
+                        </td>
+                        <td className="py-4 text-center font-mono text-[#F2EEE7]">
+                          {item.quantity}
+                        </td>
+                        <td className="py-4 text-right font-serif text-[#AAA49B]">
+                          PKR {Number(item.unit_price || 0).toLocaleString()}
+                        </td>
+                        <td className="py-4 text-right font-serif text-[#F2EEE7] font-medium">
+                          PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
             {/* MOBILE LINE ITEMS CARDS (< 768px) */}
             <div className="md:hidden divide-y divide-[rgba(242,238,231,0.06)] font-sans text-xs">
-              {items.map((item, idx) => (
-                <div key={item.id || idx} className="py-3.5 space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-serif text-base text-[#F2EEE7]">
-                        {item.product_name}
-                      </p>
-                      <p className="text-[10px] font-mono text-[#777169]">
-                        /{item.product_slug} • {item.size || "50ml"}
-                      </p>
+              {items.map((item, idx) => {
+                const isCustom = Boolean(item.is_custom);
+                const config = item.custom_configuration;
+                return (
+                  <div key={item.id || idx} className="py-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <p className="font-serif text-base text-[#F2EEE7]">
+                            {item.product_name}
+                          </p>
+                          {isCustom && (
+                            <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">
+                              BESPOKE
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] font-mono text-[#777169]">
+                          /{item.product_slug || (isCustom ? "custom-scente" : "product")} • {item.size || "50ml"}
+                        </p>
+                      </div>
+
+                      <span className="font-serif text-sm text-[#F2EEE7] font-medium">
+                        PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
+                      </span>
                     </div>
 
-                    <span className="font-serif text-sm text-[#F2EEE7] font-medium">
-                      PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
-                    </span>
-                  </div>
+                    {/* Bespoke Mobile Formulation Card */}
+                    {isCustom && (
+                      <div className="p-3 bg-[#0D0D0C] border border-[#BFA27A]/30 rounded-xs space-y-2.5 font-sans text-xs">
+                        <div className="flex items-center justify-between border-b border-[rgba(242,238,231,0.06)] pb-1.5">
+                          <span className="text-[9.5px] uppercase tracking-[0.16em] font-medium text-[#BFA27A] flex items-center gap-1">
+                            <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                            <span>FORMULATION</span>
+                          </span>
+                          {config?.formatted_total_price && (
+                            <span className="text-[9px] uppercase font-mono text-[#AAA49B]">
+                              {config.formatted_total_price}
+                            </span>
+                          )}
+                        </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-[#AAA49B] pt-1">
-                    <span>Qty: <strong className="font-mono text-[#F2EEE7]">{item.quantity}</strong></span>
-                    <span>Unit: PKR {Number(item.unit_price || 0).toLocaleString()}</span>
+                        {config?.summary && (
+                          <p className="text-[11px] text-[#F2EEE7] font-serif italic border-l-2 border-[#BFA27A] pl-2 py-0.5">
+                            "{config.summary}"
+                          </p>
+                        )}
+
+                        {config?.groups && config.groups.length > 0 && (
+                          <div className="space-y-2 pt-1">
+                            {config.groups.map((grp, gIdx) => (
+                              <div key={grp.group_id || grp.group_slug || gIdx} className="space-y-1">
+                                <span className="text-[9px] uppercase tracking-wider text-[#8E887F] block font-medium">
+                                  {grp.group_name}
+                                </span>
+                                <div className="space-y-1 pl-1">
+                                  {grp.selected_options?.map((opt, oIdx) => (
+                                    <div
+                                      key={opt.id || opt.slug || oIdx}
+                                      className="flex items-center justify-between text-[11px] bg-[#141311] px-2 py-1 border border-[rgba(242,238,231,0.04)]"
+                                    >
+                                      <span className="text-[#F2EEE7] font-light">• {opt.name}</span>
+                                      {Number(opt.price_adjustment) > 0 ? (
+                                        <span className="text-[10px] font-mono text-[#BFA27A]">
+                                          +PKR {Number(opt.price_adjustment).toLocaleString()}
+                                        </span>
+                                      ) : (
+                                        <span className="text-[8.5px] text-[#777169] uppercase">
+                                          Included
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {config && (
+                          <div className="border-t border-[rgba(242,238,231,0.06)] pt-2 text-[10.5px] text-[#AAA49B] flex items-center justify-between">
+                            <span>Base: PKR {Number(config.base_price || 0).toLocaleString()}</span>
+                            <span>Unit Total: PKR {Number(item.unit_price || config.total_price || 0).toLocaleString()}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-[11px] text-[#AAA49B] pt-1">
+                      <span>Qty: <strong className="font-mono text-[#F2EEE7]">{item.quantity}</strong></span>
+                      <span>Unit: PKR {Number(item.unit_price || 0).toLocaleString()}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         ) : (

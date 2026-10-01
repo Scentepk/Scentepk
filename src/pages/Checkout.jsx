@@ -4,8 +4,7 @@ import { useCart } from "../context/CartContext";
 import { Check, ShieldCheck, ArrowLeft, Truck, AlertCircle, Loader2, Copy, Search, CheckCircle2, Tag, X } from "lucide-react";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { motion, AnimatePresence } from "framer-motion";
-import { LUXURY_EASE } from "../lib/animations";
+import { motion } from "framer-motion";
 import SEO from "../components/SEO";
 import { validatePromoCode } from "../services/promoCodes";
 
@@ -467,7 +466,14 @@ export default function Checkout() {
                     <div key={idx} className="py-3 flex justify-between items-center text-xs">
                       <div>
                         <p className="font-serif font-light text-base text-[#F2EEE7]">{item.productName}</p>
-                        <p className="text-[10.5px] text-[#AAA49B]">{item.quantity} × {item.size} Extrait de Parfum</p>
+                        <p className="text-[10.5px] text-[#AAA49B]">
+                          {item.quantity} × {item.size} {item.isCustom ? "Bespoke Extrait" : "Extrait de Parfum"}
+                        </p>
+                        {item.customConfiguration?.summary && (
+                          <p className="text-[10px] text-[#BFA27A] font-light mt-0.5 max-w-md">
+                            {item.customConfiguration.summary}
+                          </p>
+                        )}
                       </div>
                       <span className="font-sans text-sm text-[#F2EEE7]">
                         {item.formattedLineTotal}
@@ -799,29 +805,40 @@ export default function Checkout() {
 
               {/* Items List */}
               <div className="space-y-3 max-h-64 overflow-y-auto pr-1 divide-y divide-[rgba(242,238,231,0.04)] font-sans">
-                {checkoutItems.map((item) => (
-                  <div
-                    key={`${item.product.id}-${item.size}`}
-                    className="pt-3 first:pt-0 flex justify-between items-start text-xs text-[#F2EEE7]"
-                  >
-                    <div>
-                      <p className="font-serif font-light text-base text-[#F2EEE7]">{item.product.name}</p>
-                      <p className="text-[10.5px] text-[#AAA49B]">
-                        {item.quantity} × {item.size} • {item.formattedPrice || item.product.formattedPrice}
-                      </p>
+                {checkoutItems.map((item) => {
+                  const isCustom = Boolean(item.isCustom);
+                  const itemKey = item.cartItemId || `${item.product?.id}-${item.size}`;
+                  return (
+                    <div
+                      key={itemKey}
+                      className="pt-3 first:pt-0 flex justify-between items-start text-xs text-[#F2EEE7]"
+                    >
+                      <div className="pr-2">
+                        <p className="font-serif font-light text-base text-[#F2EEE7]">
+                          {item.product?.name || "Custom SCENTÉ"}
+                        </p>
+                        <p className="text-[10.5px] text-[#AAA49B]">
+                          {item.quantity} × {item.size || (isCustom ? "Bespoke" : "50ml")} • {item.formattedPrice || item.product?.formattedPrice}
+                        </p>
+                        {isCustom && item.customConfiguration?.summary && (
+                          <p className="text-[10px] text-[#BFA27A] font-light mt-0.5 leading-relaxed max-w-xs">
+                            {item.customConfiguration.summary}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        {!isCustom && item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product?.price) && (
+                          <div className="text-[10.5px] text-[#777169] line-through font-serif decoration-[#777169]/70">
+                            PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
+                          </div>
+                        )}
+                        <span className="font-sans text-sm text-[#F2EEE7]">
+                          PKR {((item.price ?? item.product?.price) * item.quantity).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      {item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product.price) && (
-                        <div className="text-[10.5px] text-[#777169] line-through font-serif decoration-[#777169]/70">
-                          PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
-                        </div>
-                      )}
-                      <span className="font-sans text-sm text-[#F2EEE7]">
-                        PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Optional Promo Code Box */}

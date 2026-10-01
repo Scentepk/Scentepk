@@ -45,7 +45,7 @@ export default function AdminProductList() {
     { id: "testers", label: "Testers" },
   ];
 
-  // Evaluates whether a product has sufficient metadata for Find Your Scent recommendations
+  // Evaluates whether a product has complete olfactive profiling metadata
   const isProfileReady = (prod) => {
     const profile = prod.fragrance_profile || prod.fragranceProfile;
     if (!profile || typeof profile !== "object") return false;

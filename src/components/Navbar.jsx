@@ -204,7 +204,6 @@ export default function Navbar() {
   const primaryNavLinks = [
     { name: "HOME", path: "/" },
     { name: "SHOP", path: "/shop" },
-    { name: "FIND YOUR SCENT", path: "/find-your-scent" },
     { name: "TRACK ORDER", path: "/track" },
   ];
 

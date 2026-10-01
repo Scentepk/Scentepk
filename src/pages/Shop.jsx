@@ -3,7 +3,7 @@ import { getActiveProducts, getVerifiedCachedActiveProducts } from "../services/
 import ProductCard from "../components/ProductCard";
 import Button from "../components/Button";
 import ScrollReveal from "../components/ScrollReveal";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
@@ -11,6 +11,7 @@ import {
   X,
   RotateCcw,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { LUXURY_EASE } from "../lib/animations";
 import SEO from "../components/SEO";
@@ -719,6 +720,28 @@ export default function Shop() {
                 resetAllFilters={resetAllFilters}
                 counts={counts}
               />
+
+              {/* Bespoke Fragrance Atelier CTA Card */}
+              <div className="mt-8 p-4 rounded-xl bg-[#121110] border border-[rgba(242,238,231,0.08)] space-y-2.5">
+                <div className="flex items-center gap-1.5 text-[#BFA27A]">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase font-sans tracking-[0.2em] font-medium">
+                    BESPOKE ATELIER
+                  </span>
+                </div>
+                <p className="text-xs font-serif text-[#F2EEE7] leading-snug">
+                  Looking for a scent made exclusively for you?
+                </p>
+                <p className="text-[11px] font-sans text-[#AAA49B] font-light leading-relaxed">
+                  Select your size, profile and notes in our custom builder.
+                </p>
+                <Link
+                  to="/build-your-scent"
+                  className="inline-block pt-1 text-[11px] uppercase font-sans tracking-[0.14em] text-[#BFA27A] hover:text-[#F2EEE7] font-semibold transition-colors"
+                >
+                  Build Your Scent →
+                </Link>
+              </div>
             </aside>
 
             {/* PRODUCT GRID (RESPONSIVE COLUMNS) */}

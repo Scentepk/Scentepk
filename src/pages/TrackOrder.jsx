@@ -827,27 +827,84 @@ export default function TrackOrder() {
                 </span>
 
                 <div className="divide-y divide-[rgba(242,238,231,0.04)] border-t border-b border-[rgba(242,238,231,0.06)] py-2 text-xs">
-                  {orderData.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="py-3 flex justify-between items-center text-[#F2EEE7]"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <Package className="w-4 h-4 text-[#BFA27A] shrink-0" />
-                        <div>
-                          <p className="font-serif text-sm text-[#F2EEE7] font-normal">
-                            {item.product_name}
-                          </p>
-                          <p className="text-[10.5px] text-[#777169]">
-                            {item.quantity} × {item.size || "50ml"}
-                          </p>
+                  {orderData.items.map((item, idx) => {
+                    const isCustom = Boolean(item.is_custom);
+                    const config = item.custom_configuration;
+                    return (
+                      <div
+                        key={idx}
+                        className="py-3.5 space-y-2 text-[#F2EEE7]"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-start space-x-3">
+                            {isCustom ? (
+                              <Sparkles className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5" />
+                            ) : (
+                              <Package className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5" />
+                            )}
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <p className="font-serif text-sm text-[#F2EEE7] font-normal">
+                                  {isCustom ? (item.product_name || "Custom SCENTÉ") : item.product_name}
+                                </p>
+                                {isCustom && (
+                                  <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">
+                                    BESPOKE
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[10.5px] text-[#777169] mt-0.5">
+                                {item.quantity} × {item.size || "50ml"} {isCustom ? "Bespoke Creation" : "Extrait de Parfum"}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="font-serif text-sm font-medium">
+                            PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
+                          </span>
                         </div>
+
+                        {/* Customer-Facing Bespoke Formulation Presentation */}
+                        {isCustom && config && (
+                          <div className="ml-7 p-3 bg-[#121110] border border-[rgba(242,238,231,0.06)] rounded-xs space-y-2 text-xs font-sans">
+                            <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-[#BFA27A] font-medium border-b border-[rgba(242,238,231,0.04)] pb-1.5">
+                              <span>YOUR FORMULATION</span>
+                              <span className="text-[#8E887F] font-normal normal-case font-serif italic text-xs">
+                                Atelier Custom Blend
+                              </span>
+                            </div>
+
+                            {config.summary && (
+                              <p className="text-[11px] text-[#F2EEE7] font-serif italic">
+                                "{config.summary}"
+                              </p>
+                            )}
+
+                            {config.groups && config.groups.length > 0 && (
+                              <div className="space-y-1.5 pt-1">
+                                {config.groups.map((grp, gIdx) => (
+                                  <div key={grp.group_id || grp.group_slug || gIdx} className="flex flex-col sm:flex-row sm:items-baseline text-[11px]">
+                                    <span className="text-[#8E887F] sm:w-28 shrink-0 font-medium">
+                                      {grp.group_name}:
+                                    </span>
+                                    <span className="text-[#AAA49B]">
+                                      {grp.selected_options?.map((opt) => opt.name).join(", ")}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {config.base_price && (
+                              <div className="pt-2 border-t border-[rgba(242,238,231,0.04)] flex items-center justify-between text-[10.5px] text-[#8E887F]">
+                                <span>Base: PKR {Number(config.base_price).toLocaleString()}</span>
+                                <span>Total: PKR {Number(item.unit_price || config.total_price || 0).toLocaleString()}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <span className="font-serif text-sm">
-                        PKR {Number(item.line_total || item.unit_price * item.quantity).toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Settlement Summary */}

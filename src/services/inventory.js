@@ -103,8 +103,9 @@ export async function validateCartStock(cartItems = []) {
     };
   }
 
-  // Collect all variant IDs
+  // Collect all variant IDs (excluding custom bespoke perfumes)
   const variantIds = cartItems
+    .filter((item) => !item.isCustom)
     .map((item) => item.variantId || item.variant?.id || item.product?.variants?.find((v) => v.size === item.size)?.id)
     .filter(Boolean);
 
@@ -116,6 +117,12 @@ export async function validateCartStock(cartItems = []) {
   let hasChanges = false;
 
   for (const item of cartItems) {
+    if (item.isCustom) {
+      // Custom bespoke perfumes do not have static catalog variant stock
+      updatedItems.push(item);
+      continue;
+    }
+
     const vId =
       item.variantId ||
       item.variant?.id ||

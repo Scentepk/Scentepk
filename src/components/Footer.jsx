@@ -48,10 +48,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/find-your-scent"
+                  to="/build-your-scent"
                   className="text-[#AAA49B] hover:text-[#BFA27A] transition-colors duration-200 block py-1.5 whitespace-nowrap"
                 >
-                  Find Your Scent
+                  Build Your Scent
                 </Link>
               </li>
               <li>

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { SmoothScrollProvider } from "./context/SmoothScrollProvider";
@@ -13,7 +13,7 @@ import Home from "./pages/Home";
 // Secondary Storefront Routes (Lazy Loaded with Code Splitting)
 const Shop = lazy(() => import("./pages/Shop"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
-const FindYourScent = lazy(() => import("./pages/FindYourScent"));
+const BuildYourScent = lazy(() => import("./pages/BuildYourScent"));
 const About = lazy(() => import("./pages/About"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -38,6 +38,7 @@ const AdminInquiries = lazy(() => import("./pages/admin/AdminInquiries"));
 const AdminHeroManagement = lazy(() => import("./pages/admin/AdminHeroManagement"));
 const AdminEditorialBanner = lazy(() => import("./pages/admin/AdminEditorialBanner"));
 const AdminPromoCodes = lazy(() => import("./pages/admin/AdminPromoCodes"));
+const AdminCustomBuilder = lazy(() => import("./pages/admin/AdminCustomBuilder"));
 const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 
@@ -55,7 +56,8 @@ export default function App() {
                     <Route index element={<Home />} />
                     <Route path="shop" element={<Shop />} />
                     <Route path="product/:slug" element={<ProductDetails />} />
-                    <Route path="find-your-scent" element={<FindYourScent />} />
+                    <Route path="build-your-scent" element={<BuildYourScent />} />
+                    <Route path="find-your-scent" element={<Navigate to="/build-your-scent" replace />} />
                     <Route path="about" element={<About />} />
                     <Route path="story" element={<About />} />
                     <Route path="track" element={<TrackOrder />} />
@@ -98,6 +100,9 @@ export default function App() {
 
                     {/* Promo Codes & Discounts Management */}
                     <Route path="promo-codes" element={<AdminPromoCodes />} />
+
+                    {/* Custom Perfume Builder Configuration Suite */}
+                    <Route path="custom-builder" element={<AdminCustomBuilder />} />
 
                     {/* Order Logistics Management */}
                     <Route path="orders" element={<AdminOrderList />} />

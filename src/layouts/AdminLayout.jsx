@@ -17,6 +17,7 @@ import {
   Tag,
   Image as ImageIcon,
   Star,
+  FlaskConical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUnreadInquiriesCount } from "../services/inquiries";
@@ -88,6 +89,11 @@ export default function AdminLayout() {
       name: "Products",
       path: "/admin/products",
       icon: Package,
+    },
+    {
+      name: "Custom Builder",
+      path: "/admin/custom-builder",
+      icon: FlaskConical,
     },
     {
       name: "Promo Codes",

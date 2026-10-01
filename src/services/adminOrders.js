@@ -10,7 +10,14 @@ function getLocalOrdersStore() {
   try {
     const saved = localStorage.getItem(LOCAL_STORAGE_ORDERS_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        if (!parsed.some((o) => o.id === "ord-951382" || o.reference === "SC-951382")) {
+          parsed.unshift(initial[0]);
+          saveLocalOrdersStore(parsed);
+        }
+        return parsed;
+      }
     }
   } catch (e) {
     console.error("Error reading local orders cache:", e);
@@ -18,6 +25,100 @@ function getLocalOrdersStore() {
 
   // Initial demo records
   const initial = [
+    {
+      id: "ord-951382",
+      reference: "SC-951382",
+      customer_full_name: "Farhan Al-Rashid",
+      customer_phone: "0300 9513820",
+      customer_email: "farhan.rashid@atelier.pk",
+      shipping_address: "Villa 9, Street 8, Sector F-8/3",
+      city: "Islamabad",
+      province: "Islamabad Capital Territory",
+      postal_code: "44000",
+      payment_method: "cod",
+      subtotal: 3300,
+      delivery_fee: 0,
+      total: 3300,
+      status: "pending",
+      carrier: null,
+      tracking_number: null,
+      cancelled_at: null,
+      notes: "Handle bespoke flacon with care.",
+      created_at: new Date(Date.now() - 1800000).toISOString(),
+      updated_at: new Date(Date.now() - 1800000).toISOString(),
+      order_items: [
+        {
+          id: "item-custom-1",
+          is_custom: true,
+          product_id: null,
+          product_name: "Custom SCENTÉ",
+          product_slug: "custom-scente",
+          size: "50ml",
+          quantity: 1,
+          unit_price: 3300,
+          line_total: 3300,
+          custom_configuration: {
+            base_price: 2500,
+            total_price: 3300,
+            formatted_total_price: "PKR 3,300",
+            currency: "PKR",
+            summary: "50ml · Woody · Amber · Bourbon Vanilla",
+            created_at: new Date(Date.now() - 1800000).toISOString(),
+            groups: [
+              {
+                group_id: "grp-size",
+                group_slug: "bottle-size",
+                group_name: "Bottle Size",
+                selected_options: [
+                  {
+                    id: "opt-50ml",
+                    name: "50ml Flacon",
+                    slug: "50ml",
+                    category: null,
+                    price_adjustment: 0,
+                  },
+                ],
+              },
+              {
+                group_id: "grp-notes",
+                group_slug: "notes",
+                group_name: "Fragrance Notes",
+                selected_options: [
+                  {
+                    id: "opt-woody",
+                    name: "Woody",
+                    slug: "woody",
+                    category: "Heart Note",
+                    price_adjustment: 300,
+                  },
+                  {
+                    id: "opt-amber",
+                    name: "Amber",
+                    slug: "amber",
+                    category: "Heart Note",
+                    price_adjustment: 200,
+                  },
+                ],
+              },
+              {
+                group_id: "grp-base",
+                group_slug: "base-accord",
+                group_name: "Base Accord",
+                selected_options: [
+                  {
+                    id: "opt-bourbon-vanilla",
+                    name: "Bourbon Vanilla",
+                    slug: "bourbon-vanilla",
+                    category: "Base Note",
+                    price_adjustment: 300,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
     {
       id: "ord-849204",
       reference: "SC-849204",
@@ -42,6 +143,7 @@ function getLocalOrdersStore() {
       order_items: [
         {
           id: "item-1",
+          is_custom: false,
           product_id: "scente-noir",
           product_name: "SCENTÉ NOIR",
           product_slug: "scente-noir",
@@ -63,19 +165,20 @@ function getLocalOrdersStore() {
       province: "Punjab",
       postal_code: "54000",
       payment_method: "cod",
-      subtotal: 14500,
+      subtotal: 17800,
       delivery_fee: 0,
-      total: 14500,
+      total: 17800,
       status: "confirmed",
       carrier: "TCS Express",
       tracking_number: null,
       cancelled_at: null,
-      notes: "",
+      notes: "Mixed luxury parcel (Catalog + Bespoke).",
       created_at: new Date(Date.now() - 14400000).toISOString(),
       updated_at: new Date(Date.now() - 7200000).toISOString(),
       order_items: [
         {
           id: "item-2",
+          is_custom: false,
           product_id: "scente-amber",
           product_name: "SCENTÉ AMBER",
           product_slug: "scente-amber",
@@ -83,6 +186,52 @@ function getLocalOrdersStore() {
           quantity: 1,
           unit_price: 14500,
           line_total: 14500,
+        },
+        {
+          id: "item-2-custom",
+          is_custom: true,
+          product_id: null,
+          product_name: "Custom SCENTÉ",
+          product_slug: "custom-scente",
+          size: "50ml",
+          quantity: 1,
+          unit_price: 3300,
+          line_total: 3300,
+          custom_configuration: {
+            base_price: 2500,
+            total_price: 3300,
+            formatted_total_price: "PKR 3,300",
+            currency: "PKR",
+            summary: "50ml · Woody · Amber · Bourbon Vanilla",
+            created_at: new Date(Date.now() - 14400000).toISOString(),
+            groups: [
+              {
+                group_id: "grp-size",
+                group_slug: "bottle-size",
+                group_name: "Bottle Size",
+                selected_options: [
+                  { id: "opt-50ml", name: "50ml Flacon", slug: "50ml", price_adjustment: 0 },
+                ],
+              },
+              {
+                group_id: "grp-notes",
+                group_slug: "notes",
+                group_name: "Fragrance Notes",
+                selected_options: [
+                  { id: "opt-woody", name: "Woody", slug: "woody", price_adjustment: 300 },
+                  { id: "opt-amber", name: "Amber", slug: "amber", price_adjustment: 200 },
+                ],
+              },
+              {
+                group_id: "grp-base",
+                group_slug: "base-accord",
+                group_name: "Base Accord",
+                selected_options: [
+                  { id: "opt-bourbon-vanilla", name: "Bourbon Vanilla", slug: "bourbon-vanilla", price_adjustment: 300 },
+                ],
+              },
+            ],
+          },
         },
       ],
     },
@@ -248,10 +397,10 @@ export async function getAllOrdersAdmin({ search = "", status = "all", sortBy = 
     const { data, error } = await query;
     if (error) throw error;
 
-    return { data, error: null };
+    return { data: data || [], error: null };
   } catch (err) {
     console.error("Failed to fetch admin orders from Supabase:", err);
-    return { data: getLocalOrdersStore(), error: err };
+    return { data: [], error: err };
   }
 }
 
@@ -286,9 +435,7 @@ export async function getOrderByIdAdmin(idOrRef) {
     return { data, error: null };
   } catch (err) {
     console.error(`Failed to fetch order ${idOrRef}:`, err);
-    const items = getLocalOrdersStore();
-    const match = items.find((o) => o.id === idOrRef || o.reference === idOrRef);
-    return { data: match || null, error: err };
+    return { data: null, error: err };
   }
 }
 
@@ -453,14 +600,6 @@ export async function updateOrderTrackingAdmin(orderId, { carrier, trackingNumbe
     return { data, error: null };
   } catch (err) {
     console.error(`Failed to update tracking for order ${orderId}:`, err);
-    // Local fallback update
-    const items = getLocalOrdersStore();
-    const idx = items.findIndex((o) => o.id === orderId || o.reference === orderId);
-    if (idx !== -1) {
-      items[idx] = { ...items[idx], ...payload };
-      saveLocalOrdersStore(items);
-      return { data: items[idx], error: null };
-    }
     return { data: null, error: err };
   }
 }

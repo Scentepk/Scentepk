@@ -1060,7 +1060,7 @@ export default function AdminProductForm() {
               </h2>
             </div>
             <p className="text-xs font-sans text-[#777169] mt-0.5">
-              Used by Find Your Scent to recommend the most suitable SCENTÉ fragrances.
+              Olfactive profiling attributes used for fragrance discovery and catalog curation.
             </p>
           </div>
           <span className="text-[10px] uppercase font-sans tracking-[0.16em] px-2.5 py-1 rounded-sm bg-[#BFA27A]/10 text-[#BFA27A] border border-[#BFA27A]/30 self-start sm:self-auto font-medium">

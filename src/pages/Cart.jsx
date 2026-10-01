@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { ArrowRight, Minus, Plus, AlertCircle } from "lucide-react";
+import { ArrowRight, Minus, Plus, AlertCircle, Sparkles } from "lucide-react";
 import ScrollReveal from "../components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { LUXURY_EASE } from "../lib/animations";
@@ -88,110 +88,148 @@ export default function Cart() {
             <div className="lg:col-span-8">
               <div>
                 <AnimatePresence mode="popLayout">
-                  {cartItems.map((item) => (
-                    <motion.div
-                      key={`${item.product.id}-${item.size}`}
-                      layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.97 }}
-                      transition={{ duration: 0.35, ease: LUXURY_EASE }}
-                      className="py-8 first:pt-0 border-b border-[rgba(242,238,231,0.06)]"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-8">
-                        {/* Product Visual & Details */}
-                        <div className="flex items-center space-x-3.5 xs:space-x-5 sm:space-x-7">
-                          <Link
-                            to={`/product/${item.product.slug}`}
-                            className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#121110] shrink-0 border border-[rgba(242,238,231,0.08)] overflow-hidden block rounded-sm group"
-                          >
-                            <img
-                              src={item.product.image || item.product.primary_image}
-                              alt={item.product.name}
-                              className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 select-none"
-                            />
-                          </Link>
+                  {cartItems.map((item) => {
+                    const isCustom = Boolean(item.isCustom);
+                    const itemId = item.cartItemId || item.product.id;
+                    const itemKey = item.cartItemId || `${item.product.id}-${item.size}`;
 
-                          <div className="space-y-1 sm:space-y-1.5 font-sans">
-                            <h3 className="font-serif font-light text-base xs:text-xl sm:text-2xl text-[#F2EEE7] tracking-headline leading-tight">
+                    return (
+                      <motion.div
+                        key={itemKey}
+                        layout
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.97 }}
+                        transition={{ duration: 0.35, ease: LUXURY_EASE }}
+                        className="py-8 first:pt-0 border-b border-[rgba(242,238,231,0.06)]"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-8">
+                          {/* Product Visual & Details */}
+                          <div className="flex items-center space-x-3.5 xs:space-x-5 sm:space-x-7">
+                            {isCustom ? (
+                              item.product.image ? (
+                                <div className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#121110] shrink-0 border border-[#BFA27A]/30 overflow-hidden block rounded-sm">
+                                  <img
+                                    src={item.product.image}
+                                    alt={item.product.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#161513] shrink-0 border border-[#BFA27A]/30 overflow-hidden flex flex-col items-center justify-center p-2 rounded-sm text-center">
+                                  <Sparkles className="w-6 h-6 text-[#BFA27A] mb-1.5 stroke-[1.5]" />
+                                  <span className="text-[8px] sm:text-[8.5px] uppercase font-mono tracking-widest text-[#BFA27A]">
+                                    BESPOKE
+                                  </span>
+                                </div>
+                              )
+                            ) : (
                               <Link
                                 to={`/product/${item.product.slug}`}
-                                className="hover:text-[#BFA27A] transition-colors"
+                                className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#121110] shrink-0 border border-[rgba(242,238,231,0.08)] overflow-hidden block rounded-sm group"
                               >
-                                {item.product.name}
+                                <img
+                                  src={item.product.image || item.product.primary_image}
+                                  alt={item.product.name}
+                                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 select-none"
+                                />
                               </Link>
-                            </h3>
-                            <p className="text-[11px] xs:text-xs sm:text-[13px] text-[#AAA49B] font-light tracking-wide">
-                              {item.size || "50ml"} · {item.product.subtitle || "Extrait de Parfum"}
-                            </p>
-                            {(item.isUnavailable || item.availableStock === 0 || item.variant?.isOutOfStock) && (
-                              <span className="inline-block text-[9px] xs:text-[9.5px] uppercase tracking-wider text-rose-400 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-sm font-medium">
-                                SOLD OUT — PLEASE REMOVE
-                              </span>
                             )}
-                          </div>
-                        </div>
 
-                        {/* Quantity, Price & Remove Controls */}
-                        <div className="flex items-center justify-between sm:justify-end gap-3 xs:gap-6 sm:gap-10 pt-1 sm:pt-0">
-                          {/* Quantity Stepper */}
-                          <div className="space-y-1 text-left sm:text-center">
-                            <span className="text-[8.5px] xs:text-[9px] uppercase font-sans tracking-[0.18em] xs:tracking-[0.22em] text-[#777169] block font-medium">
-                              QUANTITY
-                            </span>
-                            <div className="flex items-center border border-[rgba(242,238,231,0.12)] bg-[#121110] rounded-full px-2.5 xs:px-3 py-1 xs:py-1.5 transition-colors hover:border-[rgba(242,238,231,0.22)]">
-                              <button
-                                type="button"
-                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
-                                disabled={item.quantity <= 1 || item.isUnavailable || item.availableStock === 0}
-                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
-                                aria-label="Decrease quantity"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </button>
-                              <span className="w-6 xs:w-8 text-center text-xs text-[#F2EEE7] font-medium font-sans select-none">
-                                {item.quantity}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
-                                disabled={
-                                  item.isUnavailable ||
-                                  item.availableStock === 0 ||
-                                  item.quantity >= (item.availableStock ?? item.variant?.stockQuantity ?? item.variant?.stock_quantity ?? 99)
-                                }
-                                className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
-                                aria-label="Increase quantity"
-                              >
-                                <Plus className="w-3 h-3" />
-                              </button>
+                            <div className="space-y-1 sm:space-y-1.5 font-sans">
+                              <h3 className="font-serif font-light text-base xs:text-xl sm:text-2xl text-[#F2EEE7] tracking-headline leading-tight">
+                                {isCustom ? (
+                                  <span>{item.product.name}</span>
+                                ) : (
+                                  <Link
+                                    to={`/product/${item.product.slug}`}
+                                    className="hover:text-[#BFA27A] transition-colors"
+                                  >
+                                    {item.product.name}
+                                  </Link>
+                                )}
+                              </h3>
+                              <p className="text-[11px] xs:text-xs sm:text-[13px] text-[#AAA49B] font-light tracking-wide">
+                                {item.size || "50ml"} · {item.product.subtitle || (isCustom ? "Bespoke Extrait" : "Extrait de Parfum")}
+                              </p>
+
+                              {isCustom && item.customConfiguration?.summary && (
+                                <p className="text-[10.5px] xs:text-xs text-[#BFA27A] font-light leading-relaxed max-w-sm pt-0.5">
+                                  {item.customConfiguration.summary}
+                                </p>
+                              )}
+
+                              {!isCustom && (item.isUnavailable || item.availableStock === 0 || item.variant?.isOutOfStock) && (
+                                <span className="inline-block text-[9px] xs:text-[9.5px] uppercase tracking-wider text-rose-400 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-sm font-medium">
+                                  SOLD OUT — PLEASE REMOVE
+                                </span>
+                              )}
                             </div>
                           </div>
 
-                          {/* Product Price & Subtle Remove */}
-                          <div className="text-right min-w-[90px] xs:min-w-[110px]">
-                            {item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product.price) && (
-                              <div className="text-[11px] sm:text-xs text-[#777169] line-through font-serif decoration-[#777169]/70">
-                                PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
+                          {/* Quantity, Price & Remove Controls */}
+                          <div className="flex items-center justify-between sm:justify-end gap-3 xs:gap-6 sm:gap-10 pt-1 sm:pt-0">
+                            {/* Quantity Stepper */}
+                            <div className="space-y-1 text-left sm:text-center">
+                              <span className="text-[8.5px] xs:text-[9px] uppercase font-sans tracking-[0.18em] xs:tracking-[0.22em] text-[#777169] block font-medium">
+                                QUANTITY
+                              </span>
+                              <div className="flex items-center border border-[rgba(242,238,231,0.12)] bg-[#121110] rounded-full px-2.5 xs:px-3 py-1 xs:py-1.5 transition-colors hover:border-[rgba(242,238,231,0.22)]">
+                                <button
+                                  type="button"
+                                  onClick={() => updateQuantity(itemId, item.size, item.quantity - 1)}
+                                  disabled={item.quantity <= 1 || (!isCustom && (item.isUnavailable || item.availableStock === 0))}
+                                  className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
+                                  aria-label="Decrease quantity"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="w-6 xs:w-8 text-center text-xs text-[#F2EEE7] font-medium font-sans select-none">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => updateQuantity(itemId, item.size, item.quantity + 1)}
+                                  disabled={
+                                    !isCustom && (
+                                      item.isUnavailable ||
+                                      item.availableStock === 0 ||
+                                      item.quantity >= (item.availableStock ?? item.variant?.stockQuantity ?? item.variant?.stock_quantity ?? 99)
+                                    )
+                                  }
+                                  className="text-[#AAA49B] hover:text-[#F2EEE7] disabled:opacity-20 disabled:hover:text-[#AAA49B] transition-colors p-1 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center min-w-[24px] min-h-[24px]"
+                                  aria-label="Increase quantity"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
                               </div>
-                            )}
-                            <div className="font-serif font-light text-base xs:text-lg sm:text-xl text-[#F2EEE7] tracking-tight">
-                              PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
                             </div>
-                            <div className="pt-1.5 sm:pt-3">
-                              <button
-                                type="button"
-                                onClick={() => removeFromCart(item.product.id, item.size)}
-                                className="text-xs sm:text-[13px] font-sans text-[#AAA49B] hover:text-[#BFA27A] underline underline-offset-4 decoration-[rgba(242,238,231,0.25)] hover:decoration-[#BFA27A] transition-all cursor-pointer font-medium tracking-wide py-1"
-                              >
-                                Remove
-                              </button>
+
+                            {/* Product Price & Subtle Remove */}
+                            <div className="text-right min-w-[90px] xs:min-w-[110px]">
+                              {!isCustom && item.compareAtPrice && Number(item.compareAtPrice) > (item.price ?? item.product.price) && (
+                                <div className="text-[11px] sm:text-xs text-[#777169] line-through font-serif decoration-[#777169]/70">
+                                  PKR {(Number(item.compareAtPrice) * item.quantity).toLocaleString()}
+                                </div>
+                              )}
+                              <div className="font-serif font-light text-base xs:text-lg sm:text-xl text-[#F2EEE7] tracking-tight">
+                                PKR {((item.price ?? item.product.price) * item.quantity).toLocaleString()}
+                              </div>
+                              <div className="pt-1.5 sm:pt-3">
+                                <button
+                                  type="button"
+                                  onClick={() => removeFromCart(itemId, item.size)}
+                                  className="text-xs sm:text-[13px] font-sans text-[#AAA49B] hover:text-[#BFA27A] underline underline-offset-4 decoration-[rgba(242,238,231,0.25)] hover:decoration-[#BFA27A] transition-all cursor-pointer font-medium tracking-wide py-1"
+                                >
+                                  Remove
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </AnimatePresence>
               </div>
 

@@ -6,6 +6,28 @@ const corsHeaders = {
 };
 
 interface OrderItem {
+  id?: string;
+  is_custom?: boolean;
+  custom_configuration?: {
+    base_price?: number;
+    total_price?: number;
+    formatted_total_price?: string;
+    currency?: string;
+    summary?: string;
+    created_at?: string;
+    groups?: Array<{
+      group_id?: string;
+      group_slug?: string;
+      group_name?: string;
+      selected_options?: Array<{
+        id?: string;
+        name?: string;
+        slug?: string;
+        category?: string | null;
+        price_adjustment?: number;
+      }>;
+    }>;
+  } | null;
   product_name?: string;
   name?: string;
   size?: string;
@@ -223,38 +245,208 @@ Deno.serve(async (req: Request) => {
     const customerTrackUrl = `${SITE_URL.replace(/\/+$/, "")}/track`;
 
     // 6. Common Line Items HTML — SCENTÉ Haute Parfumerie Editorial Manifest
-    const itemsRowsHtml = items.length > 0
-      ? items
-          .map((item) => {
-            const name = item.product_name || item.name || "SCENTÉ Fragrance";
-            const size = item.size || "50ml";
-            const qty = item.quantity || 1;
-            const unitPrice = Number(item.unit_price || item.price || 0);
-            const lineTotal = Number(item.line_total || unitPrice * qty);
+    function escapeHtml(str: string): string {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-            return `
-              <tr>
-                <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; vertical-align: top;">
-                  <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 15px; color: #F2EEE7; font-weight: 400; line-height: 1.35;">
-                    ${name}
+    function buildCustomerItemRowHtml(item: OrderItem): string {
+      try {
+        const isCustom = Boolean(item.is_custom);
+        const name = isCustom ? (item.product_name || "Custom SCENTÉ") : (item.product_name || item.name || "SCENTÉ Fragrance");
+        const size = item.size || (isCustom ? "Bespoke Flacon" : "50ml");
+        const qty = item.quantity || 1;
+        const unitPrice = Number(item.unit_price || item.price || 0);
+        const lineTotal = Number(item.line_total || unitPrice * qty);
+        const config = item.custom_configuration;
+
+        let formulationHtml = "";
+        if (isCustom && config) {
+          const summaryText = config.summary
+            ? `<div style="font-family: 'Playfair Display', Georgia, serif; font-size: 13px; color: #F2EEE7; font-style: italic; margin-bottom: 8px;">"${escapeHtml(config.summary)}"</div>`
+            : "";
+
+          let optionsListHtml = "";
+          if (Array.isArray(config.groups) && config.groups.length > 0) {
+            optionsListHtml = config.groups
+              .map((grp) => {
+                const grpName = escapeHtml(grp.group_name || "Notes");
+                const opts = Array.isArray(grp.selected_options)
+                  ? grp.selected_options.map((o) => escapeHtml(o.name || "")).filter(Boolean).join(", ")
+                  : "";
+                return opts
+                  ? `<div style="font-size: 11px; color: #A39E95; margin-bottom: 4px;"><strong style="color: #BFA27A; font-weight: 500;">${grpName}:</strong> ${opts}</div>`
+                  : "";
+              })
+              .filter(Boolean)
+              .join("");
+          }
+
+          formulationHtml = `
+            <div style="margin-top: 10px; padding: 12px; background-color: #171614; border: 1px solid #282521; border-radius: 2px;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.18em; color: #BFA27A; font-weight: 600; margin-bottom: 6px;">
+                YOUR FORMULATION
+              </div>
+              ${summaryText}
+              ${optionsListHtml}
+            </div>
+          `;
+        }
+
+        return `
+          <tr>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; vertical-align: top;">
+              <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 15px; color: #F2EEE7; font-weight: 400; line-height: 1.35;">
+                ${escapeHtml(name)}
+              </div>
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #8E887F; margin-top: 5px;">
+                ${escapeHtml(size)} ${isCustom ? "• BESPOKE CREATION" : ""}
+              </div>
+              ${formulationHtml}
+            </td>
+            <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top;">
+              ${qty}
+            </td>
+            <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top; white-space: nowrap;">
+              PKR ${unitPrice.toLocaleString()}
+            </td>
+            <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #F2EEE7; font-weight: 500; vertical-align: top; white-space: nowrap;">
+              PKR ${lineTotal.toLocaleString()}
+            </td>
+          </tr>
+        `;
+      } catch (err) {
+        console.error("[send-order-email] Error building customer item row:", err);
+        return `
+          <tr>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTÉ")}</td>
+            <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">${item.quantity || 1}</td>
+            <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">PKR ${Number(item.unit_price || 0).toLocaleString()}</td>
+            <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; color: #F2EEE7;">PKR ${Number(item.line_total || 0).toLocaleString()}</td>
+          </tr>
+        `;
+      }
+    }
+
+    function buildAdminItemRowHtml(item: OrderItem): string {
+      try {
+        const isCustom = Boolean(item.is_custom);
+        const name = isCustom ? (item.product_name || "CUSTOM SCENTÉ (BESPOKE)") : (item.product_name || item.name || "SCENTÉ Fragrance");
+        const size = item.size || (isCustom ? "50ml Flacon" : "50ml");
+        const qty = item.quantity || 1;
+        const unitPrice = Number(item.unit_price || item.price || 0);
+        const lineTotal = Number(item.line_total || unitPrice * qty);
+        const config = item.custom_configuration;
+
+        let adminFormulationHtml = "";
+        if (isCustom && config) {
+          const summaryText = config.summary
+            ? `<div style="font-family: 'Playfair Display', Georgia, serif; font-size: 13px; color: #F2EEE7; font-style: italic; margin-bottom: 10px;">"${escapeHtml(config.summary)}"</div>`
+            : "";
+
+          let groupsHtml = "";
+          if (Array.isArray(config.groups) && config.groups.length > 0) {
+            groupsHtml = config.groups
+              .map((grp) => {
+                const grpName = escapeHtml(grp.group_name || "Group");
+                const optsHtml = Array.isArray(grp.selected_options)
+                  ? grp.selected_options
+                      .map((opt) => {
+                        const optName = escapeHtml(opt.name || "");
+                        const adj = Number(opt.price_adjustment || 0);
+                        const adjStr = adj > 0
+                          ? `<span style="color: #BFA27A; font-family: monospace; font-size: 11px;">+PKR ${adj.toLocaleString()}</span>`
+                          : `<span style="color: #8E887F; font-size: 10px;">(Included)</span>`;
+                        return `<div style="padding: 2px 0 2px 8px; font-size: 11.5px; color: #E5E0D8;">• ${optName} ${adjStr}</div>`;
+                      })
+                      .join("")
+                  : "";
+                return `
+                  <div style="margin-bottom: 8px;">
+                    <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #8E887F; font-weight: 600;">${grpName}</div>
+                    ${optsHtml}
                   </div>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #8E887F; margin-top: 5px;">
-                    ${size}
-                  </div>
-                </td>
-                <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top;">
-                  ${qty}
-                </td>
-                <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top; white-space: nowrap;">
-                  PKR ${unitPrice.toLocaleString()}
-                </td>
-                <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #F2EEE7; font-weight: 500; vertical-align: top; white-space: nowrap;">
-                  PKR ${lineTotal.toLocaleString()}
-                </td>
-              </tr>
-            `;
-          })
-          .join("")
+                `;
+              })
+              .join("");
+          }
+
+          const basePrice = Number(config.base_price || 0);
+          const verifiedTotal = Number(config.total_price || unitPrice);
+          const adjustments = Math.max(0, verifiedTotal - basePrice);
+
+          const pricingBreakdown = `
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #302C26; font-size: 11px; color: #A39E95;">
+              <span>Base Price: <strong style="color: #F2EEE7; font-family: monospace;">PKR ${basePrice.toLocaleString()}</strong></span>
+              ${adjustments > 0 ? `<span style="margin-left: 14px;">Adjustments: <strong style="color: #BFA27A; font-family: monospace;">+PKR ${adjustments.toLocaleString()}</strong></span>` : ""}
+              <span style="margin-left: 14px;">Verified Unit: <strong style="color: #F2EEE7; font-family: monospace;">PKR ${verifiedTotal.toLocaleString()}</strong></span>
+            </div>
+          `;
+
+          adminFormulationHtml = `
+            <div style="margin-top: 12px; padding: 14px; background-color: #171614; border: 1px solid #BFA27A; border-radius: 2px;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: #BFA27A; font-weight: 600; margin-bottom: 8px;">
+                ATELIER PREPARATION SPECIFICATION
+              </div>
+              ${summaryText}
+              ${groupsHtml}
+              ${pricingBreakdown}
+            </div>
+          `;
+        }
+
+        return `
+          <tr>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; vertical-align: top;">
+              <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 15px; color: #F2EEE7; font-weight: 400; line-height: 1.35;">
+                ${escapeHtml(name)}
+              </div>
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #8E887F; margin-top: 5px;">
+                ${escapeHtml(size)} ${isCustom ? "• BESPOKE ATELIER CREATION" : ""}
+              </div>
+              ${adminFormulationHtml}
+            </td>
+            <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top;">
+              ${qty}
+            </td>
+            <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #A39E95; vertical-align: top; white-space: nowrap;">
+              PKR ${unitPrice.toLocaleString()}
+            </td>
+            <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #F2EEE7; font-weight: 500; vertical-align: top; white-space: nowrap;">
+              PKR ${lineTotal.toLocaleString()}
+            </td>
+          </tr>
+        `;
+      } catch (err) {
+        console.error("[send-order-email] Error building admin item row:", err);
+        return `
+          <tr>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTÉ")}</td>
+            <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">${item.quantity || 1}</td>
+            <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">PKR ${Number(item.unit_price || 0).toLocaleString()}</td>
+            <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; color: #F2EEE7;">PKR ${Number(item.line_total || 0).toLocaleString()}</td>
+          </tr>
+        `;
+      }
+    }
+
+    const customerItemsRowsHtml = items.length > 0
+      ? items.map(buildCustomerItemRowHtml).join("")
+      : `
+        <tr>
+          <td colspan="4" align="center" style="padding: 24px 0; font-size: 13px; color: #8E887F; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            Order items details available in atelier manifest.
+          </td>
+        </tr>
+      `;
+
+    const adminItemsRowsHtml = items.length > 0
+      ? items.map(buildAdminItemRowHtml).join("")
       : `
         <tr>
           <td colspan="4" align="center" style="padding: 24px 0; font-size: 13px; color: #8E887F; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -427,7 +619,7 @@ Deno.serve(async (req: Request) => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${itemsRowsHtml}
+                  ${adminItemsRowsHtml}
                 </tbody>
               </table>
             </td>
@@ -632,7 +824,7 @@ Deno.serve(async (req: Request) => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${itemsRowsHtml}
+                  ${customerItemsRowsHtml}
                 </tbody>
               </table>
             </td>

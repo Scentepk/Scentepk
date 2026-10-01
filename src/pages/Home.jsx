@@ -857,48 +857,44 @@ export default function Home() {
       </section>
 
       {/* =======================================================================
-          6. FIND YOUR SCENT (Discovery Section)
+          6. BUILD YOUR SCENT (Bespoke Atelier Experience)
           ======================================================================= */}
       <section className="relative py-20 sm:py-28 lg:py-32 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
         {/* Atmospheric Champagne Ambient Light */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[380px] bg-radial from-[#BFA27A]/12 via-[#BFA27A]/[0.03] to-transparent rounded-full blur-[110px] pointer-events-none" />
 
         <div className="layout-container relative z-10 max-w-3xl mx-auto space-y-6 sm:space-y-7">
-          <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] font-semibold block">
-            FIND YOUR SCENT
-          </span>
-
           <h2 className="font-serif font-light text-3xl xs:text-4xl sm:text-5xl md:text-6xl text-[#F2EEE7] leading-[1.08] tracking-tight">
-            Let Your Scent <span className="italic font-normal">Find You.</span>
+            Your Scent. <span className="italic font-normal">Your Formula.</span>
           </h2>
 
           <p className="text-sm sm:text-base font-sans text-[#AAA49B] font-light leading-relaxed max-w-xl mx-auto">
-            Tell us how you want your fragrance to feel, and discover the SCENTÉ creation that fits.
+            Create a fragrance shaped around your preferences. Select your bottle size, olfactive character, and signature notes — crafted exclusively for you.
           </p>
 
           <div className="pt-2 flex items-center justify-center">
             <Link
-              to="/find-your-scent"
+              to="/build-your-scent"
               className="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#BFA27A] text-[#090908] hover:bg-[#D4BA94] hover:shadow-[0_0_35px_rgba(191,162,122,0.3)] text-xs font-sans uppercase tracking-[0.18em] font-semibold transition-all duration-300 shadow-xl shadow-black/50 group"
             >
-              <span>Find Your Scent</span>
+              <span>Build Your Scent</span>
               <ArrowRight className="w-3.5 h-3.5 ml-2.5 transition-transform duration-300 group-hover:translate-x-1.5 stroke-[2]" />
             </Link>
           </div>
 
-          {/* Micro Consultation Pillars */}
+          {/* Micro Atelier Pillars */}
           <div className="pt-6 sm:pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[10px] sm:text-[11px] font-sans tracking-[0.16em] uppercase text-[#777169] font-light border-t border-white/[0.05] max-w-lg mx-auto">
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
-              05 Questions
+              Bespoke Selection
             </span>
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
-              Bespoke Consultation
+              Dynamic Atelier Pricing
             </span>
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
-              Instant Matching
+              Handcrafted Extrait
             </span>
           </div>
         </div>
