@@ -23,7 +23,7 @@ import {
   Star,
   X,
   Check,
-  Sparkles,
+  Compass,
   Crop,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1054,7 +1054,7 @@ export default function AdminProductForm() {
         <div className="pb-3 border-b border-[rgba(242,238,231,0.06)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#BFA27A]" />
+              <Compass className="w-4 h-4 text-[#BFA27A]" />
               <h2 className="font-serif text-lg sm:text-xl lg:text-2xl text-[#F2EEE7] font-normal">
                 4. Fragrance Recommendation Profile
               </h2>

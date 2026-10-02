@@ -642,3 +642,80 @@ export async function deleteOrderAdmin(orderId) {
   }
 }
 
+/**
+ * Admin: Permanently delete multiple orders by their IDs or references
+ */
+export async function deleteMultipleOrdersAdmin(orderIds) {
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    return { success: false, error: new Error("At least one order identifier required.") };
+  }
+
+  const idsToMatch = new Set(orderIds.map((id) => String(id).trim()));
+
+  if (!isSupabaseConfigured || !supabase) {
+    const items = getLocalOrdersStore();
+    const filtered = items.filter(
+      (o) => !idsToMatch.has(String(o.id).trim()) && !idsToMatch.has(String(o.reference).trim())
+    );
+    saveLocalOrdersStore(filtered);
+    return { success: true, error: null };
+  }
+
+  try {
+    const uuids = orderIds.filter((id) => isUuid(String(id))).map((id) => String(id).trim());
+    const refs = orderIds
+      .filter((id) => !isUuid(String(id)))
+      .map((id) => String(id).trim().toUpperCase());
+
+    if (uuids.length > 0) {
+      const { error: uuidErr } = await supabase.from("orders").delete().in("id", uuids);
+      if (uuidErr) throw uuidErr;
+    }
+
+    if (refs.length > 0) {
+      const { error: refErr } = await supabase.from("orders").delete().in("reference", refs);
+      if (refErr) throw refErr;
+    }
+
+    // Also update local cache if present
+    const items = getLocalOrdersStore();
+    const filtered = items.filter(
+      (o) => !idsToMatch.has(String(o.id).trim()) && !idsToMatch.has(String(o.reference).trim())
+    );
+    saveLocalOrdersStore(filtered);
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error("Failed to delete multiple orders:", err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Admin: Permanently delete ALL orders and their associated items
+ */
+export async function deleteAllOrdersAdmin() {
+  if (!isSupabaseConfigured || !supabase) {
+    saveLocalOrdersStore([]);
+    return { success: true, error: null };
+  }
+
+  try {
+    // Supabase / PostgREST requires a filter to prevent unintended full table wipeout.
+    // Using .neq("id", "00000000-0000-0000-0000-000000000000") matches all orders.
+    const { error } = await supabase
+      .from("orders")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000");
+
+    if (error) throw error;
+
+    saveLocalOrdersStore([]);
+    return { success: true, error: null };
+  } catch (err) {
+    console.error("Failed to delete all orders:", err);
+    return { success: false, error: err };
+  }
+}
+
+

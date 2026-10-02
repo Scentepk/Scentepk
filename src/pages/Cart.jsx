@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { ArrowRight, Minus, Plus, AlertCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Minus, Plus, AlertCircle, FlaskConical } from "lucide-react";
 import ScrollReveal from "../components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { LUXURY_EASE } from "../lib/animations";
@@ -117,7 +117,7 @@ export default function Cart() {
                                 </div>
                               ) : (
                                 <div className="w-16 xs:w-20 sm:w-24 aspect-[4/5] bg-[#161513] shrink-0 border border-[#BFA27A]/30 overflow-hidden flex flex-col items-center justify-center p-2 rounded-sm text-center">
-                                  <Sparkles className="w-6 h-6 text-[#BFA27A] mb-1.5 stroke-[1.5]" />
+                                  <FlaskConical className="w-6 h-6 text-[#BFA27A] mb-1.5 stroke-[1.5]" />
                                   <span className="text-[8px] sm:text-[8.5px] uppercase font-mono tracking-widest text-[#BFA27A]">
                                     BESPOKE
                                   </span>

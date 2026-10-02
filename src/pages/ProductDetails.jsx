@@ -18,7 +18,7 @@ import {
   Plus,
   Droplets,
   Clock,
-  Sparkles,
+  Wind,
   Compass,
   RotateCcw,
   ShoppingBag,
@@ -492,7 +492,7 @@ export default function ProductDetails() {
       label: "PROJECTION",
       value: "Commandingly Intimate",
       bar: 86,
-      icon: Sparkles,
+      icon: Wind,
       desc: "Intriguing aura within conversation distance",
     },
     {

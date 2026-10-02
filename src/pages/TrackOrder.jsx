@@ -15,7 +15,7 @@ import {
   RotateCcw,
   XCircle,
   ShieldCheck,
-  Sparkles,
+  FlaskConical,
   HelpCircle,
   CheckCircle2,
   Clock,
@@ -578,7 +578,7 @@ export default function TrackOrder() {
 
             {/* Contextual Status Message Banner */}
             <div className="p-4 bg-[#0D0D0C] border border-[rgba(242,238,231,0.06)] rounded-sm flex items-center space-x-3 text-xs">
-              <Sparkles className="w-4 h-4 text-[#BFA27A] shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-[#BFA27A] shrink-0" />
               <p className="text-[#F2EEE7] font-light">
                 {getStatusMessage(orderData.status)}
               </p>
@@ -838,7 +838,7 @@ export default function TrackOrder() {
                         <div className="flex justify-between items-start">
                           <div className="flex items-start space-x-3">
                             {isCustom ? (
-                              <Sparkles className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5" />
+                              <FlaskConical className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5" />
                             ) : (
                               <Package className="w-4 h-4 text-[#BFA27A] shrink-0 mt-0.5" />
                             )}

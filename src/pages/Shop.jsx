@@ -11,7 +11,7 @@ import {
   X,
   RotateCcw,
   Check,
-  Sparkles,
+  FlaskConical,
 } from "lucide-react";
 import { LUXURY_EASE } from "../lib/animations";
 import SEO from "../components/SEO";
@@ -725,7 +725,7 @@ export default function Shop() {
               {/* Bespoke Fragrance Atelier CTA Card */}
               <div className="mt-8 p-4 rounded-xl bg-[#121110] border border-[rgba(242,238,231,0.08)] space-y-2.5">
                 <div className="flex items-center gap-1.5 text-[#BFA27A]">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <FlaskConical className="w-3.5 h-3.5" />
                   <span className="text-[10px] uppercase font-sans tracking-[0.2em] font-medium">
                     BESPOKE ATELIER
                   </span>

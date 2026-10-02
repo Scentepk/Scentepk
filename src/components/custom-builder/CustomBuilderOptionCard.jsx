@@ -1,5 +1,4 @@
-import React from "react";
-import { Check, Sparkles, Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { getOptimizedImageUrl } from "../../lib/images";
 
@@ -54,10 +53,10 @@ export default function CustomBuilderOptionCard({
           : "bg-[#121110] border-[rgba(242,238,231,0.08)] hover:border-[rgba(242,238,231,0.22)] hover:bg-[#161513]"
       }`}
     >
-      {/* Top Header: Visual thumbnail or category tag & Selection Checkmark */}
-      <div className="flex items-start justify-between gap-3 mb-3">
+      {/* Top Header: Visual thumbnail (if present) & Selection Checkmark */}
+      <div className={`flex items-start ${optimizedImage ? "justify-between" : "justify-end"} gap-3 mb-3`}>
         {/* Visual thumbnail if provided */}
-        {optimizedImage ? (
+        {optimizedImage && (
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-sm overflow-hidden bg-[#0D0D0C] border border-[rgba(242,238,231,0.08)] shrink-0">
             <img
               src={optimizedImage}
@@ -65,10 +64,6 @@ export default function CustomBuilderOptionCard({
               aria-hidden="true"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
-          </div>
-        ) : (
-          <div className="w-10 h-10 rounded-sm bg-[#181714] border border-[rgba(242,238,231,0.06)] flex items-center justify-center text-[#BFA27A]/70 shrink-0">
-            <Sparkles className="w-4 h-4 stroke-[1.5]" />
           </div>
         )}
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, Edit2 } from "lucide-react";
+import { Edit2 } from "lucide-react";
 
 /**
  * CustomBuilderSummary
@@ -41,18 +41,13 @@ export default function CustomBuilderSummary({
   return (
     <aside className="bg-[#121110] border border-[rgba(242,238,231,0.08)] p-6 sm:p-7 rounded-sm space-y-6 shadow-2xl font-sans text-xs">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-[rgba(242,238,231,0.06)]">
-        <div>
-          <span className="text-[9.5px] uppercase font-mono tracking-[0.24em] text-[#BFA27A] font-semibold block mb-0.5">
-            BESPOKE FORMULATION
-          </span>
-          <h2 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] font-normal tracking-tight">
-            Your SCENTÉ
-          </h2>
-        </div>
-        <div className="w-8 h-8 rounded-full bg-[#181714] border border-[rgba(242,238,231,0.06)] flex items-center justify-center text-[#BFA27A]">
-          <Sparkles className="w-4 h-4 stroke-[1.5]" />
-        </div>
+      <div className="pb-4 border-b border-[rgba(242,238,231,0.06)]">
+        <span className="text-[9.5px] uppercase font-mono tracking-[0.24em] text-[#BFA27A] font-semibold block mb-0.5">
+          BESPOKE FORMULATION
+        </span>
+        <h2 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] font-normal tracking-tight">
+          Your SCENTÉ
+        </h2>
       </div>
 
       {/* Selected Items Manifest */}

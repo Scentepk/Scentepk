@@ -8,7 +8,7 @@ import {
   Minimize2,
   RotateCcw,
   Check,
-  Sparkles,
+  Crop,
   Move,
   Grid,
   ChevronRight,
@@ -433,7 +433,7 @@ export default function ImageCropModal({
             <div>
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3" />
+                  <Crop className="w-3 h-3" />
                   <span>ATELIER VISUAL STUDIO</span>
                 </span>
                 {queueTotal > 1 && (

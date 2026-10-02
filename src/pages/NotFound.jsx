@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Compass, Sparkles, ArrowRight } from "lucide-react";
+import { Compass, ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 
 export default function NotFound() {

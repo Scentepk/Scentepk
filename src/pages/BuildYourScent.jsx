@@ -5,7 +5,6 @@ import {
   ArrowRight,
   AlertCircle,
   RefreshCw,
-  Sparkles,
   Info,
 } from "lucide-react";
 import SEO from "../components/SEO";
@@ -298,7 +297,7 @@ export default function BuildYourScent() {
       <div className="bg-[#0D0D0C] min-h-screen text-[#F2EEE7] flex items-center justify-center px-4 py-20">
         <div className="bg-[#121110] border border-[rgba(242,238,231,0.08)] p-8 sm:p-12 rounded-sm text-center max-w-lg w-full space-y-5 shadow-2xl">
           <div className="w-12 h-12 rounded-full bg-[#181714] border border-[#BFA27A]/30 flex items-center justify-center text-[#BFA27A] mx-auto">
-            <Sparkles className="w-6 h-6 stroke-[1.5]" />
+            <RefreshCw className="w-5 h-5 stroke-[1.5]" />
           </div>
           <span className="text-[10px] uppercase font-mono tracking-[0.24em] text-[#BFA27A] font-semibold block">
             CUSTOM CREATION

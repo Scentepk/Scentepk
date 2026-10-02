@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Sparkles, ShieldCheck, Compass } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { LUXURY_EASE } from "../../lib/animations";
 
@@ -63,45 +63,6 @@ export default function CustomBuilderIntro({
             {groupsCount} Bespoke Step{groupsCount > 1 ? "s" : ""}
           </span>
         )}
-      </div>
-
-      {/* Editorial Trust / Experience Pillars */}
-      <div className="mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-[rgba(242,238,231,0.06)] w-full grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 text-center">
-        <div className="flex flex-col items-center space-y-1.5">
-          <div className="w-8 h-8 rounded-full bg-[#181714] border border-[rgba(242,238,231,0.06)] flex items-center justify-center text-[#BFA27A] mb-1">
-            <Sparkles className="w-3.5 h-3.5 stroke-[1.5]" />
-          </div>
-          <span className="font-serif text-sm text-[#F2EEE7] font-normal">
-            Bespoke Extrait
-          </span>
-          <span className="text-[11px] font-sans text-[#777169] font-light">
-            Formulated to your exacting taste
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center space-y-1.5">
-          <div className="w-8 h-8 rounded-full bg-[#181714] border border-[rgba(242,238,231,0.06)] flex items-center justify-center text-[#BFA27A] mb-1">
-            <Compass className="w-3.5 h-3.5 stroke-[1.5]" />
-          </div>
-          <span className="font-serif text-sm text-[#F2EEE7] font-normal">
-            Transparent Atelier
-          </span>
-          <span className="text-[11px] font-sans text-[#777169] font-light">
-            Live pricing on every refinement
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center space-y-1.5">
-          <div className="w-8 h-8 rounded-full bg-[#181714] border border-[rgba(242,238,231,0.06)] flex items-center justify-center text-[#BFA27A] mb-1">
-            <ShieldCheck className="w-3.5 h-3.5 stroke-[1.5]" />
-          </div>
-          <span className="font-serif text-sm text-[#F2EEE7] font-normal">
-            Master Craftsmanship
-          </span>
-          <span className="text-[11px] font-sans text-[#777169] font-light">
-            Hand-bottled in Karachi, Pakistan
-          </span>
-        </div>
       </div>
     </motion.div>
   );

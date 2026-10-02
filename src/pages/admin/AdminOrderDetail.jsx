@@ -18,12 +18,11 @@ import {
   Save,
   Clock,
   Trash2,
-  Sparkles,
+  FlaskConical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomSelect from "../../components/CustomSelect";
 import Input from "../../components/Input";
-
 export default function AdminOrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -257,7 +256,7 @@ export default function AdminOrderDetail() {
             </span>
             {items.some((i) => Boolean(i.is_custom)) && (
               <span className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.16em] px-2.5 py-1 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/40 font-medium rounded-xs">
-                <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                <FlaskConical className="w-3 h-3 text-[#BFA27A]" />
                 <span>BESPOKE CREATION</span>
               </span>
             )}
@@ -614,7 +613,7 @@ export default function AdminOrderDetail() {
                             <div className="mt-3 p-3.5 bg-[#0D0D0C] border border-[#BFA27A]/30 rounded-xs space-y-3 font-sans text-xs max-w-xl">
                               <div className="flex items-center justify-between border-b border-[rgba(242,238,231,0.06)] pb-2">
                                 <span className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#BFA27A] flex items-center gap-1.5">
-                                  <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                                  <FlaskConical className="w-3 h-3 text-[#BFA27A]" />
                                   <span>ATELIER FORMULATION SPECIFICATION</span>
                                 </span>
                                 {config?.formatted_total_price && (
@@ -750,7 +749,7 @@ export default function AdminOrderDetail() {
                       <div className="p-3 bg-[#0D0D0C] border border-[#BFA27A]/30 rounded-xs space-y-2.5 font-sans text-xs">
                         <div className="flex items-center justify-between border-b border-[rgba(242,238,231,0.06)] pb-1.5">
                           <span className="text-[9.5px] uppercase tracking-[0.16em] font-medium text-[#BFA27A] flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-[#BFA27A]" />
+                            <FlaskConical className="w-3 h-3 text-[#BFA27A]" />
                             <span>FORMULATION</span>
                           </span>
                           {config?.formatted_total_price && (

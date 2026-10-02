@@ -12,7 +12,7 @@ import {
   X,
   Shield,
   Mail,
-  Sparkles,
+  LayoutTemplate,
   ChevronRight,
   Tag,
   Image as ImageIcon,
@@ -78,7 +78,7 @@ export default function AdminLayout() {
     {
       name: "Hero Section",
       path: "/admin/hero",
-      icon: Sparkles,
+      icon: LayoutTemplate,
     },
     {
       name: "Editorial Banner",

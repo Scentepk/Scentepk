@@ -7,7 +7,6 @@ import {
   ZoomIn,
   ZoomOut,
   Sliders,
-  Sparkles,
   Move,
   Grid,
   Eye,

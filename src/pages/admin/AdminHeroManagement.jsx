@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
-  Sparkles,
+  LayoutTemplate,
   Save,
   RotateCcw,
   Check,
@@ -445,7 +445,7 @@ export default function AdminHeroManagement() {
         <div>
           <div className="flex items-center space-x-2.5 mb-1.5">
             <span className="text-[10px] uppercase font-sans tracking-[0.26em] text-[#BFA27A] font-semibold flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
+              <LayoutTemplate className="w-3.5 h-3.5" />
               FRONT-OF-HOUSE EDITORIAL CMS
             </span>
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Edit3, ArrowLeft, CheckCircle2, ArrowRight, ShoppingBag, AlertCircle } from "lucide-react";
+import { Edit3, ArrowLeft, CheckCircle2, ArrowRight, ShoppingBag, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { LUXURY_EASE } from "../../lib/animations";
 import { useCart } from "../../context/CartContext";
@@ -124,9 +124,6 @@ export default function CustomBuilderReview({
 
         {/* Header */}
         <div className="text-center pb-8 border-b border-[rgba(242,238,231,0.06)]">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#181714] border border-[#BFA27A]/30 text-[#BFA27A] mb-3">
-            <Sparkles className="w-5 h-5 stroke-[1.5]" />
-          </div>
           <span className="text-[10px] uppercase font-mono tracking-[0.28em] text-[#BFA27A] font-medium block mb-1">
             ATELIER BESPOKE FORMULA
           </span>

@@ -13,7 +13,6 @@ import {
   uploadBuilderOptionImageAdmin,
 } from "../../services/customBuilder";
 import {
-  Sparkles,
   Plus,
   Edit2,
   Trash2,
