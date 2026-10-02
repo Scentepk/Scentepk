@@ -582,7 +582,7 @@ export default function ProductDetails() {
                   fetchPriority="high"
                   className="w-full h-full object-cover select-none transition-transform duration-700 ease-out group-hover/main:scale-[1.03]"
                   onError={(e) => {
-                    const fallback = PRODUCTS.find((p) => p.slug === slug || p.id === slug)?.image || PRODUCTS[0].image;
+                    const fallback = PRODUCTS.find((p) => p.slug === slug || p.id === slug)?.image || "/images/flacon-minimal.jpg";
                     if (fallback && e.target.src !== fallback) {
                       e.target.src = fallback;
                     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { Check, ShieldCheck, ArrowLeft, Truck, AlertCircle, Loader2, Copy, Search, CheckCircle2, Tag, X } from "lucide-react";
@@ -10,6 +10,7 @@ import { validatePromoCode } from "../services/promoCodes";
 
 export default function Checkout() {
   const { cartItems, buyNowItem, clearBuyNow, placeOrder, validateAndSyncStock } = useCart();
+  const isSubmittingRef = useRef(false);
   const location = useLocation();
   const isBuyNow = Boolean(location.state?.isBuyNow || (buyNowItem && location.state?.isBuyNow !== false));
   const isFreshCheckout = Boolean(location.state?.freshCheckout);
@@ -220,7 +221,8 @@ export default function Checkout() {
     }
 
     // Phone validation for Pakistani numbers
-    const cleanPhone = formData.phone.replace(/[\s-]/g, "");
+    // Normalize by stripping spaces, hyphens, parentheses, and dots
+    const cleanPhone = formData.phone.trim().replace(/[\s\-().]/g, "");
     const phoneRegex = /^(\+92|0|0092)?3[0-9]{9}$/;
     if (!cleanPhone || !phoneRegex.test(cleanPhone)) {
       newErrors.phone = "Please enter a valid Pakistani mobile number (e.g. 0300 1234567).";
@@ -250,9 +252,16 @@ export default function Checkout() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle Submit COD Order
+  // Handle Submit COD Order with Synchronous Lock
   const handlePlaceOrder = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
+
+    // 1. Synchronous Guard: immediately reject rapid double-clicks or repeated Enter keystrokes
+    if (isSubmittingRef.current || isSubmitting) {
+      return;
+    }
 
     if (!validateForm()) {
       return;
@@ -267,11 +276,20 @@ export default function Checkout() {
       return;
     }
 
+    // 2. Synchronously acquire submission lock BEFORE starting asynchronous RPC
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
     setSubmissionError("");
 
     try {
-      const generatedOrder = await placeOrder(formData, checkoutItems, appliedPromo);
+      // Send normalized phone so backend receives consistent format
+      const cleanPhone = formData.phone.trim().replace(/[\s\-().]/g, "");
+      const normalizedCustomerData = {
+        ...formData,
+        phone: cleanPhone,
+      };
+
+      const generatedOrder = await placeOrder(normalizedCustomerData, checkoutItems, appliedPromo);
       setConfirmedOrder(generatedOrder);
       try {
         sessionStorage.setItem("scente_confirmed_order", JSON.stringify(generatedOrder));
@@ -286,6 +304,8 @@ export default function Checkout() {
       } catch (e) { }
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
+      // 3. Reliably release lock in all scenarios (success, failure, or cancellation)
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
     }
   };

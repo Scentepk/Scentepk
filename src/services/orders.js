@@ -124,7 +124,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
       resultData = res.data;
     } else {
       console.warn("create_cod_order primary call failed:", res.error);
-      // If remote database does not have migration 009 applied yet (schema cache missing 9-param function)
+      // Fallback for legacy 8-parameter RPC signature if 9-parameter RPC is not cached
       if (
         res.error.message?.includes("schema cache") ||
         res.error.message?.includes("Could not find the function")
@@ -132,27 +132,6 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
         const fallbackRes = await supabase.rpc("create_cod_order", basePayload);
         if (!fallbackRes.error) {
           resultData = fallbackRes.data;
-          if (promoDetails?.code) {
-            const discount = promoDetails.discountAmount || 0;
-            const newTotal = Math.max(0, (resultData.subtotal || 0) - discount);
-            try {
-              await supabase
-                .from("orders")
-                .update({
-                  promo_code: promoDetails.code,
-                  discount_amount: discount,
-                  discount_type: promoDetails.discountType || null,
-                  discount_value: promoDetails.discountValue || null,
-                  total: newTotal,
-                })
-                .eq("id", resultData.order_id);
-            } catch (e) {
-              console.warn("Could not patch promo to orders table:", e);
-            }
-            resultData.discount_amount = discount;
-            resultData.promo_code = promoDetails.code;
-            resultData.total = newTotal;
-          }
         } else {
           resultError = fallbackRes.error;
         }

@@ -605,12 +605,87 @@ export async function updateOrderTrackingAdmin(orderId, { carrier, trackingNumbe
 }
 
 /**
+ * Safely restores reserved inventory for an order if it is in an active pre-dispatch state.
+ * Idempotent: Never restores stock if the order was already cancelled or delivered.
+ * Custom items (is_custom: true) are strictly skipped and do not affect catalog inventory.
+ */
+async function restoreOrderStockBeforeDelete(idOrRef) {
+  if (!idOrRef) return;
+
+  if (isSupabaseConfigured && supabase) {
+    try {
+      let query = supabase.from("orders").select("id, status, cancelled_at");
+      if (isUuid(idOrRef)) {
+        query = query.eq("id", idOrRef.trim());
+      } else {
+        query = query.eq("reference", idOrRef.trim().toUpperCase());
+      }
+      const { data: ord } = await query.maybeSingle();
+
+      if (ord && ["pending", "confirmed", "processing"].includes(ord.status) && !ord.cancelled_at) {
+        await supabase.rpc("cancel_order_and_restore_stock", {
+          p_order_id: String(ord.id),
+        });
+      }
+    } catch (err) {
+      console.warn(`Could not restore stock before deleting order ${idOrRef}:`, err);
+    }
+    return;
+  }
+
+  // Local storage prototype restoral
+  try {
+    const items = getLocalOrdersStore();
+    const targetOrder = items.find((o) => o.id === idOrRef || o.reference === idOrRef);
+    if (!targetOrder || !["pending", "confirmed", "processing"].includes(targetOrder.status) || targetOrder.cancelled_at) {
+      return;
+    }
+
+    const localProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PRODUCTS_KEY) || "[]");
+    let changed = false;
+
+    (targetOrder.order_items || []).forEach((item) => {
+      if (item.is_custom) return; // Custom items never touch catalog variant stock
+      const prod = localProducts.find((p) => p.id === item.product_id);
+      if (prod) {
+        if (Array.isArray(prod.variants) && prod.variants.length > 0) {
+          const variant = prod.variants.find((v) => v.id === item.variant_id || v.size === item.size);
+          if (variant) {
+            variant.stock_quantity = (variant.stock_quantity || 0) + (item.quantity || 1);
+            variant.isOutOfStock = variant.stock_quantity <= 0;
+            changed = true;
+          }
+          prod.stock_quantity = prod.variants.reduce((sum, v) => sum + (Number(v.stock_quantity) || 0), 0);
+        } else {
+          prod.stock_quantity = (prod.stock_quantity || 0) + (item.quantity || 1);
+          changed = true;
+        }
+        if (prod.status === "out_of_stock" && prod.stock_quantity > 0) {
+          prod.status = "active";
+        }
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem(LOCAL_STORAGE_PRODUCTS_KEY, JSON.stringify(localProducts));
+    }
+    targetOrder.cancelled_at = new Date().toISOString();
+  } catch (e) {
+    console.error("Local stock restoration error prior to deletion:", e);
+  }
+}
+
+/**
  * Admin: Permanently delete an order and its associated order items (via cascade)
+ * Restores reserved variant stock for active pre-dispatch orders prior to deletion.
  */
 export async function deleteOrderAdmin(orderId) {
   if (!orderId) {
     return { success: false, error: new Error("Order identifier required.") };
   }
+
+  // 1. Restore reserved inventory before deletion if order is active
+  await restoreOrderStockBeforeDelete(orderId);
 
   if (!isSupabaseConfigured || !supabase) {
     const items = getLocalOrdersStore();
@@ -644,10 +719,16 @@ export async function deleteOrderAdmin(orderId) {
 
 /**
  * Admin: Permanently delete multiple orders by their IDs or references
+ * Restores reserved variant stock for active pre-dispatch orders prior to deletion.
  */
 export async function deleteMultipleOrdersAdmin(orderIds) {
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return { success: false, error: new Error("At least one order identifier required.") };
+  }
+
+  // 1. Restore reserved inventory for any active orders before deletion
+  for (const id of orderIds) {
+    await restoreOrderStockBeforeDelete(id);
   }
 
   const idsToMatch = new Set(orderIds.map((id) => String(id).trim()));
@@ -693,14 +774,39 @@ export async function deleteMultipleOrdersAdmin(orderIds) {
 
 /**
  * Admin: Permanently delete ALL orders and their associated items
+ * Restores reserved variant stock for all active pre-dispatch orders prior to deletion.
  */
 export async function deleteAllOrdersAdmin() {
   if (!isSupabaseConfigured || !supabase) {
+    const items = getLocalOrdersStore();
+    for (const ord of items) {
+      await restoreOrderStockBeforeDelete(ord.id);
+    }
     saveLocalOrdersStore([]);
     return { success: true, error: null };
   }
 
   try {
+    // 1. Query and restore reserved stock for any active orders before deletion
+    const { data: activeOrders } = await supabase
+      .from("orders")
+      .select("id, status, cancelled_at")
+      .in("status", ["pending", "confirmed", "processing"])
+      .is("cancelled_at", null);
+
+    if (Array.isArray(activeOrders) && activeOrders.length > 0) {
+      for (const ord of activeOrders) {
+        try {
+          await supabase.rpc("cancel_order_and_restore_stock", {
+            p_order_id: String(ord.id),
+          });
+        } catch (e) {
+          console.warn(`Could not restore stock for order ${ord.id}:`, e);
+        }
+      }
+    }
+
+    // 2. Perform deletion
     // Supabase / PostgREST requires a filter to prevent unintended full table wipeout.
     // Using .neq("id", "00000000-0000-0000-0000-000000000000") matches all orders.
     const { error } = await supabase
