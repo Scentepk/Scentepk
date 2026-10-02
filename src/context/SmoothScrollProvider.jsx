@@ -19,7 +19,7 @@ export function SmoothScrollProvider({ children }) {
       return;
     }
 
-    // 2. Initialize Lenis with luxury easing curve
+    // 2. Initialize Lenis with luxury easing curve & comprehensive modal / nested scroll protection
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Gentle acceleration with soft deceleration
@@ -30,6 +30,47 @@ export function SmoothScrollProvider({ children }) {
       touchMultiplier: 1.4,
       touchInertiaMultiplier: 1.0,
       infinite: false,
+      allowNestedScroll: true,
+      prevent: (node) => {
+        if (!node || !(node instanceof HTMLElement)) return false;
+
+        // 1. Explicit lenis-prevent attribute anywhere in hierarchy
+        if (node.hasAttribute("data-lenis-prevent") || node.closest?.("[data-lenis-prevent]")) {
+          return true;
+        }
+
+        // 2. Modals, dialogs, drawers, popups, and lightboxes across the entire website
+        if (
+          node.closest?.('[role="dialog"]') ||
+          node.closest?.('[aria-modal="true"]') ||
+          node.closest?.(".fixed.inset-0") ||
+          node.closest?.("[data-modal]")
+        ) {
+          return true;
+        }
+
+        // 3. Any element with overflow-y: auto / scroll or overflow-x: auto / scroll that has scrollable content
+        let curr = node;
+        while (curr && curr !== document.documentElement && curr !== document.body) {
+          try {
+            const style = window.getComputedStyle(curr);
+            const canScrollY =
+              (style.overflowY === "auto" || style.overflowY === "scroll" || style.overflowY === "overlay") &&
+              curr.scrollHeight > curr.clientHeight;
+            const canScrollX =
+              (style.overflowX === "auto" || style.overflowX === "scroll" || style.overflowX === "overlay") &&
+              curr.scrollWidth > curr.clientWidth;
+            if (canScrollY || canScrollX) {
+              return true;
+            }
+          } catch {
+            // ignore computed style evaluation errors
+          }
+          curr = curr.parentElement;
+        }
+
+        return false;
+      },
     });
 
     lenisRef.current = lenis;
@@ -43,7 +84,47 @@ export function SmoothScrollProvider({ children }) {
     }
     rafId = requestAnimationFrame(raf);
 
-    // 4. Global Anchor Smooth Scroll Handler with Navbar Offset
+    // 4. Global Active Modal & Drawer Scroll-Lock Observer
+    // Detects any open modal or drawer across the entire app and halts background Lenis/body scroll
+    const checkActiveModals = () => {
+      const modalSelectors = [
+        '[role="dialog"]',
+        '[aria-modal="true"]',
+        '.fixed.inset-0:not(.pointer-events-none)',
+      ];
+      const hasActiveModal = modalSelectors.some((sel) => {
+        const found = document.querySelector(sel);
+        if (!found) return false;
+        return found.offsetWidth > 0 || found.offsetHeight > 0 || found.getClientRects().length > 0;
+      });
+
+      if (hasActiveModal) {
+        if (!document.body.dataset.lenisModalLocked) {
+          document.body.dataset.lenisModalLocked = "true";
+          document.body.style.overflow = "hidden";
+          lenis.stop();
+        }
+      } else {
+        if (document.body.dataset.lenisModalLocked) {
+          delete document.body.dataset.lenisModalLocked;
+          document.body.style.overflow = "";
+          lenis.start();
+        }
+      }
+    };
+
+    const modalObserver = new MutationObserver(() => {
+      checkActiveModals();
+    });
+
+    modalObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "aria-modal", "role"],
+    });
+
+    // 5. Global Anchor Smooth Scroll Handler with Navbar Offset
     const handleAnchorClick = (e) => {
       const target = e.target.closest("a");
       if (!target) return;
@@ -62,6 +143,11 @@ export function SmoothScrollProvider({ children }) {
 
     // Clean up on unmount
     return () => {
+      modalObserver.disconnect();
+      if (document.body.dataset.lenisModalLocked) {
+        delete document.body.dataset.lenisModalLocked;
+        document.body.style.overflow = "";
+      }
       document.removeEventListener("click", handleAnchorClick);
       cancelAnimationFrame(rafId);
       lenis.destroy();

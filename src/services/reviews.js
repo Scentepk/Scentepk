@@ -347,3 +347,35 @@ export async function toggleReviewPublishAdmin(id, isPublished) {
 
   return { data: null, error: { message: "Review not found." } };
 }
+
+/**
+ * Calculates responsive visible card count based on screen width.
+ * Desktop (>=1024px): 3
+ * Tablet (768px-1023px): 2
+ * Mobile (<768px): 1
+ */
+export function getReviewsVisibleCount(windowWidth) {
+  if (typeof windowWidth !== "number" || windowWidth < 768) return 1;
+  if (windowWidth < 1024) return 2;
+  return 3;
+}
+
+/**
+ * Calculates max carousel slide index.
+ * Movement is 1 review at a time.
+ */
+export function calculateCarouselMaxIndex(totalItems, visibleCount) {
+  if (!totalItems || totalItems <= 0) return 0;
+  const count = typeof visibleCount === "number" && visibleCount > 0 ? visibleCount : 1;
+  return Math.max(0, totalItems - count);
+}
+
+/**
+ * Determines whether navigation controls (arrows / pagination) are needed.
+ */
+export function shouldShowCarouselNavigation(totalItems, visibleCount) {
+  if (!totalItems || totalItems <= 0) return false;
+  const count = typeof visibleCount === "number" && visibleCount > 0 ? visibleCount : 1;
+  return totalItems > count;
+}
+

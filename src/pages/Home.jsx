@@ -10,12 +10,12 @@ import {
 import { useCart } from "../context/CartContext";
 import SectionHeading from "../components/SectionHeading";
 import EditorialBanner from "../components/EditorialBanner";
+import ReviewsCarousel from "../components/ReviewsCarousel";
 import SEO from "../components/SEO";
 import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  Star,
   Check,
   Plus,
 } from "lucide-react";
@@ -904,7 +904,7 @@ export default function Home() {
           8. CUSTOMER REVIEWS (Refined Social Proof — Database Backed)
           ======================================================================= */}
       {publishedReviews.length > 0 && (
-        <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06]">
+        <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06] overflow-hidden">
           <div className="layout-container">
             <SectionHeading
               eyebrow="PATRON IMPRESSIONS"
@@ -913,52 +913,7 @@ export default function Home() {
               align="center"
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-16">
-              {publishedReviews.map((review) => {
-                const fragranceLabel =
-                  review.productName || review.product?.name || (review.productId ? "Extrait de Parfum" : null);
-
-                return (
-                  <div
-                    key={review.id}
-                    className="p-5 sm:p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-1 text-[#BFA27A]">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-3.5 h-3.5 ${
-                              i < review.rating ? "fill-[#BFA27A] stroke-none" : "stroke-white/20 fill-none"
-                            }`}
-                          />
-                        ))}
-                      </div>
-
-                      <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic">
-                        "{review.reviewText}"
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                      <div>
-                        <h4 className="font-sans font-semibold text-sm text-[#F2EEE7]">
-                          {review.customerName}
-                        </h4>
-                        <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#888279] block">
-                          {review.location ? `${review.location} • ` : ""}Verified Patron
-                        </span>
-                      </div>
-                      {fragranceLabel && (
-                        <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] bg-[#181714] px-2.5 py-1 rounded-full border border-[rgba(191,162,122,0.2)]">
-                          {fragranceLabel}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <ReviewsCarousel reviews={publishedReviews} />
           </div>
         </section>
       )}

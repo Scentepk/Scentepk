@@ -460,7 +460,8 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.28, ease: LUXURY_EASE }}
-            className="fixed inset-0 h-[100dvh] z-50 bg-[#0D0D0C] lg:hidden overflow-y-auto safe-pt safe-drawer-bottom"
+            className="fixed inset-0 h-[100dvh] z-50 bg-[#0D0D0C] lg:hidden overflow-y-auto overscroll-contain safe-pt safe-drawer-bottom"
+            data-lenis-prevent
           >
             <div className="min-h-full flex flex-col justify-between px-5 py-6 sm:px-8 sm:py-7">
               {/* Top Area: Brand Header, Search Input, and Navigation Sections */}
@@ -521,7 +522,10 @@ export default function Navbar() {
                         className="w-full overflow-hidden"
                       >
                         <div className="pt-2.5">
-                          <div className="bg-[#141312] border border-[rgba(242,238,231,0.1)] rounded-xl p-2 max-h-64 overflow-y-auto divide-y divide-[rgba(242,238,231,0.06)] shadow-[0_12px_36px_rgba(0,0,0,0.65)]">
+                          <div
+                            data-lenis-prevent
+                            className="bg-[#141312] border border-[rgba(242,238,231,0.1)] rounded-xl p-2 max-h-64 overflow-y-auto overscroll-contain divide-y divide-[rgba(242,238,231,0.06)] shadow-[0_12px_36px_rgba(0,0,0,0.65)]"
+                          >
                             {searchResults.length === 0 ? (
                               <div className="py-5 text-center space-y-1 font-sans">
                                 <p className="text-xs text-[#AAA49B] font-light">No products found</p>

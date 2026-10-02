@@ -804,7 +804,10 @@ export default function Checkout() {
               </h3>
 
               {/* Items List */}
-              <div className="space-y-3 max-h-64 overflow-y-auto pr-1 divide-y divide-[rgba(242,238,231,0.04)] font-sans">
+              <div
+                data-lenis-prevent
+                className="space-y-3 max-h-64 overflow-y-auto overscroll-contain pr-1 divide-y divide-[rgba(242,238,231,0.04)] font-sans"
+              >
                 {checkoutItems.map((item) => {
                   const isCustom = Boolean(item.isCustom);
                   const itemKey = item.cartItemId || `${item.product?.id}-${item.size}`;

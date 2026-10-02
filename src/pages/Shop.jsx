@@ -635,7 +635,8 @@ export default function Shop() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: LUXURY_EASE }}
-              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-[#121110] border-r border-white/10 p-5 sm:p-6 z-50 overflow-y-auto lg:hidden flex flex-col justify-between safe-pt safe-drawer-bottom"
+              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-[#121110] border-r border-white/10 p-5 sm:p-6 z-50 overflow-y-auto overscroll-contain lg:hidden flex flex-col justify-between safe-pt safe-drawer-bottom"
+              data-lenis-prevent
             >
               <div>
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">

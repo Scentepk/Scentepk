@@ -604,12 +604,16 @@ export default function AdminReviews() {
       {/* ===================================================================== */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div
+            data-lenis-prevent
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
             <motion.div
+              data-lenis-prevent
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg bg-[#141312] border border-white/[0.1] rounded-2xl p-5 sm:p-8 shadow-2xl text-[#F2EEE7] max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-lg bg-[#141312] border border-white/[0.1] rounded-2xl p-5 sm:p-8 shadow-2xl text-[#F2EEE7] max-h-[90vh] overflow-y-auto overscroll-contain"
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 mb-6">
@@ -789,8 +793,12 @@ export default function AdminReviews() {
       {/* ===================================================================== */}
       <AnimatePresence>
         {deleteTarget && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div
+            data-lenis-prevent
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
             <motion.div
+              data-lenis-prevent
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}

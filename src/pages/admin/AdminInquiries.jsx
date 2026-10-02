@@ -376,8 +376,12 @@ export default function AdminInquiries() {
       {/* 5. INQUIRY DETAIL MODAL (RESPONSIVE VIEWPORT BOUNDS) */}
       <AnimatePresence>
         {activeModalInquiry && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm">
+          <div
+            data-lenis-prevent
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm"
+          >
             <motion.div
+              data-lenis-prevent
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
@@ -418,7 +422,10 @@ export default function AdminInquiries() {
               </div>
 
               {/* Scrollable Content Body */}
-              <div className="overflow-y-auto space-y-5 pr-1 flex-1">
+              <div
+                data-lenis-prevent
+                className="overflow-y-auto overscroll-contain space-y-5 pr-1 flex-1"
+              >
                 {/* Client Channels */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 bg-[#0D0D0C] border border-[rgba(242,238,231,0.04)] rounded-sm">
                   <div>
