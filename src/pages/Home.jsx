@@ -674,13 +674,6 @@ export default function Home() {
                         className="absolute inset-0 w-full h-full object-cover object-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out"
                       />
                     )}
-
-                    {/* Subtle Concentration Badge */}
-                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 max-w-[85%]">
-                      <span className="text-[7.5px] xs:text-[8px] sm:text-[8.5px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.16em] bg-[#090908]/90 text-[#BFA27A] border border-[rgba(191,162,122,0.3)] px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full font-semibold backdrop-blur-md block truncate">
-                        {product.concentration || "30% Extrait"}
-                      </span>
-                    </div>
                   </Link>
 
                   {/* Minimal Details & Quick Action */}
