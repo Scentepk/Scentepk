@@ -516,32 +516,9 @@ export default function ProductDetails() {
         keywords={productKeywords}
       />
 
-      {/* BREADCRUMB & BACK NAVIGATION */}
-      <div className="layout-container pt-6 sm:pt-8">
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: LUXURY_EASE }}
-          className="flex items-center space-x-2 text-[10px] sm:text-[11px] font-sans tracking-[0.2em] uppercase text-[#777169]"
-        >
-          <Link to="/shop" className="hover:text-[#BFA27A] transition-colors">
-            THE COLLECTION
-          </Link>
-          <span>/</span>
-          <Link
-            to={`/shop?audience=${product.family || "all"}`}
-            className="text-[#BFA27A] hover:underline transition-colors"
-          >
-            {product.family ? product.family.toUpperCase() : "ATELIER"}
-          </Link>
-          <span>/</span>
-          <span className="text-[#F2EEE7] font-medium">{product.name}</span>
-        </motion.div>
-      </div>
-
       {/* 1. HERO SECTION (SPLIT TWO-COLUMN LUXURY SHOWCASE) */}
-      <section className="layout-container py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-18 items-start">
+      <section className="layout-container pt-4 pb-8 sm:pt-6 sm:pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 sm:gap-10 lg:gap-14 xl:gap-18 items-start">
           {/* LEFT: IMAGE GALLERY */}
           <div className="lg:col-span-7 flex flex-col space-y-4">
             {/* Main Image Container */}
@@ -549,7 +526,7 @@ export default function ProductDetails() {
               initial={{ opacity: 0, y: 16, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.85, ease: LUXURY_EASE }}
-              className="relative aspect-square sm:aspect-[4/3] lg:aspect-square bg-[#141312] overflow-hidden rounded-3xl border border-white/[0.08] shadow-[0_30px_90px_rgba(0,0,0,0.85)] select-none group/main cursor-zoom-in"
+              className="relative aspect-square bg-[#141312] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/[0.08] shadow-[0_30px_90px_rgba(0,0,0,0.85)] select-none group/main cursor-zoom-in"
               onClick={() => setIsLightboxOpen(true)}
               role="button"
               tabIndex={0}
@@ -561,13 +538,6 @@ export default function ProductDetails() {
               }}
               aria-label={`Open full-screen image gallery for ${product.name}`}
             >
-              {/* Formulation Badge */}
-              <div className="absolute top-4 left-4 z-20 pointer-events-none">
-                <span className="text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.2em] bg-[#0D0D0C]/85 backdrop-blur-md text-[#BFA27A] px-3.5 py-1.5 rounded-full font-medium border border-[#BFA27A]/30 shadow-lg">
-                  {batchBadgeText}
-                </span>
-              </div>
-
               {/* Main Image */}
               <AnimatePresence mode="wait">
                 <motion.img
@@ -580,7 +550,7 @@ export default function ProductDetails() {
                   alt={`${product.name}`}
                   loading="eager"
                   fetchPriority="high"
-                  className="w-full h-full object-cover select-none transition-transform duration-700 ease-out group-hover/main:scale-[1.03]"
+                  className="w-full h-full object-cover object-center select-none transition-transform duration-700 ease-out group-hover/main:scale-[1.02]"
                   onError={(e) => {
                     const fallback = PRODUCTS.find((p) => p.slug === slug || p.id === slug)?.image || "/images/flacon-minimal.jpg";
                     if (fallback && e.target.src !== fallback) {
@@ -660,198 +630,202 @@ export default function ProductDetails() {
           </div>
 
           {/* RIGHT: PRODUCT DOSSIER & ACTIONS */}
+          {/* RIGHT: PRODUCT DOSSIER & ACTIONS */}
           <div className="lg:col-span-5 flex flex-col justify-between font-sans">
             <div>
               {/* Eyebrow */}
-              <div className="mb-2">
-                <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.24em] text-[#BFA27A] font-medium block">
+              <div className="mb-1.5">
+                <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.22em] text-[#BFA27A] font-medium block">
                   {product.olfactiveFamily || "HAUTE PARFUMERIE"}
                 </span>
               </div>
 
               {/* Title & Type */}
               <div className="mb-4">
-                <h1 className="font-serif text-3xl sm:text-4xl lg:text-[44px] text-[#F2EEE7] tracking-tight leading-[1.15] mb-2 font-normal">
+                <h1 className="font-serif text-2xl sm:text-3xl lg:text-[36px] text-[#F2EEE7] tracking-normal leading-[1.2] mb-1.5 font-light sm:font-normal">
                   {product.name}
                 </h1>
-                <p className="text-xs sm:text-[13px] text-[#AAA49B] tracking-[0.08em] font-light">
+                <p className="text-[11px] sm:text-xs text-[#9E978E] tracking-wider uppercase font-light">
                   {productTypeSubtitle}
                 </p>
               </div>
 
               {/* Price Block */}
-              <div className="mb-6 pb-6 border-b border-white/[0.08]">
-                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1">
+              <div className="mb-5 pb-5 border-b border-white/[0.06]">
+                <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-1">
                   {isVariantOnSale && formattedVariantCompareAtPrice && (
-                    <span className="font-serif text-xl sm:text-2xl text-[#777169] line-through decoration-[#777169]/70 font-light">
+                    <span className="font-serif text-base sm:text-lg text-[#6E6860] line-through font-light">
                       {formattedVariantCompareAtPrice}
                     </span>
                   )}
-                  <span className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal tracking-wide">
+                  <span className="font-serif text-2xl sm:text-3xl text-[#F2EEE7] font-normal tracking-wide">
                     {currentFormattedPrice}
                   </span>
                   {isVariantOnSale && variantDiscountPercent > 0 && (
-                    <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.16em] px-2.5 py-0.5 rounded-full bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium">
+                    <span className="text-[9px] sm:text-[10px] uppercase font-sans tracking-[0.14em] px-2 py-0.5 rounded-full bg-[#BFA27A]/10 text-[#C4AB84] border border-[#BFA27A]/25 font-medium">
                       {variantDiscountPercent}% OFF
                     </span>
                   )}
-                  <span className="text-xs text-[#AAA49B] uppercase tracking-wider font-light">
+                  <span className="text-[11px] text-[#8E8880] uppercase tracking-wider font-light font-mono">
                     / {selectedSize}
                   </span>
                 </div>
-                <p className="text-[11px] text-[#777169] tracking-wider mt-1.5 font-light">
-                  Inclusive of all taxes · Complimentary express shipping across Pakistan
+                <p className="text-[10.5px] text-[#7A746C] tracking-wide mt-1.5 font-light">
+                  Inclusive of all taxes · Complimentary express delivery across Pakistan
                 </p>
               </div>
 
               {/* Description */}
               {cleanedDescription && (
-                <p className="text-sm text-[#C4BEB4] font-light leading-[1.8] mb-6 max-w-xl">
+                <p className="text-[13px] sm:text-sm text-[#B0AAA0] font-light leading-[1.75] mb-5 max-w-xl">
                   {cleanedDescription}
                 </p>
               )}
 
-              {/* Bottle Size Selector */}
-              <div className="mb-6 space-y-2.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="uppercase tracking-[0.2em] text-[#AAA49B] font-medium text-[10.5px]">
-                    BOTTLE SIZE
-                  </span>
-                  <span className="text-[#BFA27A] text-[11px] font-mono">
-                    {selectedVariantVolume}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  {variants.map((v) => {
-                    const isSelected = selectedSize === v.size;
-                    const isSoldOut = v.isOutOfStock || (v.stockQuantity !== undefined && v.stockQuantity <= 0);
-                    const vHasDiscount = Boolean(v.compareAtPrice && v.compareAtPrice > v.price);
-                    return (
-                      <button
-                        key={v.id || v.size}
-                        type="button"
-                        disabled={isSoldOut}
-                        onClick={() => setSelectedSize(v.size)}
-                        className={`px-5 py-2.5 rounded-xl font-sans text-xs uppercase tracking-[0.14em] transition-all duration-200 cursor-pointer border ${isSelected
-                            ? "bg-[#1E1C18] border-[#BFA27A] text-[#F2EEE7] font-medium shadow-[0_0_15px_rgba(191,162,122,0.2)] ring-1 ring-[#BFA27A]/50"
-                            : "bg-[#141312] border-white/10 text-[#AAA49B] hover:border-white/30 hover:text-white"
-                          } ${isSoldOut ? "opacity-40 cursor-not-allowed line-through" : ""}`}
-                      >
-                        <span>{v.size}</span>
-                        {v.formattedPrice && (
-                          <span className="block text-[10px] text-[#777169] font-mono mt-0.5">
-                            {vHasDiscount && (
-                              <span className="line-through mr-1 opacity-70">
-                                {v.formattedCompareAtPrice || `PKR ${Number(v.compareAtPrice).toLocaleString()}`}
-                              </span>
-                            )}
-                            <span className={isSelected ? "text-[#BFA27A]" : "text-[#AAA49B]"}>
-                              {v.formattedPrice}
-                            </span>
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Stock Status & Quantity Stepper */}
-              <div className="flex items-center justify-between py-4 border-y border-white/[0.08] mb-7">
-                <div className="flex items-center gap-2 text-xs">
-                  <span
-                    className={`w-2.5 h-2.5 rounded-full ${isOutOfStockNow
-                        ? "bg-rose-500"
-                        : isLowStock
-                          ? "bg-amber-400 animate-pulse"
-                          : "bg-emerald-400"
-                      }`}
-                  />
-                  <span className="uppercase tracking-widest text-[11px] font-medium text-[#F2EEE7]">
-                    {isOutOfStockNow
-                      ? "Sold Out"
-                      : isLowStock
-                        ? "Only a few bottles remaining"
-                        : "In Stock · Ready to Dispatch"}
-                  </span>
-                </div>
-
-                {!isOutOfStockNow && (
-                  <div className="flex items-center bg-[#141312] border border-white/10 rounded-xl p-1">
-                    <button
-                      type="button"
-                      onClick={handleDecreaseQuantity}
-                      disabled={quantity <= 1}
-                      className="w-8 h-8 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#F2EEE7] hover:text-[#BFA27A] flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="w-10 text-center font-mono text-sm text-[#F2EEE7] select-none font-medium">
-                      {quantity}
+              {/* Bottle Size Selector (Render only when multiple sizes exist) */}
+              {variants.length > 1 && (
+                <div className="mb-5 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="uppercase tracking-[0.18em] text-[#9E978E] font-medium text-[10px]">
+                      SELECT SIZE
                     </span>
-                    <button
-                      type="button"
-                      onClick={handleIncreaseQuantity}
-                      disabled={quantity >= maxStock}
-                      className="w-8 h-8 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#F2EEE7] hover:text-[#BFA27A] flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
+                    <span className="text-[#BFA27A] text-[11px] font-mono">
+                      {selectedVariantVolume}
+                    </span>
                   </div>
-                )}
+
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    {variants.map((v) => {
+                      const isSelected = selectedSize === v.size;
+                      const isSoldOut = v.isOutOfStock || (v.stockQuantity !== undefined && v.stockQuantity <= 0);
+                      const vHasDiscount = Boolean(v.compareAtPrice && v.compareAtPrice > v.price);
+                      return (
+                        <button
+                          key={v.id || v.size}
+                          type="button"
+                          disabled={isSoldOut}
+                          onClick={() => setSelectedSize(v.size)}
+                          className={`px-4 py-2 rounded-lg font-sans text-xs uppercase tracking-[0.12em] transition-all duration-200 cursor-pointer border ${isSelected
+                              ? "bg-[#1C1A17] border-[#BFA27A] text-[#F2EEE7] font-medium shadow-[0_0_12px_rgba(191,162,122,0.18)] ring-1 ring-[#BFA27A]/40"
+                              : "bg-[#141312] border-white/10 text-[#9E978E] hover:border-white/25 hover:text-white"
+                            } ${isSoldOut ? "opacity-40 cursor-not-allowed line-through" : ""}`}
+                        >
+                          <span>{v.size}</span>
+                          {v.formattedPrice && (
+                            <span className="block text-[10px] text-[#777169] font-mono mt-0.5">
+                              {vHasDiscount && (
+                                <span className="line-through mr-1 opacity-70">
+                                  {v.formattedCompareAtPrice || `PKR ${Number(v.compareAtPrice).toLocaleString()}`}
+                                </span>
+                              )}
+                              <span className={isSelected ? "text-[#BFA27A]" : "text-[#AAA49B]"}>
+                                {v.formattedPrice}
+                              </span>
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Stock Status Indicator */}
+              <div className="flex items-center gap-2 mb-4">
+                <span
+                  className={`w-2 h-2 rounded-full ${isOutOfStockNow
+                      ? "bg-rose-500"
+                      : isLowStock
+                        ? "bg-amber-400 animate-pulse"
+                        : "bg-emerald-400"
+                    }`}
+                />
+                <span className="text-[11px] uppercase tracking-wider font-light text-[#A8A29A]">
+                  {isOutOfStockNow
+                    ? "Sold Out"
+                    : isLowStock
+                      ? "Only a few bottles remaining"
+                      : "In Stock · Ready to Dispatch"}
+                </span>
               </div>
 
-              {/* Primary & Secondary Action CTAs */}
-              <div className="space-y-3 mb-8">
+              {/* Action Buttons & Quantity Stepper */}
+              <div className="space-y-2.5 mb-6">
                 {isOutOfStockNow ? (
-                  <div className="w-full bg-[#161513] text-[#AAA49B] border border-rose-500/30 rounded-xl py-4 px-4 text-xs uppercase font-sans tracking-[0.2em] text-center select-none font-semibold flex items-center justify-center space-x-2">
+                  <div className="w-full bg-[#161513] text-[#AAA49B] border border-rose-500/30 rounded-xl py-3.5 px-4 text-xs uppercase font-sans tracking-[0.16em] text-center select-none font-semibold flex items-center justify-center space-x-2">
                     <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
                     <span className="text-rose-300">SOLD OUT — CHECK BACK SOON</span>
                   </div>
                 ) : (
                   <>
+                    <div className="flex items-center gap-2.5">
+                      {/* Compact Stepper */}
+                      <div className="flex items-center bg-[#141312] border border-white/10 rounded-xl p-0.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={handleDecreaseQuantity}
+                          disabled={quantity <= 1}
+                          className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-[#F2EEE7] hover:text-[#BFA27A] flex items-center justify-center transition-colors disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="w-8 text-center font-mono text-xs text-[#F2EEE7] select-none font-medium">
+                          {quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleIncreaseQuantity}
+                          disabled={quantity >= maxStock}
+                          className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-[#F2EEE7] hover:text-[#BFA27A] flex items-center justify-center transition-colors disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      {/* Primary Add to Bag */}
+                      <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className="flex-1 py-3 px-5 rounded-xl bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] font-semibold text-xs uppercase tracking-[0.16em] transition-all duration-300 shadow-[0_4px_20px_rgba(191,162,122,0.2)] hover:shadow-[0_6px_25px_rgba(191,162,122,0.35)] flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        {added ? (
+                          <>
+                            <Check className="w-4 h-4 text-[#0D0D0C]" />
+                            <span>ADDED TO BAG</span>
+                          </>
+                        ) : (
+                          <span>ADD TO BAG</span>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Secondary Buy Now COD */}
                     <button
                       type="button"
                       onClick={handleBuyNow}
-                      className="w-full py-4 px-6 rounded-xl bg-[#BFA27A] hover:bg-[#D4BA94] text-[#0D0D0C] font-semibold text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_8px_30px_rgba(191,162,122,0.25)] hover:shadow-[0_8px_35px_rgba(191,162,122,0.4)] flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#141312] hover:bg-[#1A1916] text-[#D5CFC7] hover:text-[#BFA27A] border border-white/10 hover:border-[#BFA27A]/40 font-medium text-[11px] uppercase tracking-[0.14em] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>BUY NOW — CASH ON DELIVERY</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleAddToCart}
-                      className="w-full py-4 px-6 rounded-xl bg-[#141312] hover:bg-[#1A1916] text-[#F2EEE7] hover:text-[#BFA27A] border border-white/10 hover:border-[#BFA27A]/50 font-medium text-xs uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      {added ? (
-                        <>
-                          <Check className="w-4 h-4 text-[#BFA27A]" />
-                          <span className="text-[#BFA27A]">ADDED TO YOUR BAG</span>
-                        </>
-                      ) : (
-                        <span>ADD TO BAG</span>
-                      )}
                     </button>
                   </>
                 )}
               </div>
 
               {/* Trust Guarantees */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-6 border-t border-white/[0.06] text-[11px] text-[#AAA49B]">
-                <div className="flex items-center gap-2.5 bg-[#141312] p-3 rounded-xl border border-white/[0.04]">
-                  <Shield className="w-4 h-4 text-[#BFA27A] shrink-0" />
-                  <span>100% Authentic Extrait</span>
+              <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/[0.06]">
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#141312]/60 border border-white/[0.04] text-center">
+                  <Shield className="w-3.5 h-3.5 text-[#BFA27A] mb-1 shrink-0" />
+                  <span className="text-[10px] text-[#A8A29A] font-light leading-tight">100% Authentic</span>
                 </div>
-                <div className="flex items-center gap-2.5 bg-[#141312] p-3 rounded-xl border border-white/[0.04]">
-                  <Truck className="w-4 h-4 text-[#BFA27A] shrink-0" />
-                  <span>Express 2–4 Days</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#141312]/60 border border-white/[0.04] text-center">
+                  <Truck className="w-3.5 h-3.5 text-[#BFA27A] mb-1 shrink-0" />
+                  <span className="text-[10px] text-[#A8A29A] font-light leading-tight">Express 2–4 Days</span>
                 </div>
-                <div className="flex items-center gap-2.5 bg-[#141312] p-3 rounded-xl border border-white/[0.04]">
-                  <Check className="w-4 h-4 text-[#BFA27A] shrink-0" />
-                  <span>Cash on Delivery</span>
+                <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#141312]/60 border border-white/[0.04] text-center">
+                  <Check className="w-3.5 h-3.5 text-[#BFA27A] mb-1 shrink-0" />
+                  <span className="text-[10px] text-[#A8A29A] font-light leading-tight">Cash on Delivery</span>
                 </div>
               </div>
             </div>
@@ -860,46 +834,46 @@ export default function ProductDetails() {
       </section>
 
       {/* 2. FRAGRANCE PERFORMANCE & TELEMETRY SECTION (NICHE BRAND GAUGES) */}
-      <section className="py-14 sm:py-20 bg-[#121110] border-y border-white/[0.06]">
+      <section className="py-10 sm:py-16 lg:py-20 bg-[#121110] border-y border-white/[0.06]">
         <div className="layout-container">
-          <div className="max-w-2xl mb-10">
-            <span className="text-[10px] uppercase font-sans tracking-[0.26em] text-[#BFA27A] font-medium block mb-2">
+          <div className="max-w-2xl mb-8 sm:mb-10">
+            <span className="text-[10px] uppercase font-sans tracking-[0.24em] text-[#BFA27A] font-medium block mb-1.5">
               THE FORMULATION STANDARD
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#F2EEE7] font-normal">
+            <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#F2EEE7] font-normal">
               Calibrated for Enduring Presence
             </h2>
-            <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light mt-2 leading-relaxed">
+            <p className="text-xs sm:text-[13px] font-sans text-[#AAA49B] font-light mt-1.5 leading-relaxed">
               Every SCENTÉPK composition is matured in dark temperature-regulated cellars with radical pure oil concentrations.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
             {performanceMetrics.map((metric, idx) => {
               const IconComponent = metric.icon;
               return (
                 <ScrollReveal
                   key={metric.label}
                   delay={idx * 0.08}
-                  className="p-6 rounded-2xl bg-[#161513] border border-white/[0.06] flex flex-col justify-between space-y-4 hover:border-[#BFA27A]/30 transition-colors"
+                  className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-[#161513] border border-white/[0.06] flex flex-col justify-between space-y-3 hover:border-[#BFA27A]/30 transition-colors"
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-sans text-[#777169] font-medium">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[9.5px] uppercase tracking-[0.16em] font-sans text-[#777169] font-medium">
                         {metric.label}
                       </span>
-                      <IconComponent className="w-4 h-4 text-[#BFA27A]" />
+                      <IconComponent className="w-3.5 h-3.5 text-[#BFA27A]" />
                     </div>
-                    <h3 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] font-normal mb-1">
+                    <h3 className="font-serif text-lg sm:text-xl text-[#F2EEE7] font-normal mb-1">
                       {metric.value}
                     </h3>
-                    <p className="text-[11px] font-sans text-[#AAA49B] font-light leading-relaxed">
+                    <p className="text-[10.5px] font-sans text-[#9E978E] font-light leading-relaxed line-clamp-2 sm:line-clamp-none">
                       {metric.desc}
                     </p>
                   </div>
 
                   {/* Progress Gauge */}
-                  <div className="space-y-1.5 pt-2">
+                  <div className="space-y-1 pt-1">
                     <div className="w-full bg-white/[0.06] h-1.5 rounded-full overflow-hidden">
                       <div
                         className="bg-gradient-to-r from-[#8E785C] to-[#BFA27A] h-full rounded-full transition-all duration-1000 ease-out"
@@ -915,26 +889,26 @@ export default function ProductDetails() {
       </section>
 
       {/* 3. INTERACTIVE ACCORDIONS (COMPOSITION, RITUAL, DELIVERY) */}
-      <section className="py-14 sm:py-20">
-        <div className="layout-container max-w-4xl">
+      <section className="py-10 sm:py-16">
+        <div className="layout-container max-w-3xl">
           <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
             {/* Accordion 1: The Olfactive Notes */}
-            <div className="py-6">
+            <div className="py-4 sm:py-5">
               <button
                 type="button"
                 onClick={() => setOpenAccordion(openAccordion === "notes" ? null : "notes")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
+                  <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     01
                   </span>
-                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
+                  <h3 className="font-serif text-base sm:text-lg md:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     The Olfactive Notes & Architecture
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-4 h-4 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "notes" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>
@@ -946,18 +920,18 @@ export default function ProductDetails() {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: LUXURY_EASE }}
-                    className="overflow-hidden pt-6"
+                    className="overflow-hidden pt-5"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 font-sans">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 font-sans">
                       {/* Top Notes */}
-                      <div className="p-5 rounded-2xl bg-[#141312] border border-white/[0.06] space-y-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#BFA27A] font-medium block">
+                      <div className="p-4 rounded-xl bg-[#141312] border border-white/[0.06] space-y-1.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.18em] text-[#BFA27A] font-medium block">
                           TOP ACCORD (0–30 MIN)
                         </span>
-                        <h4 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                        <h4 className="font-serif text-base text-[#F2EEE7] font-normal">
                           The Opening Aura
                         </h4>
-                        <p className="text-xs text-[#AAA49B] font-light leading-relaxed">
+                        <p className="text-[11px] text-[#AAA49B] font-light leading-relaxed">
                           {product?.notes?.top && Array.isArray(product.notes.top)
                             ? product.notes.top.join(" · ")
                             : "Crisp Botanical Extracts · Luminous Resins"}
@@ -965,14 +939,14 @@ export default function ProductDetails() {
                       </div>
 
                       {/* Heart Notes */}
-                      <div className="p-5 rounded-2xl bg-[#141312] border border-white/[0.06] space-y-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#BFA27A] font-medium block">
+                      <div className="p-4 rounded-xl bg-[#141312] border border-white/[0.06] space-y-1.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.18em] text-[#BFA27A] font-medium block">
                           HEART ACCORD (1–6 HOURS)
                         </span>
-                        <h4 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                        <h4 className="font-serif text-base text-[#F2EEE7] font-normal">
                           The Persistent Core
                         </h4>
-                        <p className="text-xs text-[#AAA49B] font-light leading-relaxed">
+                        <p className="text-[11px] text-[#AAA49B] font-light leading-relaxed">
                           {product?.notes?.heart && Array.isArray(product.notes.heart)
                             ? product.notes.heart.join(" · ")
                             : "Floral Accords · Tuscan Leather"}
@@ -980,14 +954,14 @@ export default function ProductDetails() {
                       </div>
 
                       {/* Base Notes */}
-                      <div className="p-5 rounded-2xl bg-[#141312] border border-white/[0.06] space-y-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#BFA27A] font-medium block">
+                      <div className="p-4 rounded-xl bg-[#141312] border border-white/[0.06] space-y-1.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.18em] text-[#BFA27A] font-medium block">
                           BASE ACCORD (6–14+ HOURS)
                         </span>
-                        <h4 className="font-serif text-lg text-[#F2EEE7] font-normal">
+                        <h4 className="font-serif text-base text-[#F2EEE7] font-normal">
                           The Enduring Trace
                         </h4>
-                        <p className="text-xs text-[#AAA49B] font-light leading-relaxed">
+                        <p className="text-[11px] text-[#AAA49B] font-light leading-relaxed">
                           {product?.notes?.base && Array.isArray(product.notes.base)
                             ? product.notes.base.join(" · ")
                             : "Smoked Woods · Aged Ambergris · Musks"}
@@ -1000,22 +974,22 @@ export default function ProductDetails() {
             </div>
 
             {/* Accordion 2: Application Ritual */}
-            <div className="py-6">
+            <div className="py-4 sm:py-5">
               <button
                 type="button"
                 onClick={() => setOpenAccordion(openAccordion === "ritual" ? null : "ritual")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
+                  <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     02
                   </span>
-                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
+                  <h3 className="font-serif text-base sm:text-lg md:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     The Application Ritual & Longevity
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-4 h-4 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "ritual" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>
@@ -1041,22 +1015,22 @@ export default function ProductDetails() {
             </div>
 
             {/* Accordion 3: Delivery, Returns & COD Guarantee */}
-            <div className="py-6">
+            <div className="py-4 sm:py-5">
               <button
                 type="button"
                 onClick={() => setOpenAccordion(openAccordion === "delivery" ? null : "delivery")}
                 className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
               >
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
-                  <span className="text-xs uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
+                  <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium shrink-0 whitespace-nowrap select-none">
                     03
                   </span>
-                  <h3 className="font-serif text-lg sm:text-xl md:text-2xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
+                  <h3 className="font-serif text-base sm:text-lg md:text-xl text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors font-normal leading-snug">
                     Nationwide Delivery, COD & Authentic Guarantee
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
+                  className={`w-4 h-4 shrink-0 text-[#AAA49B] transition-transform duration-300 ${openAccordion === "delivery" ? "rotate-180 text-[#BFA27A]" : ""
                     }`}
                 />
               </button>

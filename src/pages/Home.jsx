@@ -319,11 +319,12 @@ export default function Home() {
         canonical="/"
       />
 
+
       {/* =======================================================================
-          1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
+          1. HERO CAMPAIGN CAROUSEL (Calibrated Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[54vh] min-h-[390px] xs:min-h-[430px] max-h-[490px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[290px] xs:h-[320px] sm:h-[420px] md:h-[460px] lg:h-[520px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -388,9 +389,9 @@ export default function Home() {
                 </div>
 
                 {/* 2. Atmospheric Luxury Vignette / Gradient Overlay */}
-                {/* Mobile Overlays: Protects product luminosity in upper/center while ensuring dark contrast for bottom copy */}
-                <div className="block sm:hidden absolute inset-0 bg-gradient-to-b from-[#090908]/75 via-[#090908]/10 to-transparent pointer-events-none h-24" />
-                <div className="block sm:hidden absolute inset-0 bg-gradient-to-t from-[#090908] from-10% via-[#090908]/95 via-48% to-transparent pointer-events-none" />
+                {/* Mobile Overlays: Keeps artwork luminous in upper portion while providing crisp legibility at the bottom */}
+                <div className="block sm:hidden absolute inset-0 bg-gradient-to-b from-[#090908]/60 via-transparent to-transparent pointer-events-none h-16" />
+                <div className="block sm:hidden absolute inset-0 bg-gradient-to-t from-[#090908] from-5% via-[#090908]/65 via-35% to-transparent pointer-events-none" />
 
                 {/* Desktop Overlays */}
                 <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#090908]/90 via-[#090908]/50 sm:via-50% to-transparent pointer-events-none" />
@@ -427,10 +428,10 @@ export default function Home() {
                       {/* Main Headline */}
                       {(slide.headlineLine1 || slide.headlineLine2 || slide.headlineLine3) && (
                         <motion.h1
-                          initial={{ opacity: 0, y: 10 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, delay: 0.15, ease: LUXURY_EASE }}
-                          className="font-sans font-bold text-[20px] xs:text-[23px] leading-[1.08] text-[#F2EEE7] tracking-[-0.02em] uppercase drop-shadow-md"
+                          className="font-serif font-normal text-[18px] xs:text-[21px] leading-[1.15] text-[#F2EEE7] tracking-normal uppercase drop-shadow-md"
                         >
                           {slide.headlineLine1 && <span className="block">{slide.headlineLine1}</span>}
                           {slide.headlineLine2 && <span className="block">{slide.headlineLine2}</span>}
@@ -441,29 +442,32 @@ export default function Home() {
                       {/* Supporting Text */}
                       {slide.subtitle && (
                         <motion.p
-                          initial={{ opacity: 0, y: 8 }}
+                          initial={{ opacity: 0, y: 6 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, delay: 0.22, ease: LUXURY_EASE }}
-                          className="text-[10px] xs:text-[11px] font-sans text-[#D4CEC5] font-light leading-[1.4] drop-shadow-sm line-clamp-1 xs:line-clamp-2 max-w-sm"
+                          className="text-[10px] xs:text-[10.5px] font-sans text-[#D4CEC5] font-light leading-[1.35] drop-shadow-sm line-clamp-1 max-w-sm"
                         >
                           {slide.subtitle}
                         </motion.p>
                       )}
 
-                      {/* Primary CTA Button (Tappable, 44px min height) */}
+                      {/* Heavy Luxury CTA Button (Mobile) */}
                       {slide.ctaText && (
                         <motion.div
-                          initial={{ opacity: 0, y: 8 }}
+                          initial={{ opacity: 0, y: 6 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, delay: 0.28, ease: LUXURY_EASE }}
-                          className="pt-0.5"
+                          className="pt-1"
                         >
                           <Link
                             to={slide.ctaLink || "/shop"}
-                            className="w-full xs:w-auto inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-full bg-[#F2EEE7] text-[#090908] active:bg-[#BFA27A] hover:bg-[#BFA27A] text-[10.5px] xs:text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 shadow-xl shadow-black/70 group"
+                            className="relative inline-flex items-center justify-center min-h-[32px] xs:min-h-[34px] px-4 py-1.5 xs:px-4.5 xs:py-1.5 rounded-full overflow-hidden bg-gradient-to-r from-[#A88B5E] via-[#D8C09D] to-[#9E8256] text-[#0A0A09] font-bold text-[9.5px] xs:text-[10px] uppercase tracking-[0.16em] transition-all duration-300 shadow-[0_3px_14px_rgba(191,162,122,0.35),inset_0_1px_1px_rgba(255,255,255,0.6)] hover:shadow-[0_4px_20px_rgba(191,162,122,0.5)] active:scale-[0.98] border border-[#F2EEE7]/40 group"
                           >
-                            <span>{slide.ctaText}</span>
-                            <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1 stroke-[2.2]" />
+                            <span className="relative z-10 flex items-center justify-center gap-1.5">
+                              <span>{slide.ctaText}</span>
+                              <ArrowRight className="w-3 h-3 stroke-[2.5] text-[#0A0A09] transition-transform duration-300 group-hover:translate-x-1" />
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
                           </Link>
                         </motion.div>
                       )}
@@ -536,7 +540,7 @@ export default function Home() {
                           initial={{ opacity: 0, y: 16 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.6, delay: 0.2, ease: LUXURY_EASE }}
-                          className="font-sans font-bold text-lg xs:text-xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[1.1] sm:leading-[0.96] text-[#F2EEE7] tracking-[-0.03em] uppercase drop-shadow-md"
+                          className="font-serif font-light text-[24px] xs:text-[28px] sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[60px] leading-[1.08] text-[#F2EEE7] tracking-tight uppercase"
                         >
                           {slide.headlineLine1 && <>{slide.headlineLine1} <br /></>}
                           {slide.headlineLine2 && <>{slide.headlineLine2} <br /></>}
@@ -556,7 +560,7 @@ export default function Home() {
                         </motion.p>
                       )}
 
-                      {/* Primary CTA */}
+                      {/* Heavy Luxury CTA (Desktop) */}
                       {slide.ctaText && (
                         <motion.div
                           initial={{ opacity: 0, y: 14 }}
@@ -566,10 +570,13 @@ export default function Home() {
                         >
                           <Link
                             to={slide.ctaLink || "/shop"}
-                            className="inline-flex items-center justify-center px-4 py-2 xs:px-5 xs:py-2.5 sm:px-9 sm:py-4 rounded-full bg-[#F2EEE7] text-[#090908] hover:bg-[#BFA27A] hover:text-[#090908] text-[10px] xs:text-[11px] sm:text-[13px] font-semibold uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all duration-300 shadow-2xl shadow-black/80 hover:scale-[1.02] active:scale-[0.98] group"
+                            className="relative inline-flex items-center justify-center px-7 py-3.5 sm:px-9 sm:py-4 rounded-full overflow-hidden bg-gradient-to-r from-[#A88B5E] via-[#D8C09D] to-[#9E8256] text-[#0A0A09] font-bold text-xs sm:text-[13px] uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_8px_30px_rgba(191,162,122,0.4),inset_0_1px_1px_rgba(255,255,255,0.6)] hover:shadow-[0_12px_40px_rgba(191,162,122,0.6)] hover:scale-[1.02] active:scale-[0.98] border border-[#F2EEE7]/40 group"
                           >
-                            <span>{slide.ctaText}</span>
-                            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2]" />
+                            <span className="relative z-10 flex items-center justify-center gap-2">
+                              <span>{slide.ctaText}</span>
+                              <ArrowRight className="w-4 h-4 stroke-[2.8] text-[#0A0A09] transition-transform duration-300 group-hover:translate-x-1" />
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
                           </Link>
                         </motion.div>
                       )}
@@ -1013,13 +1020,14 @@ export default function Home() {
           8. CUSTOMER REVIEWS (Refined Social Proof — Database Backed)
           ======================================================================= */}
       {publishedReviews.length > 0 && (
-        <section className="py-14 sm:py-24 lg:py-32 bg-[#0D0D0C] border-b border-white/[0.06] overflow-hidden">
+        <section className="py-10 sm:py-14 lg:py-16 bg-[#0D0D0C] border-b border-white/[0.06] overflow-hidden">
           <div className="layout-container">
             <SectionHeading
               eyebrow="PATRON IMPRESSIONS"
               title="What Our Customers Say"
               subtitle="Verified reviews from fragrance connoisseurs and patrons across Pakistan."
               align="center"
+              className="mb-6 sm:mb-8 md:mb-10"
             />
 
             <ReviewsCarousel reviews={publishedReviews} />

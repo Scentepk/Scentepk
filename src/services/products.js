@@ -8,8 +8,20 @@ export const normalizeProduct = (dbRow) => {
   if (!dbRow) return null;
   const isInactive = dbRow.status === "inactive" || dbRow.is_active === false;
 
-  const img = dbRow.primary_image || dbRow.image || "";
-  const secImg = dbRow.secondary_image || dbRow.secondaryImage || null;
+  // Clean edge-artifact images or map high-fidelity clean versions
+  const sanitizeImageUrl = (url, id) => {
+    if (!url || typeof url !== "string") return url;
+    if (url.includes("1790800904059-cn101wm.webp") || id === "luxury-perfume-testers-pack-of-5") {
+      return "/images/products/luxury-perfume-testers.webp";
+    }
+    return url;
+  };
+
+  const rawImg = dbRow.primary_image || dbRow.image || "";
+  const rawSecImg = dbRow.secondary_image || dbRow.secondaryImage || null;
+  const prodIdOrSlug = dbRow.id || dbRow.slug || "";
+  const img = sanitizeImageUrl(rawImg, prodIdOrSlug);
+  const secImg = sanitizeImageUrl(rawSecImg, prodIdOrSlug);
 
   // Process raw images from database or local storage cache
   const rawImages = dbRow.product_images || dbRow.images || [];
@@ -17,7 +29,8 @@ export const normalizeProduct = (dbRow) => {
     ? [...rawImages]
         .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
         .map((im, idx) => {
-          const public_url = typeof im === "string" ? im : (im.public_url || im.url || "");
+          const rawUrl = typeof im === "string" ? im : (im.public_url || im.url || "");
+          const public_url = sanitizeImageUrl(rawUrl, prodIdOrSlug);
           const storage_path = typeof im === "object" ? (im.storage_path || im.path || null) : null;
           return {
             id: im.id || `img-${dbRow.id}-${idx}`,

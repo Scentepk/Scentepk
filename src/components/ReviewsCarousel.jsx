@@ -14,9 +14,9 @@ function ReviewCard({ review, fragranceLabel, cardRef }) {
     <div
       ref={cardRef}
       data-review-card
-      className="p-5 sm:p-8 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-6 h-full min-h-[260px] sm:min-h-[280px]"
+      className="p-5 sm:p-6 rounded-2xl bg-[#121110] border border-white/[0.05] hover:border-[#BFA27A]/25 transition-all duration-300 flex flex-col justify-between space-y-4 h-full min-h-[160px] sm:min-h-[180px]"
     >
-      <div className="space-y-4">
+      <div className="space-y-2.5">
         <div className="flex items-center gap-1 text-[#BFA27A]">
           {[...Array(5)].map((_, i) => (
             <Star
@@ -28,22 +28,22 @@ function ReviewCard({ review, fragranceLabel, cardRef }) {
           ))}
         </div>
 
-        <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic line-clamp-4">
+        <p className="text-xs sm:text-sm font-sans text-[#DDD7CE] font-light leading-relaxed italic line-clamp-3">
           "{review.reviewText}"
         </p>
       </div>
 
-      <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+      <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
         <div>
-          <h4 className="font-sans font-semibold text-sm text-[#F2EEE7]">
+          <h4 className="font-sans font-semibold text-xs sm:text-sm text-[#F2EEE7]">
             {review.customerName}
           </h4>
-          <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#888279] block">
+          <span className="text-[9px] sm:text-[9.5px] uppercase font-sans tracking-[0.14em] text-[#888279] block">
             {review.location ? `${review.location} • ` : ""}Verified Patron
           </span>
         </div>
         {fragranceLabel && (
-          <span className="text-[9.5px] uppercase font-sans tracking-[0.16em] text-[#BFA27A] bg-[#181714] px-2.5 py-1 rounded-full border border-[rgba(191,162,122,0.2)]">
+          <span className="text-[9px] uppercase font-sans tracking-[0.14em] text-[#BFA27A] bg-[#181714] px-2.5 py-0.5 rounded-full border border-[rgba(191,162,122,0.2)]">
             {fragranceLabel}
           </span>
         )}
@@ -184,7 +184,7 @@ export default function ReviewsCarousel({ reviews = [] }) {
       review.productName || review.product?.name || (review.productId ? "Extrait de Parfum" : null);
 
     return (
-      <div className="max-w-md mx-auto mt-12 sm:mt-16">
+      <div className="max-w-md mx-auto mt-4 sm:mt-6">
         <ReviewCard review={review} fragranceLabel={fragranceLabel} />
       </div>
     );
@@ -200,7 +200,7 @@ export default function ReviewsCarousel({ reviews = [] }) {
   const isNextDisabled = activeIndex >= maxIndex;
 
   return (
-    <div className="relative mt-12 sm:mt-16">
+    <div className="relative mt-4 sm:mt-6">
       {/* Flex container placing flanking arrows cleanly outside the review cards */}
       <div className="flex items-center gap-3 sm:gap-4 lg:gap-5">
         {/* Desktop & Tablet Previous Arrow (Cleanly outside cards on the left) */}
@@ -281,7 +281,7 @@ export default function ReviewsCarousel({ reviews = [] }) {
       {/* Bottom Controls Bar: Mobile (Arrows + Dots) & Tablet/Desktop (Subtle Dots) */}
       {canNavigate && (
         <div
-          className={`flex items-center justify-between md:justify-center gap-4 mt-8 sm:mt-10 ${
+          className={`flex items-center justify-between md:justify-center gap-4 mt-6 sm:mt-8 ${
             !showNavDesktop ? "lg:hidden" : ""
           }`}
         >
