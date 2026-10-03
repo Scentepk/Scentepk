@@ -804,9 +804,11 @@ export default function Home() {
                         </h3>
                       </Link>
 
-                      <p className="text-[10px] sm:text-[11px] font-sans text-[#AAA49B] font-light line-clamp-1">
-                        {product.olfactiveFamily}
-                      </p>
+                      {product.olfactiveFamily && (
+                        <p className="text-[10px] sm:text-[11px] font-sans text-[#AAA49B] font-light line-clamp-1">
+                          {product.olfactiveFamily}
+                        </p>
+                      )}
                     </div>
 
                     {/* Price & Modern Quick Add Button */}
@@ -889,7 +891,7 @@ export default function Home() {
           {/* Smooth Horizontal Track */}
           <div
             ref={arrivalsTrackRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
+            className="flex items-start gap-4 sm:gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
             style={{ scrollBehavior: "smooth" }}
           >
             {activeProducts.map((product) => {
@@ -899,7 +901,7 @@ export default function Home() {
               return (
                 <div
                   key={`new-${product.id}`}
-                  className="min-w-[200px] xs:min-w-[240px] sm:min-w-[300px] max-w-[320px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group"
+                  className="min-w-[200px] xs:min-w-[240px] sm:min-w-[280px] max-w-[300px] snap-start flex flex-col bg-[#0D0D0C] rounded-xl overflow-hidden border border-white/[0.05] hover:border-[#BFA27A]/30 transition-all duration-300 group shrink-0"
                 >
                   <Link to={`/product/${product.slug}`} className="relative aspect-[4/3] overflow-hidden bg-[#141311] block">
                     <img
@@ -908,33 +910,33 @@ export default function Home() {
                       loading="lazy"
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute top-3 right-3">
-                      <span className="text-[8px] uppercase font-sans tracking-[0.16em] bg-[#090908]/90 text-[#F2EEE7] px-2.5 py-0.5 rounded-full border border-white/10">
+                    <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3">
+                      <span className="text-[7.5px] sm:text-[8px] uppercase font-sans tracking-[0.16em] bg-[#090908]/90 text-[#F2EEE7] px-2 sm:px-2.5 py-0.5 rounded-full border border-white/10">
                         New Batch
                       </span>
                     </div>
                   </Link>
 
-                  <div className="p-5 flex flex-col flex-grow justify-between space-y-3">
+                  <div className="p-3.5 sm:p-4 flex flex-col space-y-2 sm:space-y-2.5">
                     <div>
-                      <span className="text-[9px] uppercase font-sans tracking-[0.2em] text-[#888279] block">
+                      <span className="text-[8px] sm:text-[8.5px] uppercase font-sans tracking-[0.18em] text-[#888279] block">
                         {product.subtitle || "Extrait de Parfum"}
                       </span>
                       <Link to={`/product/${product.slug}`}>
-                        <h4 className="font-sans font-bold text-lg text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors mt-0.5 tracking-tight">
+                        <h4 className="font-sans font-bold text-sm sm:text-base text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors mt-0.5 tracking-tight line-clamp-1">
                           {product.name}
                         </h4>
                       </Link>
                     </div>
 
-                    <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                      <div className="flex items-baseline gap-2 flex-wrap">
+                    <div className="pt-2 sm:pt-2.5 border-t border-white/[0.06] flex items-center justify-between gap-2">
+                      <div className="flex items-baseline gap-1.5 flex-wrap">
                         {product.compareAtPrice && product.compareAtPrice > product.price && (
-                          <span className="text-xs font-sans text-[#777169] line-through">
+                          <span className="text-[10px] sm:text-xs font-sans text-[#777169] line-through">
                             {product.formattedCompareAtPrice}
                           </span>
                         )}
-                        <span className="text-sm font-sans font-semibold text-[#F2EEE7]">
+                        <span className="text-xs sm:text-sm font-sans font-semibold text-[#F2EEE7]">
                           {product.formattedPrice}
                         </span>
                       </div>
