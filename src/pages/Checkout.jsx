@@ -923,7 +923,7 @@ export default function Checkout() {
                           }
                         }}
                         placeholder="Enter promo code"
-                        className="flex-1 bg-[#0D0D0C] border border-[rgba(242,238,231,0.12)] focus:border-[#BFA27A] text-xs font-mono uppercase text-[#F2EEE7] px-3.5 py-2.5 outline-none transition-colors placeholder:normal-case placeholder:font-sans placeholder:text-[#55504A]"
+                        className="flex-1 min-w-0 bg-[#0D0D0C] border border-[rgba(242,238,231,0.12)] focus:border-[#BFA27A] text-xs font-mono uppercase text-[#F2EEE7] px-3.5 py-2.5 outline-none transition-colors placeholder:normal-case placeholder:font-sans placeholder:text-[#55504A]"
                       />
                       <button
                         type="button"

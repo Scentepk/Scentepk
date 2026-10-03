@@ -598,7 +598,7 @@ export default function Shop() {
           </button>
 
           {/* Category Dropdown (Default: All, options: Men, Women, Unisex, Testers, Waxes) */}
-          <div className="w-40 sm:w-44 shrink-0">
+          <div className="flex-1 min-w-0 max-w-[170px]">
             <CustomSelect
               value={activeFilter}
               onChange={(val) => handleFilterSelect(val)}

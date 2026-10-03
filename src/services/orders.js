@@ -97,6 +97,17 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
     })
   );
 
+  // Guard against duplicate variant IDs in standard catalog items
+  const seenVariantIds = new Set();
+  for (const itm of itemsPayload) {
+    if (!itm.is_custom && itm.variant_id) {
+      if (seenVariantIds.has(itm.variant_id)) {
+        throw new Error("Duplicate variant IDs are not allowed in order items");
+      }
+      seenVariantIds.add(itm.variant_id);
+    }
+  }
+
   // 1. If Supabase is connected, execute atomic server-side RPC
   if (isSupabaseConfigured && supabase) {
     const basePayload = {

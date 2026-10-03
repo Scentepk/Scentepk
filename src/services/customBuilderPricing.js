@@ -151,6 +151,23 @@ export function validateBuilderSelections(groups = [], selections = {}) {
     }
   }
 
+  // 5. Anti-rogue group validation: reject any unrecognized group identifiers in selections
+  const validGroupIdentifiers = new Set();
+  for (const group of groups) {
+    if (group && typeof group === "object") {
+      if (group.slug) validGroupIdentifiers.add(String(group.slug));
+      if (group.id) validGroupIdentifiers.add(String(group.id));
+    }
+  }
+
+  for (const key of Object.keys(selections || {})) {
+    const val = selections[key];
+    const hasSelection = Array.isArray(val) ? val.length > 0 : Boolean(val);
+    if (hasSelection && !validGroupIdentifiers.has(String(key))) {
+      errors[key] = `Unrecognized customization group "${key}".`;
+    }
+  }
+
   const isValid = Object.keys(errors).length === 0;
 
   return {

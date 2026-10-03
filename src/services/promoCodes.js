@@ -191,15 +191,27 @@ export async function validatePromoCode(code, subtotal, customerPhone = "", cust
     };
   }
 
-  // Per-customer usage check against local orders
+  // Per-customer usage check against local orders with phone normalization
   if (promo.per_customer_limit) {
     try {
       const orders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_ORDERS_KEY) || "[]");
       const customerOrdersWithCode = orders.filter((ord) => {
         if (ord.promo_code !== promo.code) return false;
         if (ord.status === "cancelled") return false;
-        const matchesPhone = customerPhone && ord.customer_phone === customerPhone.trim();
-        const matchesEmail = customerEmail && ord.customer_email?.toLowerCase() === customerEmail.trim().toLowerCase();
+
+        let matchesPhone = false;
+        if (customerPhone && ord.customer_phone) {
+          const normInput = String(customerPhone).replace(/\D/g, "");
+          const normSaved = String(ord.customer_phone).replace(/\D/g, "");
+          matchesPhone =
+            normInput.length >= 9 &&
+            (normInput === normSaved ||
+              normSaved.endsWith(normInput.slice(-9)) ||
+              normInput.endsWith(normSaved.slice(-9)));
+        }
+
+        const matchesEmail =
+          customerEmail && ord.customer_email?.toLowerCase() === customerEmail.trim().toLowerCase();
         return matchesPhone || matchesEmail;
       });
 

@@ -561,7 +561,7 @@ export default function BuildYourScent() {
       {/* MOBILE STICKY BOTTOM SUMMARY BAR (Only visible during building)       */}
       {/* ==================================================================== */}
       {stage === "building" && currentGroup && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#121110]/95 backdrop-blur-md border-t border-[rgba(242,238,231,0.1)] px-4 py-3 sm:py-3.5 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#121110]/95 backdrop-blur-md border-t border-[rgba(242,238,231,0.1)] px-4 py-3 sm:py-3.5 shadow-[0_-4px_24px_rgba(0,0,0,0.5)] safe-pb">
           <div className="flex items-center justify-between gap-3 max-w-md mx-auto">
             {/* Price & Selection Tally */}
             <div>

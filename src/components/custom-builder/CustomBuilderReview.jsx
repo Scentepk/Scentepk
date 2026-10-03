@@ -256,9 +256,9 @@ export default function CustomBuilderReview({
           type="button"
           id="builder-finish-btn"
           onClick={handleAddToBag}
-          className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-12 py-4 rounded-sm border border-[#BFA27A] bg-[#BFA27A] text-[#0D0D0C] hover:bg-[#d6b78d] active:scale-[0.99] font-sans text-xs uppercase tracking-[0.2em] font-semibold transition-all duration-300 shadow-[0_4px_24px_rgba(191,162,122,0.25)] cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-12 py-3.5 sm:py-4 rounded-sm border border-[#BFA27A] bg-[#BFA27A] text-[#0D0D0C] hover:bg-[#d6b78d] active:scale-[0.99] font-sans text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] font-semibold transition-all duration-300 shadow-[0_4px_24px_rgba(191,162,122,0.25)] cursor-pointer"
         >
-          <ShoppingBag className="w-4 h-4 mr-2.5" />
+          <ShoppingBag className="w-4 h-4 mr-2 sm:mr-2.5 shrink-0" />
           <span>Add to Bag — {currency} {totalPrice.toLocaleString("en-PK")}</span>
         </button>
       </div>
