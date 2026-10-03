@@ -323,7 +323,7 @@ export default function Home() {
           1. HERO CAMPAIGN CAROUSEL (Full-Bleed Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[84svh] min-h-[560px] xs:min-h-[600px] max-h-[720px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[54vh] min-h-[390px] xs:min-h-[430px] max-h-[490px] sm:h-[calc(100vh-112px)] sm:min-h-[520px] sm:max-h-[740px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -346,7 +346,7 @@ export default function Home() {
                 {/* Mobile Viewport (< sm: 640px) — Focused Product Presentation */}
                 <div className="block sm:hidden absolute inset-0 w-full h-full overflow-hidden">
                   <motion.img
-                    initial={{ opacity: 0, scale: 1.06 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1.02 }}
                     transition={{ duration: 0.8, ease: LUXURY_EASE }}
                     src={slide.mobileImage || slide.image}
@@ -355,13 +355,13 @@ export default function Home() {
                     style={{
                       objectPosition: slide.mobile_crop
                         ? `${slide.mobile_crop.x}% ${slide.mobile_crop.y}%`
-                        : "74% 36%",
+                        : "74% 38%",
                       transform: slide.mobile_crop?.zoom
-                        ? `scale(${Math.max(slide.mobile_crop.zoom, 1.04)})`
-                        : "scale(1.04)",
+                        ? `scale(${Math.max(slide.mobile_crop.zoom, 1.02)})`
+                        : "scale(1.02)",
                       transformOrigin: slide.mobile_crop
                         ? `${slide.mobile_crop.x}% ${slide.mobile_crop.y}%`
-                        : "74% 36%",
+                        : "74% 38%",
                     }}
                   />
                 </div>
@@ -389,8 +389,8 @@ export default function Home() {
 
                 {/* 2. Atmospheric Luxury Vignette / Gradient Overlay */}
                 {/* Mobile Overlays: Protects product luminosity in upper/center while ensuring dark contrast for bottom copy */}
-                <div className="block sm:hidden absolute inset-0 bg-gradient-to-b from-[#090908]/80 via-[#090908]/15 via-25% to-transparent pointer-events-none h-36" />
-                <div className="block sm:hidden absolute inset-0 bg-gradient-to-t from-[#090908] from-15% via-[#090908]/95 via-42% to-transparent pointer-events-none" />
+                <div className="block sm:hidden absolute inset-0 bg-gradient-to-b from-[#090908]/75 via-[#090908]/10 to-transparent pointer-events-none h-24" />
+                <div className="block sm:hidden absolute inset-0 bg-gradient-to-t from-[#090908] from-10% via-[#090908]/95 via-48% to-transparent pointer-events-none" />
 
                 {/* Desktop Overlays */}
                 <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#090908]/90 via-[#090908]/50 sm:via-50% to-transparent pointer-events-none" />
@@ -399,38 +399,38 @@ export default function Home() {
                 {/* 3. Hero Copy Content */}
                 {/* Mobile Layout (< sm: 640px) — Editorial Vertical Composition */}
                 <div className="block sm:hidden relative z-10 w-full h-full">
-                  <div className="flex flex-col justify-between h-full w-full px-5 xs:px-6 pt-4 xs:pt-5 pb-5 xs:pb-6">
+                  <div className="flex flex-col justify-between h-full w-full px-4.5 xs:px-5 pt-3 xs:pt-3.5 pb-3.5 xs:pb-4">
                     {/* Top Row: Edition Label & Optional Badge */}
                     <motion.div
-                      initial={{ opacity: 0, y: -6 }}
+                      initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.1, ease: LUXURY_EASE }}
+                      transition={{ duration: 0.4, delay: 0.08, ease: LUXURY_EASE }}
                       className="flex items-center justify-between w-full"
                     >
                       {slide.eyebrow ? (
-                        <span className="text-[8.5px] xs:text-[9.5px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-semibold bg-[#090908]/75 backdrop-blur-md px-2.5 py-1 rounded-full border border-[#BFA27A]/30 shadow-md">
+                        <span className="text-[8px] xs:text-[8.5px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-semibold bg-[#090908]/75 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#BFA27A]/30 shadow-md">
                           {slide.eyebrow}
                         </span>
                       ) : <div />}
                       {slide.badge && (
-                        <span className="text-[7.5px] xs:text-[8px] uppercase font-sans tracking-[0.14em] text-[#AAA49B] font-medium bg-[#090908]/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">
+                        <span className="text-[7px] xs:text-[7.5px] uppercase font-sans tracking-[0.14em] text-[#AAA49B] font-medium bg-[#090908]/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">
                           {slide.badge}
                         </span>
                       )}
                     </motion.div>
 
-                    {/* Generous Visual Center Slot (Gives the Bloom bottle full spotlight) */}
-                    <div className="flex-1 min-h-[160px] pointer-events-none" />
+                    {/* Compact Visual Center Slot */}
+                    <div className="flex-1 min-h-[30px] xs:min-h-[40px] pointer-events-none" />
 
                     {/* Bottom Content Group: Headline, Subtitle, CTA, Progress */}
-                    <div className="space-y-2.5 xs:space-y-3.5 w-full">
+                    <div className="space-y-1.5 xs:space-y-2 w-full">
                       {/* Main Headline */}
                       {(slide.headlineLine1 || slide.headlineLine2 || slide.headlineLine3) && (
                         <motion.h1
-                          initial={{ opacity: 0, y: 14 }}
+                          initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.6, delay: 0.18, ease: LUXURY_EASE }}
-                          className="font-sans font-bold text-[24px] xs:text-[28px] leading-[1.08] text-[#F2EEE7] tracking-[-0.02em] uppercase drop-shadow-md"
+                          transition={{ duration: 0.5, delay: 0.15, ease: LUXURY_EASE }}
+                          className="font-sans font-bold text-[20px] xs:text-[23px] leading-[1.08] text-[#F2EEE7] tracking-[-0.02em] uppercase drop-shadow-md"
                         >
                           {slide.headlineLine1 && <span className="block">{slide.headlineLine1}</span>}
                           {slide.headlineLine2 && <span className="block">{slide.headlineLine2}</span>}
@@ -441,37 +441,37 @@ export default function Home() {
                       {/* Supporting Text */}
                       {slide.subtitle && (
                         <motion.p
-                          initial={{ opacity: 0, y: 12 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.6, delay: 0.25, ease: LUXURY_EASE }}
-                          className="text-[11px] xs:text-[12px] font-sans text-[#D4CEC5] font-light leading-[1.45] drop-shadow-sm line-clamp-2 max-w-sm"
+                          transition={{ duration: 0.5, delay: 0.22, ease: LUXURY_EASE }}
+                          className="text-[10px] xs:text-[11px] font-sans text-[#D4CEC5] font-light leading-[1.4] drop-shadow-sm line-clamp-1 xs:line-clamp-2 max-w-sm"
                         >
                           {slide.subtitle}
                         </motion.p>
                       )}
 
-                      {/* Primary CTA Button (Tappable, min 46-48px height) */}
+                      {/* Primary CTA Button (Tappable, 44px min height) */}
                       {slide.ctaText && (
                         <motion.div
-                          initial={{ opacity: 0, y: 12 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.6, delay: 0.32, ease: LUXURY_EASE }}
+                          transition={{ duration: 0.5, delay: 0.28, ease: LUXURY_EASE }}
                           className="pt-0.5"
                         >
                           <Link
                             to={slide.ctaLink || "/shop"}
-                            className="w-full xs:w-auto inline-flex items-center justify-center min-h-[46px] xs:min-h-[48px] px-7 py-3 rounded-full bg-[#F2EEE7] text-[#090908] active:bg-[#BFA27A] hover:bg-[#BFA27A] text-[11px] xs:text-xs font-semibold uppercase tracking-[0.16em] transition-all duration-300 shadow-xl shadow-black/70 group"
+                            className="w-full xs:w-auto inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-full bg-[#F2EEE7] text-[#090908] active:bg-[#BFA27A] hover:bg-[#BFA27A] text-[10.5px] xs:text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 shadow-xl shadow-black/70 group"
                           >
                             <span>{slide.ctaText}</span>
-                            <ArrowRight className="w-3.5 h-3.5 ml-2 transition-transform duration-300 group-hover:translate-x-1 stroke-[2.2]" />
+                            <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1 stroke-[2.2]" />
                           </Link>
                         </motion.div>
                       )}
 
                       {/* Mobile Slide Indicator & Dots */}
                       {heroSlides.length > 1 && (
-                        <div className="flex items-center justify-between pt-1.5 border-t border-white/[0.04]">
-                          <div className="flex items-center gap-1.5 text-[8.5px] xs:text-[9.5px] font-sans tracking-[0.2em] text-[#AAA49B]">
+                        <div className="flex items-center justify-between pt-1 border-t border-white/[0.04]">
+                          <div className="flex items-center gap-1.5 text-[8px] xs:text-[9px] font-sans tracking-[0.2em] text-[#AAA49B]">
                             <span className="text-[#F2EEE7] font-semibold">0{currentSlide + 1}</span>
                             <span className="opacity-40">/</span>
                             <span className="opacity-60">0{heroSlides.length}</span>
@@ -483,13 +483,13 @@ export default function Home() {
                                 key={s.id}
                                 onClick={() => setCurrentSlide(idx)}
                                 aria-label={`Jump to slide ${idx + 1}`}
-                                className="min-h-[28px] min-w-[24px] flex items-center justify-center cursor-pointer"
+                                className="min-h-[24px] min-w-[20px] flex items-center justify-center cursor-pointer"
                               >
                                 <span
                                   className={`block h-1 rounded-full transition-all duration-500 ${
                                     idx === currentSlide
-                                      ? "w-6 bg-[#BFA27A]"
-                                      : "w-2 bg-white/25 hover:bg-white/50"
+                                      ? "w-5 bg-[#BFA27A]"
+                                      : "w-1.5 bg-white/25 hover:bg-white/50"
                                   }`}
                                 />
                               </button>
