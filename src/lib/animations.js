@@ -1,4 +1,4 @@
-// SCENTÉ Luxury Animation & Scroll Primitives
+// SCENTE Luxury Animation & Scroll Primitives
 // 60 FPS GPU-accelerated motion tokens and Framer Motion variants
 
 export const LUXURY_EASE = [0.16, 1, 0.3, 1]; // Editorial deceleration curve

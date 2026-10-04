@@ -1,9 +1,9 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3A: Product Catalog Seed Script
+-- SCENTE — Phase 3A: Product Catalog Seed Script
 -- Idempotent upsert matching existing products.js dataset
 -- ==============================================================================
 
--- 1. SCENTÉ NOIR
+-- 1. SCENTE NOIR
 INSERT INTO public.products (
     id,
     slug,
@@ -28,10 +28,10 @@ INSERT INTO public.products (
 ) VALUES (
     'scente-noir',
     'scente-noir',
-    'SCENTÉ NOIR',
+    'SCENTE NOIR',
     'Extrait de Parfum',
     'Shadows woven in smoke and velvet.',
-    'A dark, magnetic portrait of midnight architecture. SCENTÉ NOIR opens with dry smoked cardamom and chilled bergamot before yielding to a rich heart of Tuscan leather, dark plum, and Florentine iris, anchored on deep aged oud and Haitian vetiver.',
+    'A dark, magnetic portrait of midnight architecture. SCENTE NOIR opens with dry smoked cardamom and chilled bergamot before yielding to a rich heart of Tuscan leather, dark plum, and Florentine iris, anchored on deep aged oud and Haitian vetiver.',
     '30% Pure Perfume Oil',
     'woody',
     '["woody", "amber"]'::jsonb,
@@ -67,7 +67,7 @@ ON CONFLICT (id) DO UPDATE SET
     is_active = EXCLUDED.is_active,
     updated_at = NOW();
 
--- 2. SCENTÉ AMBER
+-- 2. SCENTE AMBER
 INSERT INTO public.products (
     id,
     slug,
@@ -92,7 +92,7 @@ INSERT INTO public.products (
 ) VALUES (
     'scente-amber',
     'scente-amber',
-    'SCENTÉ AMBER',
+    'SCENTE AMBER',
     'Extrait de Parfum',
     'Liquid warmth at the hour of twilight.',
     'Inspired by the golden hour along Mediterranean coastlines. A warm, enveloping composition that fuses sun-drenched mandora and bitter almond with a molten core of ambergris, wild honey, and toasted Madagascar vanilla.',
@@ -131,7 +131,7 @@ ON CONFLICT (id) DO UPDATE SET
     is_active = EXCLUDED.is_active,
     updated_at = NOW();
 
--- 3. SCENTÉ MUSK
+-- 3. SCENTE MUSK
 INSERT INTO public.products (
     id,
     slug,
@@ -156,7 +156,7 @@ INSERT INTO public.products (
 ) VALUES (
     'scente-musk',
     'scente-musk',
-    'SCENTÉ MUSK',
+    'SCENTE MUSK',
     'Extrait de Parfum',
     'An intimate whisper, close to the skin.',
     'A seamless second-skin fragrance. Pure white aldehydes meet freshly washed linen chords and powdery Tuscan orris, dissolving gently into comforting molecular musks and sun-bleached Virginian cedarwood.',

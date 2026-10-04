@@ -22,7 +22,7 @@ function getLocalInquiriesStore() {
       phone: "0301 8294711",
       subject: "Fragrance Consultation",
       message:
-        "Good afternoon. I am seeking advice on an evening fragrance with smoky leather and cardamom notes. Between SCENTÉ NOIR and SCENTÉ AMBER, which offers superior sillage in winter climates?",
+        "Good afternoon. I am seeking advice on an evening fragrance with smoky leather and cardamom notes. Between SCENTE NOIR and SCENTE AMBER, which offers superior sillage in winter climates?",
       status: "unread",
       created_at: new Date(Date.now() - 7200000).toISOString(),
       updated_at: new Date(Date.now() - 7200000).toISOString(),
@@ -34,7 +34,7 @@ function getLocalInquiriesStore() {
       phone: "0322 4433221",
       subject: "Corporate & Event Gifting",
       message:
-        "We are hosting an executive retreat in Islamabad next month and would like to procure 25 custom gift boxes featuring SCENTÉ NOIR 50ml flacons. Please advise on corporate bespoke rates and delivery timelines.",
+        "We are hosting an executive retreat in Islamabad next month and would like to procure 25 custom gift boxes featuring SCENTE NOIR 50ml flacons. Please advise on corporate bespoke rates and delivery timelines.",
       status: "read",
       created_at: new Date(Date.now() - 86400000).toISOString(),
       updated_at: new Date(Date.now() - 43200000).toISOString(),

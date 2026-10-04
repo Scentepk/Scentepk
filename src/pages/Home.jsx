@@ -29,7 +29,7 @@ import { getOptimizedImageUrl } from "../lib/images";
 const HERO_SLIDES = [
   {
     id: "slide-1",
-    eyebrow: "SCENTÉPK — BATCH 04",
+    eyebrow: "SCENTEPK — BATCH 04",
     headlineLine1: "FRAGRANCE",
     headlineLine2: "BECOMES",
     headlineLine3: "IDENTITY.",
@@ -38,7 +38,7 @@ const HERO_SLIDES = [
     ctaLink: "/shop",
     badge: "30% PURE PERFUME OIL",
     image: "/images/campaign/hero-campaign-main.jpg",
-    imageAlt: "SCENTÉPK The Nocturnal Oud Artisanal Fragrance Campaign",
+    imageAlt: "SCENTEPK The Nocturnal Oud Artisanal Fragrance Campaign",
     objectPosition: "object-center md:object-[72%_center] lg:object-center",
     overlayGradient: "from-[#090908]/90 via-[#090908]/50 to-transparent",
   },
@@ -53,7 +53,7 @@ const HERO_SLIDES = [
     ctaLink: "/shop",
     badge: "14+ HR LONGEVITY",
     image: "/images/hero-campaign.jpg",
-    imageAlt: "SCENTÉPK Artisanal Flacons Haute Parfumerie",
+    imageAlt: "SCENTEPK Artisanal Flacons Haute Parfumerie",
     objectPosition: "object-center md:object-[70%_center] lg:object-center",
     overlayGradient: "from-[#090908]/90 via-[#090908]/55 to-transparent",
   },
@@ -68,7 +68,7 @@ const HERO_SLIDES = [
     ctaLink: "/shop",
     badge: "FREE COD ACROSS PAKISTAN",
     image: "/images/campaign/campaign-1.jpg",
-    imageAlt: "SCENTÉPK Luxury Fragrance Editorial Campaign",
+    imageAlt: "SCENTEPK Luxury Fragrance Editorial Campaign",
     objectPosition: "object-center md:object-[76%_center] lg:object-center",
     overlayGradient: "from-[#090908]/95 via-[#090908]/60 to-[#090908]/20",
   },
@@ -224,7 +224,7 @@ export default function Home() {
         mobileImage: s.mobile_image_url || s.mobileImage || null,
         desktop_crop: s.desktop_crop || null,
         mobile_crop: s.mobile_crop || null,
-        imageAlt: s.imageAlt || `SCENTÉPK Artisanal Fragrance Campaign ${idx + 1}`,
+        imageAlt: s.imageAlt || `SCENTEPK Artisanal Fragrance Campaign ${idx + 1}`,
         objectPosition: s.objectPosition || "object-center md:object-[72%_center] lg:object-center",
         overlayGradient: s.overlayGradient || "from-[#090908]/90 via-[#090908]/50 to-transparent",
       }));
@@ -303,11 +303,11 @@ export default function Home() {
   return (
     <div className="w-full bg-[#090908] text-[#F2EEE7] selection:bg-[#BFA27A] selection:text-[#090908]">
       <SEO
-        title="SCENTÉPK — Haute Parfumerie | Artisanal Extraits de Parfum"
-        description="SCENTÉPK is a modern Pakistani artisanal fragrance house crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
+        title="SCENTEPK — Haute Parfumerie | Artisanal Extraits de Parfum"
+        description="SCENTEPK is a modern Pakistani artisanal fragrance house crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
         keywords={[
-          "SCENTÉPK",
-          "SCENTÉ",
+          "SCENTEPK",
+          "SCENTE",
           "niche perfume Pakistan",
           "luxury extrait de parfum",
           "haute parfumerie",
@@ -351,7 +351,7 @@ export default function Home() {
                     animate={{ opacity: 1, scale: 1.02 }}
                     transition={{ duration: 0.8, ease: LUXURY_EASE }}
                     src={slide.mobileImage || slide.image}
-                    alt={slide.imageAlt || "SCENTÉPK Artisanal Fragrance Campaign"}
+                    alt={slide.imageAlt || "SCENTEPK Artisanal Fragrance Campaign"}
                     className="w-full h-full object-cover"
                     style={{
                       objectPosition: slide.mobile_crop
@@ -374,7 +374,7 @@ export default function Home() {
                     animate={{ scale: 1 }}
                     transition={{ duration: 7, ease: "easeOut" }}
                     src={slide.image}
-                    alt={slide.imageAlt || "SCENTÉPK Artisanal Fragrance Campaign"}
+                    alt={slide.imageAlt || "SCENTEPK Artisanal Fragrance Campaign"}
                     className={`w-full h-full object-cover ${!slide.desktop_crop ? (slide.objectPosition || "object-center") : ""}`}
                     style={
                       slide.desktop_crop
@@ -857,7 +857,7 @@ export default function Home() {
       </section>
 
       {/* =======================================================================
-          4. SCENTÉ EDITORIAL CAMPAIGN BANNER (Cinematic Editorial Image Section)
+          4. SCENTE EDITORIAL CAMPAIGN BANNER (Cinematic Editorial Image Section)
           ======================================================================= */}
       <EditorialBanner />
 

@@ -139,7 +139,7 @@ export async function getLowStockProducts(threshold = LOW_STOCK_THRESHOLD) {
       data: [
         {
           id: "scente-noir",
-          name: "SCENTÉ NOIR",
+          name: "SCENTE NOIR",
           size: "50ml",
           stock_quantity: 4,
           price: 12500,

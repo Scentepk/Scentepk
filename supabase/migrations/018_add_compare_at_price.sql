@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 7: Sale / Compare-at Pricing System
+-- SCENTE — Phase 7: Sale / Compare-at Pricing System
 -- Migration 018: Add compare_at_price to products and product_variants
 -- ==============================================================================
 

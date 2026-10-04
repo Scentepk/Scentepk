@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3B: Product Status Column & Integrity Migration
+-- SCENTE — Phase 3B: Product Status Column & Integrity Migration
 -- ==============================================================================
 
 -- Add status column if it does not already exist

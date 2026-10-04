@@ -320,7 +320,7 @@ export default function Cart() {
               "Discover a fragrance crafted to become your signature."
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light leading-[1.6] mb-8 max-w-md mx-auto">
-              Each SCENTÉ composition is hand-macerated with pure perfume oil concentration for an enduring, magnetic aura.
+              Each SCENTE composition is hand-macerated with pure perfume oil concentration for an enduring, magnetic aura.
             </p>
             <Link
               to="/shop"
@@ -335,10 +335,10 @@ export default function Cart() {
         <div className="mt-16 sm:mt-24 pt-12 sm:pt-16 border-t border-[rgba(242,238,231,0.06)]">
           <ScrollReveal className="mb-8 sm:mb-12">
             <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] font-medium block mb-1.5">
-              ATELIER DISPATCH STANDARDS
+              DISPATCH STANDARDS
             </span>
             <h2 className="font-serif font-light text-2xl sm:text-3xl text-[#F2EEE7] tracking-headline">
-              The Scenté Guarantee
+              The Scente Guarantee
             </h2>
           </ScrollReveal>
 

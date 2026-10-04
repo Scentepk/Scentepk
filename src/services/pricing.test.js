@@ -3,13 +3,13 @@ import assert from "node:assert/strict";
 import { calculateDiscountPercent, isDiscountActive, formatPrice } from "../lib/pricing.js";
 import { normalizeProduct } from "./products.js";
 
-describe("SCENTÉ Phase 7: Sale & Compare-at Pricing System", () => {
+describe("SCENTE Phase 7: Sale & Compare-at Pricing System", () => {
   // 1. Normal product without compare-at price
   it("1. Normal product without compare-at price displays standard price and no discount", () => {
     const raw = {
       id: "scente-noir",
       slug: "scente-noir",
-      name: "SCENTÉ NOIR",
+      name: "SCENTE NOIR",
       price: 2999,
       compare_at_price: null,
       stock_quantity: 50,
@@ -261,7 +261,7 @@ describe("SCENTÉ Phase 7: Sale & Compare-at Pricing System", () => {
   // 12. Order creation preserves selling price
   it("12. Order creation stores unit_price as the actual selling price paid", () => {
     const cartItem = {
-      product: { id: "p1", name: "Scenté Royale", slug: "scente-royale", price: 2799, compareAtPrice: 3499 },
+      product: { id: "p1", name: "Scente Royale", slug: "scente-royale", price: 2799, compareAtPrice: 3499 },
       size: "50ml",
       price: 2799,
       compareAtPrice: 3499,

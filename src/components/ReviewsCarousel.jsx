@@ -7,7 +7,7 @@ import {
 } from "../services/reviews";
 
 /**
- * Individual Review Card component adhering strictly to SCENTÉ Haute Parfumerie aesthetic tokens.
+ * Individual Review Card component adhering strictly to SCENTE Haute Parfumerie aesthetic tokens.
  */
 function ReviewCard({ review, fragranceLabel, cardRef }) {
   return (

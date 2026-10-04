@@ -35,7 +35,7 @@ test("3. Normalizes tester product with category-appropriate defaults", () => {
   const rawTester = {
     id: "tester-noir",
     slug: "tester-noir",
-    name: "SCENTÉ NOIR TESTER",
+    name: "SCENTE NOIR TESTER",
     family: "testers",
     price: 1500,
   };
@@ -51,7 +51,7 @@ test("4. Normalizes perfume with standard Extrait defaults preserved", () => {
   const rawPerfume = {
     id: "scente-noir",
     slug: "scente-noir",
-    name: "SCENTÉ NOIR",
+    name: "SCENTE NOIR",
     family: "men",
     price: 12500,
   };

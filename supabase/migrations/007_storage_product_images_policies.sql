@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3B: Supabase Storage Configuration & RLS Policies
+-- SCENTE — Phase 3B: Supabase Storage Configuration & RLS Policies
 -- Bucket: 'product-images' (Public read for storefront, Admin-only write/delete)
 -- ==============================================================================
 

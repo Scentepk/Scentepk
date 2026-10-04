@@ -13,7 +13,7 @@ export const DEFAULT_BUILDER_SETTINGS = {
   is_active: false,
   base_price: 0,
   currency: "PKR",
-  title: "BUILD YOUR SCENTÉ",
+  title: "BUILD YOUR SCENTE",
   subtitle: "Create a Fragrance That's Yours",
   description: "Choose your size, fragrance profile, notes, and intensity to create a scent made around your preferences.",
   updated_at: new Date().toISOString(),

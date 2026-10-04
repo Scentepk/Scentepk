@@ -2,7 +2,7 @@ import React from "react";
 
 /**
  * AtelierLoader — Quiet-luxury branded loading state for lazy-loaded route transitions.
- * Perfectly matches SCENTÉ dark obsidian (#0D0D0C) and champagne gold (#BFA27A) aesthetic.
+ * Perfectly matches SCENTE dark obsidian (#0D0D0C) and champagne gold (#BFA27A) aesthetic.
  * Fixed min-height ensures zero layout shift during route navigation.
  */
 export default function AtelierLoader() {
@@ -27,7 +27,7 @@ export default function AtelierLoader() {
 
       {/* Eyebrow Label */}
       <span className="text-[9.5px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium opacity-90 mb-1.5 animate-pulse">
-        SCENTÉ ATELIER
+        SCENTE ATELIER
       </span>
 
       {/* Subtext */}

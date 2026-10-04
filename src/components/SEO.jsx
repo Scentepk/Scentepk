@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const BASE_URL = "https://scente.pk";
-const DEFAULT_TITLE = "SCENTÉPK — Haute Parfumerie | Extraits de Parfum";
+const DEFAULT_TITLE = "SCENTEPK — Haute Parfumerie | Extraits de Parfum";
 const DEFAULT_DESCRIPTION =
-  "SCENTÉPK is a luxury niche fragrance atelier crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
+  "SCENTEPK is a luxury niche fragrance atelier crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=85";
 
@@ -58,9 +58,9 @@ export default function SEO({
   useEffect(() => {
     // 1. Resolve values
     const fullTitle = title
-      ? title.includes("SCENTÉ")
-        ? title.replace(/SCENTÉ(?!\w)/g, "SCENTÉPK")
-        : `${title} | SCENTÉPK — Haute Parfumerie`
+      ? title.includes("SCENTE")
+        ? title.replace(/SCENTE(?!\w)/g, "SCENTEPK")
+        : `${title} | SCENTEPK — Haute Parfumerie`
       : DEFAULT_TITLE;
 
     const fullDescription = description || DEFAULT_DESCRIPTION;
@@ -99,7 +99,7 @@ export default function SEO({
     setMetaTag("og:url", resolvedCanonical, true);
     setMetaTag("og:image", resolvedImage, true);
     setMetaTag("og:type", ogType, true);
-    setMetaTag("og:site_name", "SCENTÉ Parfums", true);
+    setMetaTag("og:site_name", "SCENTE Parfums", true);
     setMetaTag("og:locale", "en_US", true);
 
     // 6. Twitter Card Meta
@@ -135,7 +135,7 @@ export default function SEO({
           sku: productData.sku || "SCENTE-PARFUM",
           brand: {
             "@type": "Brand",
-            name: "SCENTÉ",
+            name: "SCENTE",
           },
           offers: {
             "@type": "Offer",

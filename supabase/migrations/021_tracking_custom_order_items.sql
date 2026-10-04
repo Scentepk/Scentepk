@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 021_tracking_custom_order_items.sql
--- SCENTÉ — Support Bespoke Custom Perfume Formulations in Public Order Tracking
+-- SCENTE — Support Bespoke Custom Perfume Formulations in Public Order Tracking
 -- ==============================================================================
 
 -- Updates public.track_order_public to include is_custom and custom_configuration

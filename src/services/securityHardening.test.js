@@ -31,7 +31,7 @@ if (typeof globalThis.window === "undefined") {
   };
 }
 
-test("SCENTÉ Phase 1 Security Hardening: Regression & Integration Suite", async (t) => {
+test("SCENTE Phase 1 Security Hardening: Regression & Integration Suite", async (t) => {
   const LOCAL_STORAGE_ORDERS_KEY = "scente_admin_orders_cache";
 
   // Setup test environment
@@ -159,14 +159,14 @@ test("SCENTÉ Phase 1 Security Hardening: Regression & Integration Suite", async
       {
         isCustom: false,
         variantId: "99999999-aaaa-bbbb-cccc-111111111111",
-        product: { id: "scente-noir", name: "SCENTÉ NOIR", price: 12500 },
+        product: { id: "scente-noir", name: "SCENTE NOIR", price: 12500 },
         size: "50ml",
         quantity: 1,
       },
       {
         isCustom: false,
         variantId: "99999999-aaaa-bbbb-cccc-111111111111", // DUPLICATE!
-        product: { id: "scente-noir", name: "SCENTÉ NOIR", price: 12500 },
+        product: { id: "scente-noir", name: "SCENTE NOIR", price: 12500 },
         size: "50ml",
         quantity: 1,
       },
@@ -187,14 +187,14 @@ test("SCENTÉ Phase 1 Security Hardening: Regression & Integration Suite", async
       {
         isCustom: false,
         variantId: "99999999-aaaa-bbbb-cccc-111111111111",
-        product: { id: "scente-noir", name: "SCENTÉ NOIR", price: 12500 },
+        product: { id: "scente-noir", name: "SCENTE NOIR", price: 12500 },
         size: "50ml",
         quantity: 1,
       },
       {
         isCustom: false,
         variantId: "88888888-aaaa-bbbb-cccc-222222222222", // DISTINCT
-        product: { id: "scente-amber", name: "SCENTÉ AMBER", price: 14500 },
+        product: { id: "scente-amber", name: "SCENTE AMBER", price: 14500 },
         size: "50ml",
         quantity: 1,
       },
@@ -222,13 +222,13 @@ test("SCENTÉ Phase 1 Security Hardening: Regression & Integration Suite", async
       {
         isCustom: false,
         variantId: "11111111-2222-3333-4444-555555555555",
-        product: { id: "scente-noir", name: "SCENTÉ NOIR", price: 12500 },
+        product: { id: "scente-noir", name: "SCENTE NOIR", price: 12500 },
         size: "50ml",
         quantity: 1,
       },
       {
         isCustom: true,
-        product: { name: "Custom SCENTÉ", price: 3300 },
+        product: { name: "Custom SCENTE", price: 3300 },
         size: "Bespoke",
         quantity: 1,
         price: 3300,
@@ -240,6 +240,6 @@ test("SCENTÉ Phase 1 Security Hardening: Regression & Integration Suite", async
     // In local mode without active builder in mock storage, createCodOrder handles custom items gracefully
     const orderRes = await createCodOrder(customerData, [mixedCart[0]]);
     assert.ok(orderRes.data, "Standard item order completes successfully");
-    assert.equal(orderRes.data.order_items[0].product_name, "SCENTÉ NOIR");
+    assert.equal(orderRes.data.order_items[0].product_name, "SCENTE NOIR");
   });
 });

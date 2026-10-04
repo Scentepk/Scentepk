@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 013_customer_email_tracking.sql
--- SCENTÉ — Add customer_email_sent_at timestamp to orders table for idempotency
+-- SCENTE — Add customer_email_sent_at timestamp to orders table for idempotency
 -- ==============================================================================
 
 ALTER TABLE public.orders 

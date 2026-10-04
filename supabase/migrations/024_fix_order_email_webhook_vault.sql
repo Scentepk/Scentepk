@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 024_fix_order_email_webhook_vault.sql
--- SCENTÉ — Fix Vault Secret Decryption in Order Notification Webhook Trigger
+-- SCENTE — Fix Vault Secret Decryption in Order Notification Webhook Trigger
 -- ==============================================================================
 
 -- 1. Ensure extensions exist in proper schemas

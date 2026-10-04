@@ -10,7 +10,7 @@ export default function DeliveryReturns() {
     {
       number: "01",
       title: "CONTACT US",
-      description: "Contact the SCENTÉPK team through the existing contact/inquiry system.",
+      description: "Contact the SCENTEPK team through the existing contact/inquiry system.",
     },
     {
       number: "02",
@@ -52,9 +52,9 @@ export default function DeliveryReturns() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Delivery & Returns — Atelier Logistics & Transit"
-        description="Comprehensive guide to SCENTÉPK express courier shipping, transit timelines across Pakistan, secure packaging, and return policies."
+        description="Comprehensive guide to SCENTEPK express courier shipping, transit timelines across Pakistan, secure packaging, and return policies."
         canonicalUrl="https://scente.pk/delivery-returns"
-        keywords="SCENTÉPK delivery, perfume shipping Pakistan, return policy, delivery times Karachi Lahore Islamabad"
+        keywords="SCENTEPK delivery, perfume shipping Pakistan, return policy, delivery times Karachi Lahore Islamabad"
       />
       <div className="layout-container py-14 sm:py-20">
         {/* 1. HERO SECTION */}
@@ -72,7 +72,7 @@ export default function DeliveryReturns() {
               From Our Atelier to Your Door
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#AAA49B] font-light leading-[1.75] max-w-2xl pt-1">
-              Everything you need to know about delivery, receiving your order, and returns at SCENTÉPK.
+              Everything you need to know about delivery, receiving your order, and returns at SCENTEPK.
             </p>
           </motion.div>
         </section>
@@ -94,7 +94,7 @@ export default function DeliveryReturns() {
             <div className="lg:col-span-8 space-y-6">
               <ScrollReveal delay={0.08} className="space-y-4">
                 <p className="font-sans text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-                  SCENTÉPK delivers fragrances across Pakistan through its available courier network. Each composition is hand-checked and encased in protective atelier housing before dispatch.
+                  SCENTEPK delivers fragrances across Pakistan through its available courier network. Each composition is hand-checked and encased in protective atelier housing before dispatch.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
@@ -139,7 +139,7 @@ export default function DeliveryReturns() {
             <div className="lg:col-span-8 space-y-4">
               <ScrollReveal delay={0.08}>
                 <p className="font-sans text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-                  Because fragrances are personal products, returns should follow SCENTÉPK's actual return policy. To maintain integrity, hygiene, and authenticity, our return process adheres to strict atelier standards.
+                  Because fragrances are personal products, returns should follow SCENTEPK's actual return policy. To maintain integrity, hygiene, and authenticity, our return process adheres to strict atelier standards.
                 </p>
               </ScrollReveal>
             </div>
@@ -216,7 +216,7 @@ export default function DeliveryReturns() {
             <div className="lg:col-span-8">
               <ScrollReveal delay={0.08} className="space-y-3">
                 <p className="font-sans text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-                  For questions regarding exchanges or refunds, please contact the SCENTÉPK team with your Order Reference Number.
+                  For questions regarding exchanges or refunds, please contact the SCENTEPK team with your Order Reference Number.
                 </p>
               </ScrollReveal>
             </div>

@@ -215,7 +215,7 @@ export default function Navbar() {
   ];
 
   const moreNavLinks = [
-    { name: "ABOUT SCENTÉ", path: "/about" },
+    { name: "ABOUT SCENTE", path: "/about" },
     { name: "CONTACT", path: "/contact" },
     { name: "FAQ", path: "/delivery-returns" },
   ];
@@ -250,7 +250,7 @@ export default function Navbar() {
               className="group flex flex-col items-center lg:items-start tracking-tight focus:outline-none"
             >
               <span className="font-serif text-xl xs:text-2xl sm:text-[27px] font-medium tracking-[0.2em] xs:tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300">
-                SCENTÉPK
+                SCENTEPK
               </span>
               <span className="text-[7px] xs:text-[7.5px] uppercase font-sans tracking-[0.28em] xs:tracking-[0.35em] text-[#AAA49B] -mt-0.5 xs:-mt-1 font-light opacity-80">
                 Premium Fragrances
@@ -389,7 +389,7 @@ export default function Navbar() {
                             COMPOSITIONS ({searchResults.length})
                           </span>
                           <span className="text-[9.5px] uppercase font-sans tracking-micro text-[#777169]">
-                            SCENTÉPK ARCHIVE
+                            SCENTEPK ARCHIVE
                           </span>
                         </div>
 
@@ -421,7 +421,7 @@ export default function Navbar() {
                                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
                                     />
                                   ) : (
-                                    <span className="text-[8px] text-[#777169] font-serif tracking-widest uppercase">SCENTÉPK</span>
+                                    <span className="text-[8px] text-[#777169] font-serif tracking-widest uppercase">SCENTEPK</span>
                                   )}
                                 </div>
 
@@ -470,7 +470,7 @@ export default function Navbar() {
                 {/* Top Bar with Brand and Dedicated Close Button */}
                 <div className="w-full flex items-center justify-between pb-5 border-b border-[rgba(242,238,231,0.06)]">
                   <span className="font-serif text-xl tracking-[0.2em] text-[#F2EEE7]">
-                    SCENTÉPK
+                    SCENTEPK
                   </span>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
@@ -560,7 +560,7 @@ export default function Navbar() {
                                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
                                       ) : (
-                                        <span className="text-[9px] text-[#777169] font-serif tracking-widest uppercase">SCENTÉPK</span>
+                                        <span className="text-[9px] text-[#777169] font-serif tracking-widest uppercase">SCENTEPK</span>
                                       )}
                                     </div>
                                     <div className="flex-grow min-w-0 font-sans space-y-0.5">

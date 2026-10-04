@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Migration 022: Harden Custom Order RPC Price Authority & Option Validation
+-- SCENTE — Migration 022: Harden Custom Order RPC Price Authority & Option Validation
 -- Feature: Authoritative server-side price calculation and option validation in create_cod_order
 -- ==============================================================================
 
@@ -421,7 +421,7 @@ BEGIN
             ) VALUES (
                 v_order_id,
                 NULL,
-                COALESCE(v_item->>'product_name', 'Custom SCENTÉ'),
+                COALESCE(v_item->>'product_name', 'Custom SCENTE'),
                 'custom-scente',
                 COALESCE(v_item->>'size', 'Bespoke'),
                 v_qty,

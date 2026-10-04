@@ -442,7 +442,7 @@
 }
 
 /* ==========================================================================
-   GLOBAL CHROME & EDGE BROWSER AUTOFILL SHIELD (SCENTÉ LUXURY DARK THEME)
+   GLOBAL CHROME & EDGE BROWSER AUTOFILL SHIELD (SCENTE LUXURY DARK THEME)
    Preserves EXACT pixel-perfect input dimensions, padding, borders, typography,
    and border radii under all browser autofill lifecycle states.
    Completely prevents browser autofill from expanding input height/width,
@@ -689,7 +689,7 @@ select.rounded-full:autofill {
 }
 
 /* ==========================================================================
-   SCENTÉ UNIFIED FORM CONTROL UTILITIES
+   SCENTE UNIFIED FORM CONTROL UTILITIES
    ========================================================================== */
 .scente-input {
   width: 100%;
@@ -802,7 +802,7 @@ select.rounded-full:autofill {
 }
 
 /* ==========================================================================
-   SCENTÉ REUSABLE PRODUCT GRID
+   SCENTE REUSABLE PRODUCT GRID
    Enforces consistent 2-column mobile layout across all product galleries,
    scaling to 2 columns on tablet and 3 columns on desktop.
    ========================================================================== */

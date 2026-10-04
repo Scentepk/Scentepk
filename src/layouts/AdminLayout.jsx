@@ -144,13 +144,13 @@ export default function AdminLayout() {
             <Link
               to="/admin"
               className="block focus:outline-none group"
-              title="SCENTÉ Atelier Control Room"
-              aria-label="SCENTÉ Atelier Control Room"
+              title="SCENTE Atelier Control Room"
+              aria-label="SCENTE Atelier Control Room"
             >
               {isExpanded ? (
                 <div className="transition-opacity duration-200">
                   <span className="font-serif text-2xl font-medium tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors block whitespace-nowrap">
-                    SCENTÉPK
+                    SCENTEPK
                   </span>
                   <span className="text-[8px] uppercase font-sans tracking-[0.32em] text-[#BFA27A] block font-medium whitespace-nowrap">
                     ATELIER CONTROL ROOM
@@ -291,7 +291,7 @@ export default function AdminLayout() {
 
           <Link to="/admin" className="focus:outline-none">
             <span className="font-serif text-xl tracking-[0.2em] text-[#F2EEE7] block leading-none">
-              SCENTÉ
+              SCENTE
             </span>
             <span className="text-[7.5px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block mt-1 font-medium">
               CONTROL ROOM
@@ -355,7 +355,7 @@ export default function AdminLayout() {
                 <div className="flex items-center justify-between pb-5 border-b border-[rgba(242,238,231,0.06)]">
                   <div>
                     <span className="font-serif text-2xl font-medium tracking-[0.2em] text-[#F2EEE7] block">
-                      SCENTÉPK
+                      SCENTEPK
                     </span>
                     <span className="text-[8px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium mt-0.5">
                       ATELIER CONTROL

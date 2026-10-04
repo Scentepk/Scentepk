@@ -73,7 +73,7 @@ export default function EditorialBanner() {
 
   return (
     <section
-      aria-label="SCENTÉ Campaign Editorial"
+      aria-label="SCENTE Campaign Editorial"
       className="relative w-full overflow-hidden bg-[#090908] border-y border-white/[0.06] select-none"
     >
       {/* Full-bleed edge-to-edge container: adapts dynamically to the image's natural aspect ratio so 100% of the original image is visible with ZERO top/bottom/side crop */}
@@ -88,7 +88,7 @@ export default function EditorialBanner() {
           {/* Natural full-width uncropped image: completely static, zero zoom/scale/transform, no distortion */}
           <img
             src={settings.image_url}
-            alt="SCENTÉ Parfums Editorial Campaign"
+            alt="SCENTE Parfums Editorial Campaign"
             loading="lazy"
             decoding="async"
             onError={() => setImageFailed(true)}

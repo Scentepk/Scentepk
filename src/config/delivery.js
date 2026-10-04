@@ -1,5 +1,5 @@
 /**
- * Centralized Delivery & Shipping Configuration for SCENTÉ
+ * Centralized Delivery & Shipping Configuration for SCENTE
  */
 export const DELIVERY_CONFIG = {
   fee: 0, // Complimentary air express delivery across Pakistan

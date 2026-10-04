@@ -1,6 +1,6 @@
 -- ==============================================================================
--- SCENTÉ — Migration 019: Custom Perfume Builder Database Architecture
--- Feature: BUILD YOUR SCENTÉ (Bespoke Perfume Builder & Dynamic Pricing)
+-- SCENTE — Migration 019: Custom Perfume Builder Database Architecture
+-- Feature: BUILD YOUR SCENTE (Bespoke Perfume Builder & Dynamic Pricing)
 -- ==============================================================================
 
 -- 1. BUILDER SETTINGS (Global Singleton Configuration)
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS public.custom_builder_settings (
     is_active BOOLEAN NOT NULL DEFAULT false,
     base_price INTEGER NOT NULL DEFAULT 0 CHECK (base_price >= 0),
     currency TEXT NOT NULL DEFAULT 'PKR',
-    title TEXT NOT NULL DEFAULT 'BUILD YOUR SCENTÉ',
+    title TEXT NOT NULL DEFAULT 'BUILD YOUR SCENTE',
     subtitle TEXT NOT NULL DEFAULT 'Create a Fragrance That''s Yours',
     description TEXT DEFAULT 'Choose your size, fragrance profile, notes, and intensity to create a scent made around your preferences.',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -240,7 +240,7 @@ INSERT INTO public.custom_builder_settings (
     false,
     0,
     'PKR',
-    'BUILD YOUR SCENTÉ',
+    'BUILD YOUR SCENTE',
     'Create a Fragrance That''s Yours',
     'Choose your size, fragrance profile, notes, and intensity to create a scent made around your preferences.'
 )

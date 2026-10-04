@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 4A: Fragrance Profile Recommendation Metadata
+-- SCENTE — Phase 4A: Fragrance Profile Recommendation Metadata
 -- Supports deterministic "Find Your Scent" recommendation engine
 -- ==============================================================================
 

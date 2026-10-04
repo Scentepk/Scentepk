@@ -65,9 +65,9 @@ export default function Contact() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Private Concierge — Atelier Client Services"
-        description="Connect with the SCENTÉPK private concierge for fragrance consultations, order inquiries, and bespoke corporate gifting across Pakistan."
+        description="Connect with the SCENTEPK private concierge for fragrance consultations, order inquiries, and bespoke corporate gifting across Pakistan."
         canonicalUrl="https://scente.pk/contact"
-        keywords="contact SCENTÉPK, perfume concierge Pakistan, bespoke fragrance gifting, luxury customer service"
+        keywords="contact SCENTEPK, perfume concierge Pakistan, bespoke fragrance gifting, luxury customer service"
       />
       <div className="layout-container py-10 sm:py-16 lg:py-24">
         <SectionHeading
@@ -207,7 +207,7 @@ export default function Contact() {
                 Atelier Headquarters
               </h4>
               <p className="text-sm font-sans text-[#AAA49B] font-light leading-relaxed">
-                SCENTÉPK Parfums operates an exclusive private blending atelier. Consultations and formulation visits are by verified appointment only.
+                SCENTEPK Parfums operates an exclusive private blending atelier. Consultations and formulation visits are by verified appointment only.
               </p>
 
               <div className="space-y-4 pt-4 border-t border-[rgba(242,238,231,0.06)] font-sans text-xs">

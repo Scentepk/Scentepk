@@ -3,7 +3,7 @@ export const PRODUCTS = [
   {
     id: "scente-noir",
     slug: "scente-noir",
-    name: "SCENTÉ NOIR",
+    name: "SCENTE NOIR",
     subtitle: "Extrait de Parfum",
     concentration: "30% Pure Perfume Oil",
     family: "men",
@@ -14,7 +14,7 @@ export const PRODUCTS = [
     olfactiveFamily: "Smoky Woods & Black Leather",
     tagline: "Shadows woven in smoke and velvet.",
     description:
-      "A dark, magnetic portrait of midnight architecture. SCENTÉ NOIR opens with dry smoked cardamom and chilled bergamot before yielding to a rich heart of Tuscan leather, dark plum, and Florentine iris, anchored on deep aged oud and Haitian vetiver.",
+      "A dark, magnetic portrait of midnight architecture. SCENTE NOIR opens with dry smoked cardamom and chilled bergamot before yielding to a rich heart of Tuscan leather, dark plum, and Florentine iris, anchored on deep aged oud and Haitian vetiver.",
     notes: {
       top: ["Smoked Cardamom", "Calabrian Bergamot", "Pink Peppercorn"],
       heart: ["Tuscan Leather", "Dark Plum", "Black Iris"],
@@ -34,7 +34,7 @@ export const PRODUCTS = [
   {
     id: "scente-amber",
     slug: "scente-amber",
-    name: "SCENTÉ AMBER",
+    name: "SCENTE AMBER",
     subtitle: "Extrait de Parfum",
     concentration: "32% Pure Perfume Oil",
     family: "unisex",
@@ -65,7 +65,7 @@ export const PRODUCTS = [
   {
     id: "scente-musk",
     slug: "scente-musk",
-    name: "SCENTÉ MUSK",
+    name: "SCENTE MUSK",
     subtitle: "Extrait de Parfum",
     concentration: "28% Pure Perfume Oil",
     family: "unisex",
@@ -96,7 +96,7 @@ export const PRODUCTS = [
   {
     id: "scente-bloom",
     slug: "scente-bloom",
-    name: "SCENTÉ BLOOM",
+    name: "SCENTE BLOOM",
     subtitle: "Extrait de Parfum",
     concentration: "30% Pure Perfume Oil",
     family: "women",
@@ -107,7 +107,7 @@ export const PRODUCTS = [
     olfactiveFamily: "Nocturnal Rose & Black Iris",
     tagline: "Velvet petals under twilight skies.",
     description:
-      "A dramatic study in velvet florals. SCENTÉ BLOOM pairs rich Damask rose absolute with nocturnal jasmine and powdery Florentine iris, anchored on dark smoked amber and white cashmeran.",
+      "A dramatic study in velvet florals. SCENTE BLOOM pairs rich Damask rose absolute with nocturnal jasmine and powdery Florentine iris, anchored on dark smoked amber and white cashmeran.",
     notes: {
       top: ["Damask Rose Absolute", "Pink Pepper", "Bergamot"],
       heart: ["Nocturnal Jasmine", "Florentine Iris", "Magnolia"],
@@ -127,7 +127,7 @@ export const PRODUCTS = [
   {
     id: "scente-oud",
     slug: "scente-oud",
-    name: "SCENTÉ OUD",
+    name: "SCENTE OUD",
     subtitle: "Extrait de Parfum",
     concentration: "32% Pure Perfume Oil",
     family: "men",
@@ -158,7 +158,7 @@ export const PRODUCTS = [
   {
     id: "scente-soleil",
     slug: "scente-soleil",
-    name: "SCENTÉ SOLEIL",
+    name: "SCENTE SOLEIL",
     subtitle: "Extrait de Parfum",
     concentration: "28% Pure Perfume Oil",
     family: "unisex",

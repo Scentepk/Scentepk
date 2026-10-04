@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 009_promo_codes.sql
--- SCENTÉ Ecommerce — Admin-Controlled Promo Code & Discount System
+-- SCENTE Ecommerce — Admin-Controlled Promo Code & Discount System
 -- ==============================================================================
 
 -- 1. Create Promo Codes Table

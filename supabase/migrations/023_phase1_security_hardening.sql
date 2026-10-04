@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Migration 023: Phase 1 Security Hardening & Vulnerability Remediation
+-- SCENTE — Migration 023: Phase 1 Security Hardening & Vulnerability Remediation
 -- 
 -- Fixes applied:
 -- 1. PROMO PHONE NORMALIZATION:
@@ -461,7 +461,7 @@ BEGIN
                 jsonb_build_object(
                     'is_custom', true,
                     'product_id', NULL,
-                    'product_name', COALESCE(v_item->>'product_name', 'Custom SCENTÉ'),
+                    'product_name', COALESCE(v_item->>'product_name', 'Custom SCENTE'),
                     'product_slug', 'custom-scente',
                     'size', COALESCE(v_item->>'size', 'Bespoke'),
                     'quantity', v_qty,

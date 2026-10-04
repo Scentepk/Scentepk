@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 012_order_notification_webhook.sql
--- SCENTÉ — Automatic Order Email Notification Trigger via pg_net
+-- SCENTE — Automatic Order Email Notification Trigger via pg_net
 -- ==============================================================================
 
 -- 1. Ensure pg_net extension is enabled

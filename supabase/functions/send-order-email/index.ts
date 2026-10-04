@@ -244,7 +244,7 @@ Deno.serve(async (req: Request) => {
     const adminOrderUrl = `${SITE_URL.replace(/\/+$/, "")}/admin/orders/${orderId !== "N/A" ? orderId : reference}`;
     const customerTrackUrl = `${SITE_URL.replace(/\/+$/, "")}/track`;
 
-    // 6. Common Line Items HTML — SCENTÉ Haute Parfumerie Editorial Manifest
+    // 6. Common Line Items HTML — SCENTE Haute Parfumerie Editorial Manifest
     function escapeHtml(str: string): string {
       if (!str) return "";
       return String(str)
@@ -468,7 +468,7 @@ Deno.serve(async (req: Request) => {
       `
       : "";
 
-    // 7. BUILD ADMIN NOTIFICATION HTML (SCENTÉ Dark Luxury Atelier Logistics)
+    // 7. BUILD ADMIN NOTIFICATION HTML (SCENTE Dark Luxury Atelier Logistics)
     const adminHtmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -536,7 +536,7 @@ Deno.serve(async (req: Request) => {
                 SCENTE
               </div>
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 0.28em; color: #8E887F; margin-top: 8px; font-weight: 500;">
-                PREMIUM FRAGRANCE • ATELIER DISPATCH
+                PREMIUM FRAGRANCE
               </div>
             </td>
           </tr>
@@ -695,7 +695,7 @@ Deno.serve(async (req: Request) => {
 </html>
     `;
 
-    // 8. BUILD CUSTOMER ORDER CONFIRMATION HTML (SCENTÉ Editorial Noir & Warm Champagne)
+    // 8. BUILD CUSTOMER ORDER CONFIRMATION HTML (SCENTE Editorial Noir & Warm Champagne)
     const customerHtmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -760,7 +760,7 @@ Deno.serve(async (req: Request) => {
             <td style="background-color: #BFA27A; height: 1px; font-size: 0; line-height: 0;">&nbsp;</td>
           </tr>
 
-          <!-- SCENTÉ Header -->
+          <!-- SCENTE Header -->
           <tr>
             <td align="center" style="padding: 44px 32px 30px 32px; border-bottom: 1px solid #1E1D1A;">
               <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 300; letter-spacing: 0.35em; color: #F2EEE7; text-transform: uppercase;">
@@ -921,7 +921,7 @@ Deno.serve(async (req: Request) => {
             </td>
           </tr>
 
-          <!-- SCENTÉ Footer -->
+          <!-- SCENTE Footer -->
           <tr>
             <td align="center" style="padding: 30px 24px; background-color: #090908; border-top: 1px solid #1A1916; font-size: 11px; color: #6E6962; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
               <div style="letter-spacing: 0.18em; text-transform: uppercase; color: #8E887F; font-size: 10.5px;">SCENTE PREMIUM FRAGRANCE</div>

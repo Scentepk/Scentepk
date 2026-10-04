@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 2B: Secure Customer Order Cancellation & Inventory Restoration
+-- SCENTE — Phase 2B: Secure Customer Order Cancellation & Inventory Restoration
 -- Migration: 006_customer_order_cancellation.sql
 -- ==============================================================================
 

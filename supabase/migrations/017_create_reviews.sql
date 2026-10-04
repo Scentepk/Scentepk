@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 6.5: Reviews Management System
+-- SCENTE — Phase 6.5: Reviews Management System
 -- Migration 017: Create public.reviews table, constraints, indexes & RLS policies
 -- ==============================================================================
 

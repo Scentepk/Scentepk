@@ -143,7 +143,7 @@ export default function AdminDashboard() {
             {stats.pendingOrders}
           </p>
           <p className="text-[10.5px] font-sans text-[#AAA49B] flex items-center justify-between pt-1">
-            <span>Awaiting Atelier Dispatch</span>
+            <span>Awaiting Dispatch</span>
             <ArrowRight className="w-3 h-3 text-[#777169]" />
           </p>
         </Link>

@@ -335,7 +335,7 @@ export default function Checkout() {
                 ORDER CONFIRMED
               </span>
               <h1 className="font-serif font-light text-3xl sm:text-4xl text-[#F2EEE7] tracking-headline">
-                Thank you for choosing SCENTÉ.
+                Thank you for choosing SCENTE.
               </h1>
               <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light max-w-lg mx-auto leading-[1.6]">
                 Your Cash on Delivery reservation has been registered at our atelier. We are preparing your bespoke flacon(s) for express insured dispatch.
@@ -838,7 +838,7 @@ export default function Checkout() {
                     >
                       <div className="pr-2">
                         <p className="font-serif font-light text-base text-[#F2EEE7]">
-                          {item.product?.name || "Custom SCENTÉ"}
+                          {item.product?.name || "Custom SCENTE"}
                         </p>
                         <p className="text-[10.5px] text-[#AAA49B]">
                           {item.quantity} × {item.size || (isCustom ? "Bespoke" : "50ml")} • {item.formattedPrice || item.product?.formattedPrice}

@@ -55,7 +55,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
         const verified = verifiedCustomItems.get(item);
         return {
           is_custom: true,
-          product_name: item.product?.name || "Custom SCENTÉ",
+          product_name: item.product?.name || "Custom SCENTE",
           size: item.size || "Bespoke",
           quantity: item.quantity || 1,
           unit_price: verified?.finalPrice ?? item.price,
@@ -217,7 +217,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
           id: `item-${Date.now()}-${idx}`,
           is_custom: true,
           product_id: null,
-          product_name: item.product?.name || "Custom SCENTÉ",
+          product_name: item.product?.name || "Custom SCENTE",
           product_slug: "custom-scente",
           size: item.size || "Bespoke",
           quantity: item.quantity,

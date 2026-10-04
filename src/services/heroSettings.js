@@ -15,7 +15,7 @@ export const DEFAULT_HERO_SLIDES = [
   {
     id: "slide-1",
     product_id: null,
-    eyebrow: "SCENTÉPK — BATCH 04",
+    eyebrow: "SCENTEPK — BATCH 04",
     badge: "30% PURE PERFUME OIL",
     headline_line1: "FRAGRANCE",
     headline_line2: "BECOMES",
@@ -254,7 +254,7 @@ export async function getHeroSettings() {
       ) {
         isHeroTableAvailable = false;
         console.info(
-          "SCENTÉ Info: 'public.hero_settings' table has not been created in Supabase yet. Using local hero campaign slides."
+          "SCENTE Info: 'public.hero_settings' table has not been created in Supabase yet. Using local hero campaign slides."
         );
       } else {
         console.warn("Hero settings DB fetch warning:", error.message);

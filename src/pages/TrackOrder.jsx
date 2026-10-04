@@ -360,16 +360,16 @@ export default function TrackOrder() {
   return (
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
-        title="Track Your Parcel — Live Atelier Dispatch & Logistics"
-        description="Inspect live courier milestones and transit manifests for your SCENTÉPK fragrance order using your order reference and registered contact number."
+        title="Track Your Parcel — Live Dispatch & Logistics"
+        description="Inspect live courier milestones and transit manifests for your SCENTEPK fragrance order using your order reference and registered contact number."
         canonicalUrl="https://scente.pk/track"
-        keywords="track order, SCENTÉPK tracking, perfume delivery status Pakistan, courier tracking, Cash on Delivery status"
+        keywords="track order, SCENTEPK tracking, perfume delivery status Pakistan, courier tracking, Cash on Delivery status"
       />
       <div className="layout-container py-10 sm:py-16 lg:py-20 max-w-4xl mx-auto">
         {/* 1. HEADER */}
         <ScrollReveal className="text-center mb-8 sm:mb-12">
           <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-3 font-medium">
-            ATELIER DISPATCH & LOGISTICS
+            DISPATCH & LOGISTICS
           </span>
           <h1 className="font-serif font-light text-2xl xs:text-3xl sm:text-5xl text-[#F2EEE7] tracking-headline mb-3">
             Track Your Parcel
@@ -489,7 +489,7 @@ export default function TrackOrder() {
               <div className="flex items-center space-x-2.5 text-[#BFA27A]">
                 <Package className="w-4 h-4 shrink-0" />
                 <h3 className="font-serif text-lg sm:text-xl text-[#F2EEE7] font-normal">
-                  Track your SCENTÉPK order
+                  Track your SCENTEPK order
                 </h3>
               </div>
               <p className="text-xs font-sans text-[#AAA49B] font-light leading-relaxed max-w-2xl">
@@ -845,7 +845,7 @@ export default function TrackOrder() {
                             <div>
                               <div className="flex items-center space-x-2">
                                 <p className="font-serif text-sm text-[#F2EEE7] font-normal">
-                                  {isCustom ? (item.product_name || "Custom SCENTÉ") : item.product_name}
+                                  {isCustom ? (item.product_name || "Custom SCENTE") : item.product_name}
                                 </p>
                                 {isCustom && (
                                   <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">

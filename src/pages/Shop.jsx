@@ -561,7 +561,7 @@ export default function Shop() {
                 ? `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}'s Fragrances — The Collection`
                 : "The Fragrance Collection — Handcrafted Extraits de Parfum"
         }
-        description="Explore the SCENTÉPK collection of artisan Extraits de Parfum, scented botanical waxes, and discovery testers. Handcrafted in limited maceration batches with 30-40% pure perfume oil concentrations. Cash on Delivery across Pakistan."
+        description="Explore the SCENTEPK collection of artisan Extraits de Parfum, scented botanical waxes, and discovery testers. Handcrafted in limited maceration batches with 30-40% pure perfume oil concentrations. Cash on Delivery across Pakistan."
         canonicalUrl="https://scente.pk/shop"
         keywords="buy perfume online Pakistan, luxury extrait de parfum, artisan scented waxes, perfume testers, artisan fragrance Karachi, Lahore, Islamabad, Cash on Delivery perfumes"
       />

@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3D: Hero Image Editor Enhancements & Positioning
+-- SCENTE — Phase 3D: Hero Image Editor Enhancements & Positioning
 -- Supports independent desktop & mobile crop/zoom and draft vs. published workflow
 -- ==============================================================================
 

@@ -290,7 +290,7 @@ export default function AdminReviews() {
             Customer Reviews
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light mt-1">
-            Curate verified patron testimonials displayed on the SCENTÉ homepage.
+            Curate verified patron testimonials displayed on the SCENTE homepage.
           </p>
         </div>
 

@@ -829,7 +829,7 @@ export default function AdminProductForm() {
               required
               value={formData.name}
               onChange={handleNameChange}
-              placeholder="e.g. Santal 33 or SCENTÉ NOIR"
+              placeholder="e.g. Santal 33 or SCENTE NOIR"
             />
             <p className="text-[11px] text-[#777169] mt-1.5 font-light leading-relaxed">
               The name customers will see on the website, in the cart, and on receipts.

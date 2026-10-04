@@ -19,7 +19,7 @@ import {
 import { DEFAULT_CROP_SETTINGS } from "../../services/heroSettings";
 
 /**
- * High-End Luxury Hero Image Crop & Positioning Editor for SCENTÉ Admin
+ * High-End Luxury Hero Image Crop & Positioning Editor for SCENTE Admin
  */
 export default function HeroImageEditor({
   slide,
@@ -354,7 +354,7 @@ export default function HeroImageEditor({
             </div>
           )}
 
-          {/* D. Live SCENTÉ Luxury Text & CTA Overlay Preview (Toggleable) */}
+          {/* D. Live SCENTE Luxury Text & CTA Overlay Preview (Toggleable) */}
           {showOverlay && (
             <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-center p-4 sm:p-7 bg-black/20">
               <div className="max-w-[78%] sm:max-w-[70%] space-y-1.5 sm:space-y-2.5 drop-shadow-md">

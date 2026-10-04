@@ -8,13 +8,13 @@ import {
   extractProductProfile,
 } from "./recommendationEngine.js";
 
-describe("SCENTÉ Fragrance Recommendation Engine", () => {
+describe("SCENTE Fragrance Recommendation Engine", () => {
   // Mock products fixture
   const sampleProducts = [
     {
       id: "prod-noir",
       slug: "scente-noir",
-      name: "SCENTÉ NOIR",
+      name: "SCENTE NOIR",
       price: 12500,
       stockQuantity: 50,
       status: "active",
@@ -30,7 +30,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
     {
       id: "prod-soleil",
       slug: "scente-soleil",
-      name: "SCENTÉ SOLEIL",
+      name: "SCENTE SOLEIL",
       price: 13000,
       stockQuantity: 40,
       status: "active",
@@ -46,7 +46,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
     {
       id: "prod-musk",
       slug: "scente-musk",
-      name: "SCENTÉ MUSK",
+      name: "SCENTE MUSK",
       price: 13500,
       stockQuantity: 30,
       status: "active",
@@ -62,7 +62,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
     {
       id: "prod-inactive",
       slug: "scente-archived",
-      name: "SCENTÉ ARCHIVED",
+      name: "SCENTE ARCHIVED",
       price: 11000,
       stockQuantity: 20,
       status: "inactive",
@@ -78,7 +78,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
     {
       id: "prod-soldout",
       slug: "scente-soldout",
-      name: "SCENTÉ SOLD OUT",
+      name: "SCENTE SOLD OUT",
       price: 14000,
       stockQuantity: 0,
       isOutOfStock: true,
@@ -95,7 +95,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
     {
       id: "prod-empty-profile",
       slug: "scente-unprofiled",
-      name: "SCENTÉ UNPROFILED",
+      name: "SCENTE UNPROFILED",
       price: 12000,
       stockQuantity: 25,
       status: "active",
@@ -130,7 +130,7 @@ describe("SCENTÉ Fragrance Recommendation Engine", () => {
 
   test("3. Multiple mood matching awards 20 points if at least one matches", () => {
     const results = getFragranceRecommendations(sampleProducts, {
-      moods: ["romantic", "mysterious"], // "mysterious" matches SCENTÉ NOIR
+      moods: ["romantic", "mysterious"], // "mysterious" matches SCENTE NOIR
     });
 
     assert.equal(results.length, 1);

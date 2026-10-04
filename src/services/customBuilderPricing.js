@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * SCENTÉ — Custom Perfume Builder Pricing & Validation Foundation
+ * SCENTE — Custom Perfume Builder Pricing & Validation Foundation
  * ==============================================================================
  * Pure, deterministic pricing calculation and structural validation logic for
  * the bespoke Custom Perfume Builder.

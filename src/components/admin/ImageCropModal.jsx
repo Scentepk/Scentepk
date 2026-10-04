@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSmoothScroll } from "../../context/SmoothScrollProvider";
 
 /**
- * SCENTÉ Luxury Visual Image Crop & Positioning Modal
+ * SCENTE Luxury Visual Image Crop & Positioning Modal
  * Provides visual 1:1 and 4:5 rule-of-thirds framing, direct pointer dragging,
  * smooth wheel/slider zoom, rotation, live storefront preview card,
  * and high-resolution canvas export.

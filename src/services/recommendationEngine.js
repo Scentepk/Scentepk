@@ -1,9 +1,9 @@
 /**
  * ==============================================================================
- * SCENTÉ — Deterministic Fragrance Recommendation Engine
+ * SCENTE — Deterministic Fragrance Recommendation Engine
  * ==============================================================================
  * Pure, deterministic service for matching customer preferences against
- * existing SCENTÉ perfumes based on structured fragrance_profile metadata.
+ * existing SCENTE perfumes based on structured fragrance_profile metadata.
  *
  * Scoring Weights (Total = 100 points):
  *  - Scent Family: 35 points

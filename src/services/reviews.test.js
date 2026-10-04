@@ -7,7 +7,7 @@ import {
   shouldShowCarouselNavigation,
 } from "./reviews.js";
 
-describe("SCENTÉ Reviews Service & Normalization", () => {
+describe("SCENTE Reviews Service & Normalization", () => {
   it("1. Normalizes database row to frontend camelCase representation", () => {
     const dbRow = {
       id: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
@@ -22,7 +22,7 @@ describe("SCENTÉ Reviews Service & Normalization", () => {
       updated_at: "2026-09-30T12:00:00Z",
       product: {
         id: "scente-noir",
-        name: "SCENTÉ NOIR",
+        name: "SCENTE NOIR",
         slug: "scente-noir",
       },
     };
@@ -35,7 +35,7 @@ describe("SCENTÉ Reviews Service & Normalization", () => {
     assert.equal(review.rating, 5);
     assert.equal(review.location, "Lahore");
     assert.equal(review.productId, "scente-noir");
-    assert.equal(review.productName, "SCENTÉ NOIR");
+    assert.equal(review.productName, "SCENTE NOIR");
     assert.equal(review.productSlug, "scente-noir");
     assert.equal(review.isPublished, true);
     assert.equal(review.displayOrder, 1);
@@ -86,7 +86,7 @@ describe("SCENTÉ Reviews Service & Normalization", () => {
   });
 });
 
-describe("SCENTÉ Patron Impressions Carousel Logic", () => {
+describe("SCENTE Patron Impressions Carousel Logic", () => {
   it("1. Responsive visible count: mobile (<768) = 1, tablet (768-1023) = 2, desktop (>=1024) = 3", () => {
     assert.equal(getReviewsVisibleCount(375), 1);
     assert.equal(getReviewsVisibleCount(640), 1);

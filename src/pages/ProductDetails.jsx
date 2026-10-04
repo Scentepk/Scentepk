@@ -457,7 +457,7 @@ export default function ProductDetails() {
     ...(keyAccords || []),
     "Pakistan luxury perfume",
     "Extrait de Parfum",
-    "SCENTÉPK fragrance",
+    "SCENTEPK fragrance",
     "Cash on Delivery Pakistan"
   ].filter(Boolean).join(", ");
 
@@ -844,7 +844,7 @@ export default function ProductDetails() {
               Calibrated for Enduring Presence
             </h2>
             <p className="text-xs sm:text-[13px] font-sans text-[#AAA49B] font-light mt-1.5 leading-relaxed">
-              Every SCENTÉPK composition is matured in dark temperature-regulated cellars with radical pure oil concentrations.
+              Every SCENTEPK composition is matured in dark temperature-regulated cellars with radical pure oil concentrations.
             </p>
           </div>
 
@@ -1004,7 +1004,7 @@ export default function ProductDetails() {
                     className="overflow-hidden pt-6 font-sans text-xs sm:text-sm text-[#AAA49B] font-light leading-relaxed space-y-3"
                   >
                     <p>
-                      Because SCENTÉPK compositions contain 30–35% pure fragrance oil with zero water dilution, standard heavy misting is unnecessary. 2 to 3 sprays on pulse points — the hollow of the neck, inner wrists, and collarbone — are sufficient for an intimate, hypnotic sillage that radiates throughout your day.
+                      Because SCENTEPK compositions contain 30–35% pure fragrance oil with zero water dilution, standard heavy misting is unnecessary. 2 to 3 sprays on pulse points — the hollow of the neck, inner wrists, and collarbone — are sufficient for an intimate, hypnotic sillage that radiates throughout your day.
                     </p>
                     <p className="text-[#BFA27A] text-xs font-mono">
                       Tip: Do not rub your wrists together after spraying, as friction crushes the delicate top molecular accords and alters the planned drydown sequence.
@@ -1133,7 +1133,7 @@ export default function ProductDetails() {
         isOpen={isLightboxOpen}
         images={galleryImages}
         initialIndex={activeImageIndex}
-        productName={product?.name || "SCENTÉPK Fragrance"}
+        productName={product?.name || "SCENTEPK Fragrance"}
         onClose={() => setIsLightboxOpen(false)}
       />
     </div>
@@ -1141,7 +1141,7 @@ export default function ProductDetails() {
 }
 
 /**
- * Editorial Loading Skeleton for SCENTÉ Product Details Page
+ * Editorial Loading Skeleton for SCENTE Product Details Page
  */
 function ProductDetailsSkeleton() {
   return (

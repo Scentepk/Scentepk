@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="md:col-span-2 lg:col-span-4 space-y-3.5">
             <Link to="/" className="inline-block group focus:outline-none">
               <span className="font-serif font-medium text-2xl sm:text-[28px] tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#BFA27A] transition-colors duration-300 block leading-none">
-                SCENTÉPK
+                SCENTEPK
               </span>
             </Link>
             <p className="text-[9.5px] uppercase font-sans tracking-[0.22em] text-[#BFA27A] font-medium leading-relaxed">
@@ -144,7 +144,7 @@ export default function Footer() {
         {/* BOTTOM BAR (Copyright Left, Social Icons Right on desktop; Icons on top on mobile) */}
         <div className="flex flex-col-reverse sm:flex-row items-center justify-between text-[10.5px] font-sans uppercase tracking-[0.16em] text-[#777169] gap-4 pt-2 text-center sm:text-left">
           <div className="flex items-center space-x-3">
-            <p>© {currentYear} SCENTÉPK PARFUMS. ALL RIGHTS RESERVED.</p>
+            <p>© {currentYear} SCENTEPK PARFUMS. ALL RIGHTS RESERVED.</p>
           </div>
 
           {/* 4 Circular Social Icons (Instagram, Facebook, TikTok, WhatsApp) */}
@@ -154,7 +154,7 @@ export default function Footer() {
               href="https://www.instagram.com/scentepk/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="SCENTÉPK Instagram Profile"
+              aria-label="SCENTEPK Instagram Profile"
               className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -169,7 +169,7 @@ export default function Footer() {
               href="https://www.facebook.com/people/Scente-Pk/61579229135561/?mibextid=wwXIfr&rdid=zcqC2T5gKBIbeTJK&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1FLbFQVT1t%2F%3Fmibextid%3DwwXIfr%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="SCENTÉPK Facebook Page"
+              aria-label="SCENTEPK Facebook Page"
               className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -182,7 +182,7 @@ export default function Footer() {
               href="https://www.tiktok.com/@scente.pk?_t=ZS-8zw2sHXoXFC&fbclid=PAcGRvZgJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA85MzY2MTk3NDMzOTI0NTkAAafohWpxaFI9iUFhGgRV5gHxa6lknO0pLbA7ZcEu9w3i8R0s8GDN8Lml5iFidQ_aem_UT-MIoalpW7U_b2n2xU2Gw"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="SCENTÉPK TikTok Profile"
+              aria-label="SCENTEPK TikTok Profile"
               className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -195,7 +195,7 @@ export default function Footer() {
               href="https://wa.me/923258833171"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="SCENTÉPK WhatsApp Concierge"
+              aria-label="SCENTEPK WhatsApp Concierge"
               className="w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-[rgba(242,238,231,0.18)] flex items-center justify-center text-[#AAA49B] hover:text-[#BFA27A] hover:border-[#BFA27A] hover:bg-[#181714] transition-all duration-300 focus:outline-none"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">

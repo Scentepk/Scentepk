@@ -10,9 +10,9 @@ export default function About() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Brand Story — Atelier Heritage & Olfactive Ethos"
-        description="Learn the ethos behind SCENTÉ: pure, high-concentration Extraits de Parfum formulated with 30-40% perfume oils, meticulous cellar maceration, and enduring sillage."
+        description="Learn the ethos behind SCENTE: pure, high-concentration Extraits de Parfum formulated with 30-40% perfume oils, meticulous cellar maceration, and enduring sillage."
         canonicalUrl="https://scente.pk/about"
-        keywords="SCENTÉ story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi atelier"
+        keywords="SCENTE story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi atelier"
       />
       <div className="layout-container py-14 sm:py-20">
         {/* Header */}
@@ -21,10 +21,10 @@ export default function About() {
             ATELIER HERITAGE
           </span>
           <h1 className="font-serif font-light text-fluid-display text-[#F2EEE7] tracking-headline mb-4 leading-[1.08]">
-            The House of <span className="italic">SCENTÉPK</span>
+            The House of <span className="italic">SCENTEPK</span>
           </h1>
           <p className="text-sm sm:text-base font-sans text-[#AAA49B] font-light leading-[1.7]">
-            SCENTÉPK was founded on a simple, uncompromising ethos: to formulate pure, high-concentration Extraits de Parfum that honor ancient perfumery traditions while pushing the boundaries of modern sillage.
+            SCENTEPK was founded on a simple, uncompromising ethos: to formulate pure, high-concentration Extraits de Parfum that honor ancient perfumery traditions while pushing the boundaries of modern sillage.
           </p>
         </ScrollReveal>
 
@@ -61,7 +61,7 @@ export default function About() {
               Concentrated by Design
             </h2>
             <p className="text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-              SCENTÉ compositions are crafted with a high concentration of fine perfume oils and given time to mature, allowing each fragrance to develop depth, character, and lasting presence on skin.
+              SCENTE compositions are crafted with a high concentration of fine perfume oils and given time to mature, allowing each fragrance to develop depth, character, and lasting presence on skin.
             </p>
             <div className="pt-2">
               <Button to="/shop" variant="solid">

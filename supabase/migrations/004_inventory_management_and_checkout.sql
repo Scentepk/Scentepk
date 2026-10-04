@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3D: Variant-Level Inventory & Transactional Checkout
+-- SCENTE — Phase 3D: Variant-Level Inventory & Transactional Checkout
 -- ==============================================================================
 
 -- 1. HARDEN ORDER REFERENCE (Safe unique index to prevent reference collisions)
@@ -325,7 +325,7 @@ DECLARE
 BEGIN
     -- 1. Authorization: Verify administrator privileges
     IF NOT public.is_admin() THEN
-        RAISE EXCEPTION 'Unauthorized: Only SCENTÉ Atelier administrators can cancel orders.';
+        RAISE EXCEPTION 'Unauthorized: Only SCENTE Atelier administrators can cancel orders.';
     END IF;
 
     -- 2. Lock and fetch order

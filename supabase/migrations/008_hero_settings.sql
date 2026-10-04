@@ -1,12 +1,12 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3C: Hero Section Settings Table & RLS Policies
+-- SCENTE — Phase 3C: Hero Section Settings Table & RLS Policies
 -- Enables dynamic hero background image & copy management from Admin Panel
 -- ==============================================================================
 
 -- 1. CREATE 'hero_settings' TABLE
 CREATE TABLE IF NOT EXISTS public.hero_settings (
     id TEXT PRIMARY KEY DEFAULT 'primary_hero',
-    eyebrow TEXT NOT NULL DEFAULT 'SCENTÉ — BATCH 04',
+    eyebrow TEXT NOT NULL DEFAULT 'SCENTE — BATCH 04',
     badge TEXT NOT NULL DEFAULT '30% PURE PERFUME OIL',
     headline_line1 TEXT NOT NULL DEFAULT 'FRAGRANCE',
     headline_line2 TEXT NOT NULL DEFAULT 'BECOMES',
@@ -106,7 +106,7 @@ INSERT INTO public.hero_settings (
     is_active
 ) VALUES (
     'primary_hero',
-    'SCENTÉ — BATCH 04',
+    'SCENTE — BATCH 04',
     '30% PURE PERFUME OIL',
     'FRAGRANCE',
     'BECOMES',

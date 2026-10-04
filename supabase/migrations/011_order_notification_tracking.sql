@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 011_order_notification_tracking.sql
--- SCENTÉ — Add notification_sent_at timestamp to orders table for webhook idempotency
+-- SCENTE — Add notification_sent_at timestamp to orders table for webhook idempotency
 -- ==============================================================================
 
 ALTER TABLE public.orders 

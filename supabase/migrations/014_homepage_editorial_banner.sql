@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Homepage Editorial Banner Table & RLS Policies
+-- SCENTE — Homepage Editorial Banner Table & RLS Policies
 -- Enables dynamic editorial campaign banner management from Admin Panel
 -- ==============================================================================
 

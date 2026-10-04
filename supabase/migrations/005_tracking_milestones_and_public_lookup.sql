@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 1: Tracking Milestones & Public Order Tracking Hardening
+-- SCENTE — Phase 1: Tracking Milestones & Public Order Tracking Hardening
 -- Migration: 005_tracking_milestones_and_public_lookup.sql
 -- ==============================================================================
 

@@ -79,7 +79,7 @@ export async function getEditorialBannerSettings() {
       ) {
         isEditorialTableAvailable = false;
         console.info(
-          "SCENTÉ Info: 'public.homepage_editorial_banner' table not yet created in Supabase. Using local editorial banner settings. Run migration '014_homepage_editorial_banner.sql' to enable cloud persistence."
+          "SCENTE Info: 'public.homepage_editorial_banner' table not yet created in Supabase. Using local editorial banner settings. Run migration '014_homepage_editorial_banner.sql' to enable cloud persistence."
         );
       } else {
         console.warn("Editorial banner DB fetch warning:", error.message);

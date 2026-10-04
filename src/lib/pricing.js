@@ -1,5 +1,5 @@
 /**
- * SCENTÉ Luxury E-Commerce — Phase 7: Sale & Compare-at Pricing Utilities
+ * SCENTE Luxury E-Commerce — Phase 7: Sale & Compare-at Pricing Utilities
  *
  * Provides defensive, mathematically robust pricing and discount computations
  * across the storefront, cart, product cards, and admin dashboard.
@@ -51,7 +51,7 @@ export function isDiscountActive(compareAtPrice, salePrice) {
 }
 
 /**
- * Formats a numeric price into the standard SCENTÉ PKR currency string.
+ * Formats a numeric price into the standard SCENTE PKR currency string.
  *
  * @param {number|string|null|undefined} amount
  * @returns {string} e.g. "PKR 2,799"

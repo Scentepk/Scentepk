@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- 010_fix_create_cod_order_overload.sql
--- SCENTÉ — Complete Fix for PostgREST Overload, Variant Resolution & Restock
+-- SCENTE — Complete Fix for PostgREST Overload, Variant Resolution & Restock
 -- ==============================================================================
 
 -- 1. Ensure helper inventory sync functions exist

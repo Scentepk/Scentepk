@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCENTÉ — Phase 3A: Supabase Database Schema & Security Foundation
+-- SCENTE — Phase 3A: Supabase Database Schema & Security Foundation
 -- ==============================================================================
 
 -- 1. EXTENSIONS

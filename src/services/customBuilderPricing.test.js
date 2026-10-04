@@ -6,7 +6,7 @@ import {
   buildCustomConfigurationSnapshot,
 } from "./customBuilderPricing.js";
 
-describe("SCENTÉ Phase 2: Custom Perfume Builder Pricing & Validation Engine", () => {
+describe("SCENTE Phase 2: Custom Perfume Builder Pricing & Validation Engine", () => {
   // ============================================================================
   // 1. PRICING CALCULATION TESTS
   // ============================================================================
@@ -407,14 +407,14 @@ describe("SCENTÉ Phase 2: Custom Perfume Builder Pricing & Validation Engine", 
         order_items: [
           {
             is_custom: false,
-            product_name: "SCENTÉ NOIR",
+            product_name: "SCENTE NOIR",
             unit_price: 12500,
             quantity: 2,
             line_total: 25000,
           },
           {
             is_custom: true,
-            product_name: "Custom SCENTÉ",
+            product_name: "Custom SCENTE",
             unit_price: 3300,
             quantity: 1,
             line_total: 3300,
@@ -439,7 +439,7 @@ describe("SCENTÉ Phase 2: Custom Perfume Builder Pricing & Validation Engine", 
     it("3. Null-safe rendering gracefully falls back when custom_configuration is null", () => {
       const legacyItem = {
         is_custom: true,
-        product_name: "Custom SCENTÉ",
+        product_name: "Custom SCENTE",
         size: "50ml",
         unit_price: 3000,
         quantity: 1,
@@ -448,11 +448,11 @@ describe("SCENTÉ Phase 2: Custom Perfume Builder Pricing & Validation Engine", 
       };
 
       // Safely access fields without crashing
-      const summary = legacyItem.custom_configuration?.summary || "Custom SCENTÉ";
+      const summary = legacyItem.custom_configuration?.summary || "Custom SCENTE";
       const groups = legacyItem.custom_configuration?.groups || [];
       const basePrice = legacyItem.custom_configuration?.base_price ?? legacyItem.unit_price;
 
-      assert.equal(summary, "Custom SCENTÉ");
+      assert.equal(summary, "Custom SCENTE");
       assert.equal(groups.length, 0);
       assert.equal(basePrice, 3000);
     });

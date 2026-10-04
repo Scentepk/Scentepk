@@ -1,6 +1,6 @@
 -- ==============================================================================
--- SCENTÉ — Migration 020: Custom Perfume COD Order Integration
--- Feature: BUILD YOUR SCENTÉ (Cart, Checkout & Order Creation RPC Extension)
+-- SCENTE — Migration 020: Custom Perfume COD Order Integration
+-- Feature: BUILD YOUR SCENTE (Cart, Checkout & Order Creation RPC Extension)
 -- ==============================================================================
 
 -- Update create_cod_order to atomically support both standard catalog products
@@ -287,7 +287,7 @@ BEGIN
             ) VALUES (
                 v_order_id,
                 NULL,
-                COALESCE(v_item->>'product_name', 'Custom SCENTÉ'),
+                COALESCE(v_item->>'product_name', 'Custom SCENTE'),
                 'custom-scente',
                 COALESCE(v_item->>'size', 'Bespoke'),
                 v_qty,

@@ -141,7 +141,7 @@ export function CartProvider({ children }) {
       isCustom: true,
       product: {
         id: "custom-scente",
-        name: "Custom SCENTÉ",
+        name: "Custom SCENTE",
         slug: "custom-scente",
         subtitle: "Bespoke Extrait Formulation",
         price: verifiedPrice,
