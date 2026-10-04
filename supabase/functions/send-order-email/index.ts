@@ -77,7 +77,7 @@ Deno.serve(async (req: Request) => {
     // 2. Read Server-Side Secrets
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const ADMIN_NOTIFICATION_EMAIL = Deno.env.get("ADMIN_NOTIFICATION_EMAIL");
-    const SITE_URL = Deno.env.get("SITE_URL") || "https://scente.pk";
+    const SITE_URL = Deno.env.get("SITE_URL") || "https://scentepk.com";
     const WEBHOOK_SECRET = Deno.env.get("ORDER_WEBHOOK_SECRET");
 
     // Optional shared secret verification if configured
