@@ -144,8 +144,8 @@ export default function AdminLayout() {
             <Link
               to="/admin"
               className="block focus:outline-none group"
-              title="SCENTE Atelier Control Room"
-              aria-label="SCENTE Atelier Control Room"
+              title="SCENTE Control Room"
+              aria-label="SCENTE Control Room"
             >
               {isExpanded ? (
                 <div className="transition-opacity duration-200">
@@ -153,7 +153,7 @@ export default function AdminLayout() {
                     SCENTEPK
                   </span>
                   <span className="text-[8px] uppercase font-sans tracking-[0.32em] text-[#BFA27A] block font-medium whitespace-nowrap">
-                    ATELIER CONTROL ROOM
+                    CONTROL ROOM
                   </span>
                 </div>
               ) : (
@@ -251,7 +251,7 @@ export default function AdminLayout() {
                     </span>
                   </div>
                   <p className="text-[11px] text-[#F2EEE7] truncate" title={user?.email}>
-                    {user?.email || "admin@scente-parfums.com"}
+                    {user?.email || "scentepk@gmail.com"}
                   </p>
                 </div>
 
@@ -429,7 +429,7 @@ export default function AdminLayout() {
                       </span>
                     </div>
                     <p className="text-[11px] text-[#F2EEE7] truncate">
-                      {user?.email || "admin@scente-parfums.com"}
+                      {user?.email || "scentepk@gmail.com"}
                     </p>
                   </div>
 

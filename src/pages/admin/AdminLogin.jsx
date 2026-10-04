@@ -45,7 +45,7 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-[#0D0D0C] text-[#F2EEE7] flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <SEO
-        title="Atelier Portal — Control Console"
+        title="SCENTE Admin Portal — Control Console"
         noindex={true}
       />
       {/* Top Back Link */}
@@ -72,7 +72,7 @@ export default function AdminLogin() {
             SCENTEPK
           </span>
           <span className="text-[9px] uppercase font-sans tracking-[0.35em] text-[#BFA27A] block font-medium">
-            ATELIER CONTROL PORTAL
+            ADMIN CONTROL PORTAL
           </span>
         </div>
 
@@ -157,7 +157,7 @@ export default function AdminLogin() {
       {/* Bottom Footer Note */}
       <div className="max-w-md w-full mx-auto text-center py-4">
         <span className="text-[10px] text-[#777169] uppercase tracking-wider font-mono">
-          SCENTEPK Atelier Parfums • Control Architecture v2.0
+          SCENTEPK Parfums • Control Architecture v2.0
         </span>
       </div>
     </div>

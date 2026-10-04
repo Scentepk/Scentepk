@@ -26,13 +26,13 @@ export default function AtelierLoader() {
       </div>
 
       {/* Eyebrow Label */}
-      <span className="text-[9.5px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium opacity-90 mb-1.5 animate-pulse">
-        SCENTE ATELIER
+      <span className="text-[10px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium opacity-90 mb-1.5 animate-pulse">
+        SCENTE
       </span>
 
       {/* Subtext */}
       <span className="text-[11px] font-sans tracking-[0.14em] text-[#777169] uppercase font-light">
-        Loading Composition
+        Loading...
       </span>
     </div>
   );
