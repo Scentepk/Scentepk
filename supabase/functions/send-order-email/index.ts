@@ -960,7 +960,7 @@ Deno.serve(async (req: Request) => {
           method: "POST",
           headers: adminResendHeaders,
           body: JSON.stringify({
-            from: "SCENTÉ Atelier <onboarding@resend.dev>",
+            from: "SCENTÉ Atelier <orders@scentepk.com>",
             to: [ADMIN_NOTIFICATION_EMAIL],
             subject: `New SCENTÉ Order — ${reference}`,
             html: adminHtmlContent,
@@ -999,7 +999,7 @@ Deno.serve(async (req: Request) => {
           method: "POST",
           headers: customerResendHeaders,
           body: JSON.stringify({
-            from: "SCENTÉ Atelier <onboarding@resend.dev>",
+            from: "SCENTÉ Atelier <orders@scentepk.com>",
             to: [rawCustomerEmail],
             subject: `Order Confirmed — ${reference} | SCENTÉ`,
             html: customerHtmlContent,
