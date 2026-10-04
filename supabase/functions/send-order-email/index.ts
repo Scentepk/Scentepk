@@ -258,7 +258,7 @@ Deno.serve(async (req: Request) => {
     function buildCustomerItemRowHtml(item: OrderItem): string {
       try {
         const isCustom = Boolean(item.is_custom);
-        const name = isCustom ? (item.product_name || "Custom SCENTÉ") : (item.product_name || item.name || "SCENTÉ Fragrance");
+        const name = isCustom ? (item.product_name || "Custom SCENTE") : (item.product_name || item.name || "SCENTE Fragrance");
         const size = item.size || (isCustom ? "Bespoke Flacon" : "50ml");
         const qty = item.quantity || 1;
         const unitPrice = Number(item.unit_price || item.price || 0);
@@ -324,7 +324,7 @@ Deno.serve(async (req: Request) => {
         console.error("[send-order-email] Error building customer item row:", err);
         return `
           <tr>
-            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTÉ")}</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTE")}</td>
             <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">${item.quantity || 1}</td>
             <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">PKR ${Number(item.unit_price || 0).toLocaleString()}</td>
             <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; color: #F2EEE7;">PKR ${Number(item.line_total || 0).toLocaleString()}</td>
@@ -336,7 +336,7 @@ Deno.serve(async (req: Request) => {
     function buildAdminItemRowHtml(item: OrderItem): string {
       try {
         const isCustom = Boolean(item.is_custom);
-        const name = isCustom ? (item.product_name || "CUSTOM SCENTÉ (BESPOKE)") : (item.product_name || item.name || "SCENTÉ Fragrance");
+        const name = isCustom ? (item.product_name || "CUSTOM SCENTE (BESPOKE)") : (item.product_name || item.name || "SCENTE Fragrance");
         const size = item.size || (isCustom ? "50ml Flacon" : "50ml");
         const qty = item.quantity || 1;
         const unitPrice = Number(item.unit_price || item.price || 0);
@@ -426,7 +426,7 @@ Deno.serve(async (req: Request) => {
         console.error("[send-order-email] Error building admin item row:", err);
         return `
           <tr>
-            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTÉ")}</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; font-size: 13px; color: #F2EEE7;">${escapeHtml(item.product_name || "Custom SCENTE")}</td>
             <td align="center" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">${item.quantity || 1}</td>
             <td align="right" style="padding: 16px 8px; border-bottom: 1px solid #1E1D1A; color: #A39E95;">PKR ${Number(item.unit_price || 0).toLocaleString()}</td>
             <td align="right" style="padding: 16px 0; border-bottom: 1px solid #1E1D1A; color: #F2EEE7;">PKR ${Number(item.line_total || 0).toLocaleString()}</td>
@@ -477,7 +477,7 @@ Deno.serve(async (req: Request) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark only">
   <meta name="supported-color-schemes" content="dark only">
-  <title>New Order — ${reference} | SCENTÉ</title>
+  <title>New Order — ${reference} | SCENTE</title>
   <style>
     body {
       margin: 0;
@@ -704,7 +704,7 @@ Deno.serve(async (req: Request) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark only">
   <meta name="supported-color-schemes" content="dark only">
-  <title>Order Confirmed — ${reference} | SCENTÉ</title>
+  <title>Order Confirmed — ${reference} | SCENTE</title>
   <style>
     body {
       margin: 0;
@@ -782,7 +782,7 @@ Deno.serve(async (req: Request) => {
                 Your order is confirmed.
               </h1>
               <p style="margin: 14px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.65; color: #A39E95; font-weight: 300;">
-                Dear ${customerName}, thank you for choosing SCENTÉ. Your order has been received and our atelier has commenced preparation. You will receive real-time updates as your parcel progresses through dispatch.
+                Dear ${customerName}, thank you for choosing SCENTE. Your order has been received and our atelier has commenced preparation. You will receive real-time updates as your parcel progresses through dispatch.
               </p>
 
               <!-- Prominent Order Reference Card -->
@@ -962,7 +962,7 @@ Deno.serve(async (req: Request) => {
           body: JSON.stringify({
             from: "SCENTE PK <orders@scentepk.com>",
             to: [ADMIN_NOTIFICATION_EMAIL],
-            subject: `New SCENTÉ Order — ${reference}`,
+            subject: `New SCENTE Order — ${reference}`,
             html: adminHtmlContent,
           }),
         });
@@ -1001,7 +1001,7 @@ Deno.serve(async (req: Request) => {
           body: JSON.stringify({
             from: "SCENTE PK <orders@scentepk.com>",
             to: [rawCustomerEmail],
-            subject: `Order Confirmed — ${reference} | SCENTÉ`,
+            subject: `Order Confirmed — ${reference} | SCENTE`,
             html: customerHtmlContent,
           }),
         });
