@@ -533,10 +533,10 @@ Deno.serve(async (req: Request) => {
           <tr>
             <td align="center" style="padding: 40px 32px 28px 32px; border-bottom: 1px solid #1E1D1A;">
               <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 300; letter-spacing: 0.35em; color: #F2EEE7; text-transform: uppercase;">
-                SCENTÉ
+                SCENTE
               </div>
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 0.28em; color: #8E887F; margin-top: 8px; font-weight: 500;">
-                HAUTE PARFUMERIE • ATELIER DISPATCH
+                PREMIUM FRAGRANCE • ATELIER DISPATCH
               </div>
             </td>
           </tr>
@@ -682,7 +682,7 @@ Deno.serve(async (req: Request) => {
           <!-- Footer -->
           <tr>
             <td align="center" style="padding: 28px 24px; background-color: #090908; border-top: 1px solid #1A1916; font-size: 11px; color: #6E6962; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-              <div style="letter-spacing: 0.12em; text-transform: uppercase; color: #8E887F;">SCENTÉ Luxury Fragrance Atelier</div>
+              <div style="letter-spacing: 0.12em; text-transform: uppercase; color: #8E887F;">SCENTE PREMIUM FRAGRANCE</div>
               <div style="margin-top: 4px;">Automated internal logistics record &bull; Authorized dispatch notification</div>
             </td>
           </tr>
@@ -764,10 +764,10 @@ Deno.serve(async (req: Request) => {
           <tr>
             <td align="center" style="padding: 44px 32px 30px 32px; border-bottom: 1px solid #1E1D1A;">
               <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 300; letter-spacing: 0.35em; color: #F2EEE7; text-transform: uppercase;">
-                SCENTÉ
+                SCENTE
               </div>
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 0.28em; color: #8E887F; margin-top: 8px; font-weight: 500;">
-                HAUTE PARFUMERIE
+                PREMIUM FRAGRANCE
               </div>
             </td>
           </tr>
@@ -924,7 +924,7 @@ Deno.serve(async (req: Request) => {
           <!-- SCENTÉ Footer -->
           <tr>
             <td align="center" style="padding: 30px 24px; background-color: #090908; border-top: 1px solid #1A1916; font-size: 11px; color: #6E6962; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-              <div style="letter-spacing: 0.18em; text-transform: uppercase; color: #8E887F; font-size: 10.5px;">SCENTÉ HAUTE PARFUMERIE</div>
+              <div style="letter-spacing: 0.18em; text-transform: uppercase; color: #8E887F; font-size: 10.5px;">SCENTE PREMIUM FRAGRANCE</div>
               <div style="margin-top: 4px;">Handcrafted &amp; Sealed in Small Batches &bull; All Rights Reserved</div>
             </td>
           </tr>
@@ -960,7 +960,7 @@ Deno.serve(async (req: Request) => {
           method: "POST",
           headers: adminResendHeaders,
           body: JSON.stringify({
-            from: "SCENTÉ Atelier <orders@scentepk.com>",
+            from: "SCENTE PK <orders@scentepk.com>",
             to: [ADMIN_NOTIFICATION_EMAIL],
             subject: `New SCENTÉ Order — ${reference}`,
             html: adminHtmlContent,
@@ -999,7 +999,7 @@ Deno.serve(async (req: Request) => {
           method: "POST",
           headers: customerResendHeaders,
           body: JSON.stringify({
-            from: "SCENTÉ Atelier <orders@scentepk.com>",
+            from: "SCENTE PK <orders@scentepk.com>",
             to: [rawCustomerEmail],
             subject: `Order Confirmed — ${reference} | SCENTÉ`,
             html: customerHtmlContent,
