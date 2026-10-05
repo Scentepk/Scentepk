@@ -247,13 +247,19 @@ export default function Navbar() {
           <div className="flex items-center justify-center lg:justify-start shrink-0">
             <Link
               to="/"
-              className="group flex flex-col items-center lg:items-start tracking-tight focus:outline-none"
+              className="group flex flex-col items-center lg:items-start focus:outline-none"
             >
-              <span className="font-serif text-xl xs:text-2xl sm:text-[27px] font-medium tracking-[0.2em] xs:tracking-[0.24em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300">
+              <span
+                className="text-lg xs:text-xl sm:text-[23px] font-medium tracking-[0.22em] xs:tracking-[0.26em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300 leading-none"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+              >
                 SCENTEPK
               </span>
-              <span className="text-[7px] xs:text-[7.5px] uppercase font-sans tracking-[0.28em] xs:tracking-[0.35em] text-[#AAA49B] -mt-0.5 xs:-mt-1 font-light opacity-80">
-                Premium Fragrances
+              <span className="text-[7.5px] xs:text-[8px] sm:text-[8.5px] uppercase font-sans tracking-[0.30em] xs:tracking-[0.35em] text-[#AAA49B]/70 mt-[3px] font-light leading-none">
+                BY MIAN ISHAQ HANIF
+              </span>
+              <span className="text-[6px] xs:text-[6.5px] sm:text-[7px] uppercase font-sans tracking-[0.32em] xs:tracking-[0.38em] text-[#AAA49B]/50 mt-[1.5px] font-light leading-none">
+                PREMIUM FRAGRANCE
               </span>
             </Link>
           </div>
@@ -469,9 +475,20 @@ export default function Navbar() {
               <div className="w-full flex flex-col shrink-0">
                 {/* Top Bar with Brand and Dedicated Close Button */}
                 <div className="w-full flex items-center justify-between pb-5 border-b border-[rgba(242,238,231,0.06)]">
-                  <span className="font-serif text-xl tracking-[0.2em] text-[#F2EEE7]">
-                    SCENTEPK
-                  </span>
+                  <div className="flex flex-col">
+                    <span
+                      className="text-lg tracking-[0.22em] text-[#F2EEE7] font-medium leading-none"
+                      style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+                    >
+                      SCENTEPK
+                    </span>
+                    <span className="text-[7.5px] uppercase font-sans tracking-[0.30em] text-[#AAA49B]/70 mt-[3px] font-light leading-none">
+                      BY MIAN ISHAQ HANIF
+                    </span>
+                    <span className="text-[6px] uppercase font-sans tracking-[0.32em] text-[#AAA49B]/50 mt-[1.5px] font-light leading-none">
+                      PREMIUM FRAGRANCE
+                    </span>
+                  </div>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2.5 -mr-2 text-[#AAA49B] hover:text-[#BFA27A] transition-colors focus:outline-none cursor-pointer flex items-center justify-center min-w-[44px] min-h-[44px]"
