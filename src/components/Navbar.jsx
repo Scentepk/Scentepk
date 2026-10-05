@@ -253,7 +253,7 @@ export default function Navbar() {
                 className="text-lg xs:text-xl sm:text-[23px] font-medium tracking-[0.22em] xs:tracking-[0.26em] text-[#F2EEE7] group-hover:text-[#FAF8F5] transition-colors duration-300 leading-none"
                 style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
               >
-                SCENTEPK
+                SCENTÉPK
               </span>
               <span className="text-[7.5px] xs:text-[8px] sm:text-[8.5px] uppercase font-sans tracking-[0.30em] xs:tracking-[0.35em] text-[#AAA49B]/70 mt-[3px] font-light leading-none">
                 BY MIAN ISHAQ HANIF
@@ -480,7 +480,7 @@ export default function Navbar() {
                       className="text-lg tracking-[0.22em] text-[#F2EEE7] font-medium leading-none"
                       style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
                     >
-                      SCENTEPK
+                      SCENTÉPK
                     </span>
                     <span className="text-[7.5px] uppercase font-sans tracking-[0.30em] text-[#AAA49B]/70 mt-[3px] font-light leading-none">
                       BY MIAN ISHAQ HANIF
