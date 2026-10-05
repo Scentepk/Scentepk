@@ -209,17 +209,15 @@ export default function Home() {
   const heroSlides = useMemo(() => {
     if (!customHero) return HERO_SLIDES;
 
-    const cleanBrand = (txt) => typeof txt === "string" ? txt.replace(/SCENTÉ/gi, "SCENTE") : (txt || "");
-
     if (Array.isArray(customHero.slides) && customHero.slides.length > 0) {
       return customHero.slides.map((s, idx) => ({
         id: s.id || `slide-${idx + 1}`,
-        eyebrow: cleanBrand(s.eyebrow),
-        badge: cleanBrand(s.badge),
-        headlineLine1: cleanBrand(s.headline_line1 || s.headlineLine1),
-        headlineLine2: cleanBrand(s.headline_line2 || s.headlineLine2),
-        headlineLine3: cleanBrand(s.headline_line3 || s.headlineLine3),
-        subtitle: cleanBrand(s.subtitle),
+        eyebrow: s.eyebrow || "",
+        badge: s.badge || "",
+        headlineLine1: s.headline_line1 || s.headlineLine1 || "",
+        headlineLine2: s.headline_line2 || s.headlineLine2 || "",
+        headlineLine3: s.headline_line3 || s.headlineLine3 || "",
+        subtitle: s.subtitle || "",
         ctaText: s.cta_text || s.ctaText || "EXPLORE FRAGRANCES",
         ctaLink: s.cta_link || s.ctaLink || "/shop",
         image: s.image_url || s.image || "/images/campaign/hero-campaign-main.jpg",
@@ -235,12 +233,12 @@ export default function Home() {
     if (customHero.headline_line1 || customHero.image_url) {
       const dynamicFirstSlide = {
         ...HERO_SLIDES[0],
-        eyebrow: cleanBrand(customHero.eyebrow || HERO_SLIDES[0].eyebrow),
-        badge: cleanBrand(customHero.badge || HERO_SLIDES[0].badge),
-        headlineLine1: cleanBrand(customHero.headline_line1 || HERO_SLIDES[0].headlineLine1),
-        headlineLine2: cleanBrand(customHero.headline_line2 || HERO_SLIDES[0].headlineLine2),
-        headlineLine3: cleanBrand(customHero.headline_line3 || HERO_SLIDES[0].headlineLine3),
-        subtitle: cleanBrand(customHero.subtitle || HERO_SLIDES[0].subtitle),
+        eyebrow: customHero.eyebrow || HERO_SLIDES[0].eyebrow,
+        badge: customHero.badge || HERO_SLIDES[0].badge,
+        headlineLine1: customHero.headline_line1 || HERO_SLIDES[0].headlineLine1,
+        headlineLine2: customHero.headline_line2 || HERO_SLIDES[0].headlineLine2,
+        headlineLine3: customHero.headline_line3 || HERO_SLIDES[0].headlineLine3,
+        subtitle: customHero.subtitle || HERO_SLIDES[0].subtitle,
         ctaText: customHero.cta_text || HERO_SLIDES[0].ctaText,
         ctaLink: customHero.cta_link || HERO_SLIDES[0].ctaLink,
         image: customHero.image_url || HERO_SLIDES[0].image,
@@ -326,7 +324,7 @@ export default function Home() {
           1. HERO CAMPAIGN CAROUSEL (Calibrated Luxury Campaign Banner)
           ======================================================================= */}
       <section
-        className="relative w-full h-[calc(100dvh-95px)] min-h-[480px] sm:h-[calc(100vh-105px)] sm:min-h-[580px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
+        className="relative w-full h-[290px] xs:h-[320px] sm:h-[420px] md:h-[460px] lg:h-[520px] bg-[#090908] select-none flex items-center overflow-hidden border-b border-white/[0.06]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
