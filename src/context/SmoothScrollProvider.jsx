@@ -43,30 +43,15 @@ export function SmoothScrollProvider({ children }) {
         if (
           node.closest?.('[role="dialog"]') ||
           node.closest?.('[aria-modal="true"]') ||
-          node.closest?.(".fixed.inset-0") ||
+          node.closest?.(".fixed.inset-0:not(.pointer-events-none)") ||
           node.closest?.("[data-modal]")
         ) {
           return true;
         }
 
-        // 3. Any element with overflow-y: auto / scroll or overflow-x: auto / scroll that has scrollable content
-        let curr = node;
-        while (curr && curr !== document.documentElement && curr !== document.body) {
-          try {
-            const style = window.getComputedStyle(curr);
-            const canScrollY =
-              (style.overflowY === "auto" || style.overflowY === "scroll" || style.overflowY === "overlay") &&
-              curr.scrollHeight > curr.clientHeight;
-            const canScrollX =
-              (style.overflowX === "auto" || style.overflowX === "scroll" || style.overflowX === "overlay") &&
-              curr.scrollWidth > curr.clientWidth;
-            if (canScrollY || canScrollX) {
-              return true;
-            }
-          } catch {
-            // ignore computed style evaluation errors
-          }
-          curr = curr.parentElement;
+        // 3. Form controls with internal scroll
+        if (node.tagName === "TEXTAREA" || node.tagName === "SELECT") {
+          return true;
         }
 
         return false;
