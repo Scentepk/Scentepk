@@ -395,17 +395,17 @@ export default function ProductDetails() {
       <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-[70vh] flex flex-col items-center justify-center text-center p-6">
         <SEO
           title="Composition Not Found"
-          description="The requested fragrance composition could not be located in our atelier catalog."
+          description="The requested fragrance composition could not be located in our catalog."
           noindex={true}
         />
         <span className="text-[10px] uppercase font-sans tracking-[0.24em] text-[#BFA27A] mb-3 font-medium">
-          ATELIER ARCHIVE
+          FRAGRANCE ARCHIVE
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] mb-3">
           Composition Not Found
         </h1>
         <p className="text-xs font-sans text-[#AAA49B] max-w-md mb-8 font-light leading-relaxed">
-          The requested fragrance could not be located in our atelier catalog.
+          The requested fragrance could not be located in our catalog.
         </p>
         <Link
           to="/shop"
@@ -422,17 +422,17 @@ export default function ProductDetails() {
       <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-[70vh] flex flex-col items-center justify-center text-center p-6">
         <SEO
           title="Composition Currently Unavailable"
-          description="This fragrance has been temporarily archived or reserved by the atelier."
+          description="This fragrance has been temporarily archived or reserved."
           noindex={true}
         />
         <span className="text-[10px] uppercase font-sans tracking-[0.24em] text-[#BFA27A] mb-3 font-medium">
-          ATELIER ARCHIVE
+          FRAGRANCE ARCHIVE
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] mb-3">
           Composition Currently Unavailable
         </h1>
         <p className="text-xs font-sans text-[#AAA49B] max-w-md mb-8 font-light leading-relaxed">
-          This fragrance has been temporarily archived or reserved by the atelier and is not accessible for ordering at this time.
+          This fragrance has been temporarily archived and is not accessible for ordering at this time.
         </p>
         <Link
           to="/shop"

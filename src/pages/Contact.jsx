@@ -64,14 +64,14 @@ export default function Contact() {
   return (
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
-        title="Private Concierge — Atelier Client Services"
+        title="Private Concierge — SCENTE Client Services"
         description="Connect with the SCENTEPK private concierge for fragrance consultations, order inquiries, and bespoke corporate gifting across Pakistan."
         canonicalUrl="https://scente.pk/contact"
         keywords="contact SCENTEPK, perfume concierge Pakistan, bespoke fragrance gifting, luxury customer service"
       />
       <div className="layout-container py-10 sm:py-16 lg:py-24">
         <SectionHeading
-          eyebrow="CLIENT SERVICES & ATELIER"
+          eyebrow="CLIENT SERVICES & CONCIERGE"
           title="Private Concierge"
           subtitle="For personalized olfactive advice, corporate bespoke gifting, or urgent order tracking across Pakistan."
         />
@@ -190,7 +190,7 @@ export default function Contact() {
                     className="flex items-center space-x-2 text-xs text-[#BFA27A] mt-3 p-3 bg-[#181714] border border-[#BFA27A]/30 rounded-lg"
                   >
                     <Check className="w-4 h-4 text-[#BFA27A] shrink-0" />
-                    <span>Thank you. Your inquiry has been registered in the atelier system. Our concierge will respond within 24 hours.</span>
+                    <span>Thank you. Your inquiry has been registered. Our concierge will respond within 24 hours.</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -204,10 +204,10 @@ export default function Contact() {
                 DIRECT CHANNELS
               </span>
               <h4 className="font-serif font-light text-2xl text-[#F2EEE7] tracking-headline">
-                Atelier Headquarters
+                Brand Headquarters
               </h4>
               <p className="text-sm font-sans text-[#AAA49B] font-light leading-relaxed">
-                SCENTEPK Parfums operates an exclusive private blending atelier. Consultations and formulation visits are by verified appointment only.
+                SCENTEPK Parfums operates an exclusive private blending studio. Consultations and formulation visits are by verified appointment only.
               </p>
 
               <div className="space-y-4 pt-4 border-t border-[rgba(242,238,231,0.06)] font-sans text-xs">
@@ -239,7 +239,7 @@ export default function Contact() {
 
                 <div>
                   <span className="text-[10px] uppercase tracking-micro text-[#777169] block mb-1">
-                    Atelier Location
+                    Studio Location
                   </span>
                   <span className="text-[#F2EEE7]">
                     DHA Phase 7, Lahore, Pakistan

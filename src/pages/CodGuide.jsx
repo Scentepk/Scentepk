@@ -220,7 +220,7 @@ export default function CodGuide() {
         <section className="border-t border-[rgba(242,238,231,0.06)] pt-12 sm:pt-16 text-center max-w-2xl mx-auto space-y-4">
           <ScrollReveal>
             <span className="text-[10px] uppercase font-sans tracking-[0.22em] text-[#777169] font-medium block mb-2">
-              ATELIER CONCIERGE
+              PRIVATE CONCIERGE
             </span>
             <h3 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] tracking-headline">
               NEED ASSISTANCE?

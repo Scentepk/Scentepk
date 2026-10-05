@@ -81,7 +81,7 @@ export default function AdminOrderList() {
       sortBy,
     });
     if (error) {
-      setLoadError("Unable to synchronize orders with atelier database. Please refresh.");
+      setLoadError("Unable to synchronize orders with database. Please refresh.");
     }
     if (data) setOrders(data);
     setIsLoading(false);
@@ -153,7 +153,7 @@ export default function AdminOrderList() {
       setSelectedOrderIds(new Set());
       setShowDeleteAllModal(false);
       setDeleteAllConfirmInput("");
-      setToastMessage("All orders permanently deleted from atelier database.");
+      setToastMessage("All orders permanently deleted from database.");
       setTimeout(() => setToastMessage(""), 4000);
     }
   };

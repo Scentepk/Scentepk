@@ -43,7 +43,7 @@ test("3. Normalizes tester product with category-appropriate defaults", () => {
   const normalized = normalizeProduct(rawTester);
   assert.equal(normalized.family, "testers");
   assert.equal(normalized.subtitle, "Discovery Tester");
-  assert.equal(normalized.concentration, "Atelier Tester Vial");
+  assert.equal(normalized.concentration, "Discovery Tester Vial");
   assert.equal(normalized.volume, "5ml / 0.17 FL. OZ.");
 });
 

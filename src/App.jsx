@@ -4,7 +4,7 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { SmoothScrollProvider } from "./context/SmoothScrollProvider";
 import MainLayout from "./layouts/MainLayout";
-import AtelierLoader from "./components/AtelierLoader";
+import ScenteLoader from "./components/ScenteLoader";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Primary Storefront Landing Page (Eagerly Loaded for Instant FCP)
@@ -49,7 +49,7 @@ export default function App() {
         <BrowserRouter>
           <SmoothScrollProvider>
             <ErrorBoundary>
-              <Suspense fallback={<AtelierLoader />}>
+              <Suspense fallback={<ScenteLoader />}>
                 <Routes>
                   {/* Public Storefront Routes */}
                   <Route path="/" element={<MainLayout />}>

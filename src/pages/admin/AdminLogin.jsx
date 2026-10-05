@@ -142,7 +142,7 @@ export default function AdminLogin() {
                 <span>AUTHENTICATING...</span>
               </>
             ) : (
-              <span>SIGN IN TO ATELIER →</span>
+              <span>SIGN IN →</span>
             )}
           </button>
         </form>

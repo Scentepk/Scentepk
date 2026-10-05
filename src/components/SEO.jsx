@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const BASE_URL = "https://scente.pk";
+const BASE_URL = "https://scentepk.com";
 const DEFAULT_TITLE = "SCENTEPK — Haute Parfumerie | Extraits de Parfum";
 const DEFAULT_DESCRIPTION =
-  "SCENTEPK is a luxury niche fragrance atelier crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
+  "SCENTEPK is a luxury niche fragrance brand crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=85";
 

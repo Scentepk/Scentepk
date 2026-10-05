@@ -358,7 +358,7 @@ export default function AdminLayout() {
                       SCENTEPK
                     </span>
                     <span className="text-[8px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium mt-0.5">
-                      ATELIER CONTROL
+                      ADMIN PANEL
                     </span>
                   </div>
 

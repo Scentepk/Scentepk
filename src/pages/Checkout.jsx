@@ -125,7 +125,7 @@ export default function Checkout() {
         if (res.unavailableItems?.length > 0) {
           setSubmissionError("Sorry, one or more items in your cart are currently sold out.");
         } else if (res.adjustedItems?.length > 0) {
-          setSubmissionError("Some quantities were automatically adjusted to match current atelier inventory.");
+          setSubmissionError("Some quantities were automatically adjusted to match current inventory.");
         }
       } catch (e) {
         console.warn("Stock verification error:", e);
@@ -316,7 +316,7 @@ export default function Checkout() {
       <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen py-14 sm:py-20">
         <SEO
           title={`Order Confirmed (${confirmedOrder.reference})`}
-          description="Your Cash on Delivery reservation has been registered at our atelier."
+          description="Your Cash on Delivery reservation has been registered."
           noindex={true}
         />
         <div className="layout-container max-w-3xl mx-auto">
@@ -338,7 +338,7 @@ export default function Checkout() {
                 Thank you for choosing SCENTE.
               </h1>
               <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light max-w-lg mx-auto leading-[1.6]">
-                Your Cash on Delivery reservation has been registered at our atelier. We are preparing your bespoke flacon(s) for express insured dispatch.
+                Your Cash on Delivery reservation has been registered. We are preparing your flacon(s) for express insured dispatch.
               </p>
             </div>
 
@@ -527,7 +527,7 @@ export default function Checkout() {
         />
         <div className="text-center max-w-md mx-auto bg-[#121110] p-10 sm:p-14 border border-[rgba(242,238,231,0.06)] shadow-2xl">
           <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-3 font-medium">
-            ATELIER CHECKOUT
+            PRIVATE CHECKOUT
           </span>
           <h1 className="font-serif font-light text-3xl sm:text-4xl text-[#F2EEE7] mb-3 tracking-headline">
             {isBuyNow ? "No Item Selected" : "Your Bag is Empty"}
@@ -1014,7 +1014,7 @@ export default function Checkout() {
               {/* Reassurance */}
               <div className="flex items-center justify-center space-x-2 text-[10px] uppercase font-sans text-[#777169] tracking-micro pt-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#BFA27A]" />
-                <span>Confidential Atelier Packaging</span>
+                <span>Confidential Secure Packaging</span>
               </div>
             </div>
           </div>

@@ -755,7 +755,7 @@ export default function AdminHeroManagement() {
                 Slide 0{activeSlideIndex + 1} Headline & Copy
               </h2>
               <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#BFA27A]">
-                SCENTEPK ATELIER VOICE
+                SCENTEPK EDITORIAL VOICE
               </span>
             </div>
 

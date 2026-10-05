@@ -634,7 +634,7 @@ export default function AdminCustomBuilder() {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[rgba(242,238,231,0.06)] gap-4">
         <div>
           <span className="text-[10px] uppercase tracking-[0.28em] text-[#BFA27A] font-semibold block mb-1">
-            ATELIER CONFIGURATION
+            BUILDER CONFIGURATION
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal tracking-tight">
             Build Your SCENTE

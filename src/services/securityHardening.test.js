@@ -66,7 +66,7 @@ test("SCENTE Phase 1 Security Hardening: Regression & Integration Suite", async 
       id: "ord-test-existing",
       reference: "SC-100001",
       customer_phone: "03001234567",
-      customer_email: "client@atelier.pk",
+      customer_email: "client@scente.pk",
       promo_code: "VIPONE",
       status: "confirmed",
       total: 5000,
@@ -95,7 +95,7 @@ test("SCENTE Phase 1 Security Hardening: Regression & Integration Suite", async 
     assert.match(resDoubleZero.message, /already utilized/i);
 
     // Control: A genuinely different customer mobile (03219876543) MUST succeed
-    const resDifferentCustomer = await validatePromoCode("VIPONE", 5000, "03219876543", "other@atelier.pk");
+    const resDifferentCustomer = await validatePromoCode("VIPONE", 5000, "03219876543", "other@scente.pk");
     assert.equal(resDifferentCustomer.valid, true, "Genuinely different customer must be allowed");
     assert.equal(resDifferentCustomer.discountAmount, 1000, "20% discount on 5000 is 1000");
   });

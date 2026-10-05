@@ -36,7 +36,7 @@ export default function DeliveryReturns() {
     },
     {
       label: "Packaging",
-      detail: "Must be in original bespoke atelier protective housing and protective encasings.",
+      detail: "Must be in original bespoke protective housing and protective encasings.",
     },
     {
       label: "Timeline",
@@ -51,7 +51,7 @@ export default function DeliveryReturns() {
   return (
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
-        title="Delivery & Returns — Atelier Logistics & Transit"
+        title="Delivery & Returns — Shipping & Transit Logistics"
         description="Comprehensive guide to SCENTEPK express courier shipping, transit timelines across Pakistan, secure packaging, and return policies."
         canonicalUrl="https://scente.pk/delivery-returns"
         keywords="SCENTEPK delivery, perfume shipping Pakistan, return policy, delivery times Karachi Lahore Islamabad"
@@ -69,7 +69,7 @@ export default function DeliveryReturns() {
               DELIVERY & RETURNS
             </span>
             <h1 className="font-serif font-light text-3xl sm:text-4xl lg:text-5xl text-[#F2EEE7] tracking-headline leading-[1.12]">
-              From Our Atelier to Your Door
+              From Our Studio to Your Door
             </h1>
             <p className="font-sans text-sm sm:text-base text-[#AAA49B] font-light leading-[1.75] max-w-2xl pt-1">
               Everything you need to know about delivery, receiving your order, and returns at SCENTEPK.
@@ -94,7 +94,7 @@ export default function DeliveryReturns() {
             <div className="lg:col-span-8 space-y-6">
               <ScrollReveal delay={0.08} className="space-y-4">
                 <p className="font-sans text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-                  SCENTEPK delivers fragrances across Pakistan through its available courier network. Each composition is hand-checked and encased in protective atelier housing before dispatch.
+                  SCENTEPK delivers fragrances across Pakistan through its available courier network. Each composition is hand-checked and encased in protective housing before dispatch.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
@@ -139,7 +139,7 @@ export default function DeliveryReturns() {
             <div className="lg:col-span-8 space-y-4">
               <ScrollReveal delay={0.08}>
                 <p className="font-sans text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-                  Because fragrances are personal products, returns should follow SCENTEPK's actual return policy. To maintain integrity, hygiene, and authenticity, our return process adheres to strict atelier standards.
+                  Because fragrances are personal products, returns should follow SCENTEPK's actual return policy. To maintain integrity, hygiene, and authenticity, our return process adheres to strict quality standards.
                 </p>
               </ScrollReveal>
             </div>
@@ -227,7 +227,7 @@ export default function DeliveryReturns() {
         <section className="border-t border-[rgba(242,238,231,0.06)] pt-14 sm:pt-20 text-center max-w-2xl mx-auto space-y-4">
           <ScrollReveal>
             <span className="text-[10px] uppercase font-sans tracking-[0.22em] text-[#777169] font-medium block mb-2">
-              ATELIER CONCIERGE
+              PRIVATE CONCIERGE
             </span>
             <h3 className="font-serif font-light text-xl sm:text-2xl text-[#F2EEE7] tracking-headline">
               NEED ASSISTANCE?

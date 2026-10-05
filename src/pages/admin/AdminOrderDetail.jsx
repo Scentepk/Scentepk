@@ -70,7 +70,7 @@ export default function AdminOrderDetail() {
     { value: "CallCourier", label: "CallCourier" },
     { value: "M&P Express", label: "M&P Express" },
     { value: "DHL Express", label: "DHL Express" },
-    { value: "Atelier Private Courier", label: "Atelier Private Courier" },
+    { value: "Private Courier", label: "Private Courier" },
   ];
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function AdminOrderDetail() {
 
     if (newStatus === "cancelled") {
       const confirmCancel = window.confirm(
-        `Are you sure you wish to mark order ${order?.reference} as CANCELLED?\n\nThis will automatically restore reserved stock to the atelier product catalog.`
+        `Are you sure you wish to mark order ${order?.reference} as CANCELLED?\n\nThis will automatically restore reserved stock to the product catalog.`
       );
       if (!confirmCancel) return;
     }
@@ -614,7 +614,7 @@ export default function AdminOrderDetail() {
                               <div className="flex items-center justify-between border-b border-[rgba(242,238,231,0.06)] pb-2">
                                 <span className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#BFA27A] flex items-center gap-1.5">
                                   <FlaskConical className="w-3 h-3 text-[#BFA27A]" />
-                                  <span>ATELIER FORMULATION SPECIFICATION</span>
+                                  <span>BESPOKE FORMULATION SPECIFICATION</span>
                                 </span>
                                 {config?.formatted_total_price && (
                                   <span className="text-[9.5px] uppercase tracking-wider text-[#AAA49B] font-mono">
@@ -874,7 +874,7 @@ export default function AdminOrderDetail() {
                     Delete Order {order.reference}?
                   </h3>
                   <p className="text-[#AAA49B] text-xs font-light leading-relaxed">
-                    This action will permanently delete order <strong className="text-[#F2EEE7] font-mono">{order.reference}</strong> and its line items from the atelier database. This action cannot be undone.
+                    This action will permanently delete order <strong className="text-[#F2EEE7] font-mono">{order.reference}</strong> and its line items from the database. This action cannot be undone.
                   </p>
                 </div>
               </div>

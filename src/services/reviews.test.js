@@ -45,7 +45,7 @@ describe("SCENTE Reviews Service & Normalization", () => {
     const dbRow = {
       id: "general-rev-1",
       customer_name: "Fatima S.",
-      review_text: "The atelier packaging is pristine and delivery was prompt.",
+      review_text: "The luxury packaging is pristine and delivery was prompt.",
       rating: 4,
       location: "Karachi",
       product_id: null,

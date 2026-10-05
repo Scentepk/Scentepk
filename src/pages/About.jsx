@@ -9,16 +9,16 @@ export default function About() {
   return (
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
-        title="Brand Story — Atelier Heritage & Olfactive Ethos"
+        title="Brand Story — Heritage & Olfactive Ethos"
         description="Learn the ethos behind SCENTE: pure, high-concentration Extraits de Parfum formulated with 30-40% perfume oils, meticulous cellar maceration, and enduring sillage."
-        canonicalUrl="https://scente.pk/about"
-        keywords="SCENTE story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi atelier"
+        canonicalUrl="https://scentepk.com/about"
+        keywords="SCENTE story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi fragrance"
       />
       <div className="layout-container py-14 sm:py-20">
         {/* Header */}
         <ScrollReveal className="max-w-3xl mb-14">
           <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] block mb-3 font-medium">
-            ATELIER HERITAGE
+            OUR HERITAGE
           </span>
           <h1 className="font-serif font-light text-fluid-display text-[#F2EEE7] tracking-headline mb-4 leading-[1.08]">
             The House of <span className="italic">SCENTEPK</span>

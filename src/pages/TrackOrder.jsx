@@ -94,9 +94,9 @@ export default function TrackOrder() {
   const getStatusMessage = (status) => {
     switch (status?.toLowerCase()) {
       case "pending":
-        return "Your order has been received and is awaiting atelier review.";
+        return "Your order has been received and is awaiting verification.";
       case "confirmed":
-        return "Your order has been verified and confirmed by the atelier.";
+        return "Your order has been verified and confirmed.";
       case "processing":
         return "Your fragrance is being carefully prepared for dispatch.";
       case "shipped":
@@ -106,7 +106,7 @@ export default function TrackOrder() {
       case "cancelled":
         return "This order has been cancelled.";
       default:
-        return "Your order status is being updated by our atelier.";
+        return "Your order status is being updated.";
     }
   };
 
@@ -246,7 +246,7 @@ export default function TrackOrder() {
     const mPlaced = {
       key: "pending",
       label: "Order Placed",
-      desc: isCancelled ? "Order received by atelier" : "Awaiting atelier review",
+      desc: isCancelled ? "Order received" : "Awaiting verification",
       date: formatMilestoneDate(orderData.created_at),
       state: statusLower === "pending" ? "current" : "completed",
     };
@@ -441,7 +441,7 @@ export default function TrackOrder() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[rgba(242,238,231,0.05)]">
               <span className="text-[11px] text-[#777169] font-light flex items-center space-x-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#BFA27A] shrink-0" />
-                <span>Protected by Atelier Order Verification — reference and phone must match.</span>
+                <span>Protected by Order Verification — reference and phone must match.</span>
               </span>
 
               <button
@@ -742,7 +742,7 @@ export default function TrackOrder() {
                         {orderData.cancelled_at && (
                           <span> on {formatMilestoneDate(orderData.cancelled_at)}</span>
                         )}
-                        . Reserved bottles have been restored to the atelier catalog. No Cash on Delivery payment is due.
+                        . Reserved bottles have been restored to inventory. No Cash on Delivery payment is due.
                       </p>
                     </div>
                   </div>
@@ -869,7 +869,7 @@ export default function TrackOrder() {
                             <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-[#BFA27A] font-medium border-b border-[rgba(242,238,231,0.04)] pb-1.5">
                               <span>YOUR FORMULATION</span>
                               <span className="text-[#8E887F] font-normal normal-case font-serif italic text-xs">
-                                Atelier Custom Blend
+                                Bespoke Custom Blend
                               </span>
                             </div>
 

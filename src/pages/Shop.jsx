@@ -722,12 +722,12 @@ export default function Shop() {
                 counts={counts}
               />
 
-              {/* Bespoke Fragrance Atelier CTA Card */}
+              {/* Bespoke Fragrance Builder CTA Card */}
               <div className="mt-8 p-4 rounded-xl bg-[#121110] border border-[rgba(242,238,231,0.08)] space-y-2.5">
                 <div className="flex items-center gap-1.5 text-[#BFA27A]">
                   <FlaskConical className="w-3.5 h-3.5" />
                   <span className="text-[10px] uppercase font-sans tracking-[0.2em] font-medium">
-                    BESPOKE ATELIER
+                    BESPOKE CREATION
                   </span>
                 </div>
                 <p className="text-xs font-serif text-[#F2EEE7] leading-snug">

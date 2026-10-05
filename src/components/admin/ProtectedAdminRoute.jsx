@@ -13,7 +13,7 @@ export default function ProtectedAdminRoute({ children }) {
       <div className="min-h-screen bg-[#0D0D0C] flex flex-col items-center justify-center text-[#F2EEE7] px-6">
         <Loader2 className="w-8 h-8 animate-spin text-[#BFA27A] mb-4" />
         <span className="text-[10.5px] uppercase font-sans tracking-[0.28em] text-[#AAA49B]">
-          VERIFYING ATELIER CREDENTIALS...
+          VERIFYING ADMIN CREDENTIALS...
         </span>
       </div>
     );

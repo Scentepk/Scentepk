@@ -393,7 +393,7 @@ export default function AdminPromoCodes() {
         {isLoading ? (
           <div className="py-16 text-center space-y-3">
             <Loader2 className="w-6 h-6 animate-spin text-[#BFA27A] mx-auto" />
-            <p className="text-xs text-[#AAA49B]">Accessing Atelier Promo Registers...</p>
+            <p className="text-xs text-[#AAA49B]">Accessing Promo Registers...</p>
           </div>
         ) : filteredPromos.length === 0 ? (
           <div className="py-16 text-center space-y-3">
@@ -812,7 +812,7 @@ export default function AdminPromoCodes() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div>
                     <label className="block text-[10px] uppercase tracking-wider text-[#777169] mb-1.5 font-medium">
-                      Total Usage Limit (Atelier-wide) <span className="text-[#777169] lowercase font-light">(optional)</span>
+                      Total Usage Limit (Store-wide) <span className="text-[#777169] lowercase font-light">(optional)</span>
                     </label>
                     <input
                       type="number"
@@ -959,7 +959,7 @@ export default function AdminPromoCodes() {
                   Delete Promo Code "{deleteTarget.code}"?
                 </h3>
                 <p className="text-xs text-[#AAA49B] leading-relaxed">
-                  This promo code will be removed from the atelier register. Past completed orders will retain their recorded discount snapshots.
+                  This promo code will be removed from the active register. Past completed orders will retain their recorded discount snapshots.
                 </p>
               </div>
 

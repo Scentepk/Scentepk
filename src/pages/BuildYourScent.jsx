@@ -8,7 +8,7 @@ import {
   Info,
 } from "lucide-react";
 import SEO from "../components/SEO";
-import AtelierLoader from "../components/AtelierLoader";
+import ScenteLoader from "../components/ScenteLoader";
 import CustomBuilderIntro from "../components/custom-builder/CustomBuilderIntro";
 import CustomBuilderProgress from "../components/custom-builder/CustomBuilderProgress";
 import CustomBuilderOptionCard from "../components/custom-builder/CustomBuilderOptionCard";
@@ -253,7 +253,7 @@ export default function BuildYourScent() {
   if (loading) {
     return (
       <div className="bg-[#0D0D0C] min-h-screen text-[#F2EEE7] flex items-center justify-center">
-        <AtelierLoader />
+        <ScenteLoader />
       </div>
     );
   }
@@ -270,7 +270,7 @@ export default function BuildYourScent() {
           </div>
           <div className="space-y-2">
             <h2 className="font-serif text-2xl text-[#F2EEE7] font-normal">
-              Atelier Unavailable
+              Studio Unavailable
             </h2>
             <p className="text-xs text-[#AAA49B] font-light leading-relaxed">
               {error}
@@ -303,7 +303,7 @@ export default function BuildYourScent() {
             CUSTOM CREATION
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal">
-            Atelier Currently Resting
+            Studio Currently Resting
           </h2>
           <p className="text-xs sm:text-sm text-[#AAA49B] font-light leading-relaxed max-w-sm mx-auto">
             Our custom fragrance builder is currently undergoing scheduled refinement. Please check back soon for bespoke formulations.
@@ -321,7 +321,7 @@ export default function BuildYourScent() {
       <div className="bg-[#0D0D0C] min-h-screen text-[#F2EEE7] flex items-center justify-center px-4 py-20">
         <div className="bg-[#121110] border border-[rgba(242,238,231,0.08)] p-8 sm:p-12 rounded-sm text-center max-w-lg w-full space-y-4 shadow-2xl">
           <span className="text-[10px] uppercase font-mono tracking-[0.24em] text-[#BFA27A] font-semibold block">
-            PREPARING ATELIER
+            PREPARING STUDIO
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl text-[#F2EEE7] font-normal">
             Formulation Experience in Preparation
@@ -343,7 +343,7 @@ export default function BuildYourScent() {
   return (
     <div className="bg-[#0D0D0C] min-h-screen text-[#F2EEE7] selection:bg-[#BFA27A]/30 selection:text-[#F2EEE7] pb-32 sm:pb-36 lg:pb-16">
       <SEO
-        title={`${settings.title || "Build Your SCENTE"} | Bespoke Fragrance Atelier`}
+        title={`${settings.title || "Build Your SCENTE"} | Bespoke Fragrance Studio`}
         description={
           settings.description ||
           "Create your own custom luxury fragrance with SCENTE. Choose your bottle, notes, and profile."

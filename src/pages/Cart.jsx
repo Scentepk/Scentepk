@@ -23,7 +23,7 @@ export default function Cart() {
           if (res.unavailableItems?.length > 0) {
             setStockNotice("One or more items in your bag are currently sold out. Please remove them to proceed.");
           } else if (res.adjustedItems?.length > 0) {
-            setStockNotice("Some item quantities were adjusted to match current atelier inventory.");
+            setStockNotice("Some item quantities were adjusted to match current inventory.");
           } else {
             setStockNotice("");
           }
@@ -331,7 +331,7 @@ export default function Cart() {
           </motion.div>
         )}
 
-        {/* 5. ATELIER STANDARDS FOOTNOTE */}
+        {/* 5. QUALITY STANDARDS FOOTNOTE */}
         <div className="mt-16 sm:mt-24 pt-12 sm:pt-16 border-t border-[rgba(242,238,231,0.06)]">
           <ScrollReveal className="mb-8 sm:mb-12">
             <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-eyebrow text-[#BFA27A] font-medium block mb-1.5">
@@ -372,7 +372,7 @@ export default function Cart() {
 
             <ScrollReveal delay={0.26} className="py-6 sm:py-8 lg:py-2 lg:pr-0 flex flex-col justify-start">
               <span className="text-[11px] sm:text-[11.5px] uppercase font-sans tracking-micro text-[#F2EEE7] font-medium block mb-2">
-                ATELIER PACKAGING
+                SIGNATURE PACKAGING
               </span>
               <p className="text-xs sm:text-[13px] font-sans text-[#AAA49B] font-light leading-[1.65]">
                 Every 50ml flacon is encased in custom protective housing and accompanied by a sample vial.

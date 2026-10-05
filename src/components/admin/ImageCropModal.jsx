@@ -434,7 +434,7 @@ export default function ImageCropModal({
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#BFA27A] font-medium flex items-center gap-1.5">
                   <Crop className="w-3 h-3" />
-                  <span>ATELIER VISUAL STUDIO</span>
+                  <span>IMAGE STUDIO</span>
                 </span>
                 {queueTotal > 1 && (
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30">

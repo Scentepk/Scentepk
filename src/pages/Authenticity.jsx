@@ -14,7 +14,7 @@ export default function Authenticity() {
       />
       <div className="layout-container py-10 sm:py-16 lg:py-24">
         <SectionHeading
-          eyebrow="ATELIER STANDARDS"
+          eyebrow="OUR STANDARDS"
           title="Authenticity Guarantee"
           subtitle="Every bottle of SCENTEPK is an unadulterated Extrait de Parfum crafted with 30%+ pure perfume oil."
         />
@@ -32,9 +32,9 @@ export default function Authenticity() {
 
           <ScrollReveal delay={0.12} className="bg-[#121110] p-5 xs:p-6 sm:p-8 border border-[rgba(242,238,231,0.08)] space-y-4">
             <span className="text-[10px] font-sans uppercase tracking-eyebrow text-[#BFA27A] font-medium block">
-              ATELIER DIRECT
+              DIRECT SOURCE
             </span>
-            <h3 className="font-serif text-xl font-light text-[#F2EEE7]">Single-Source Atelier</h3>
+            <h3 className="font-serif text-xl font-light text-[#F2EEE7]">Single-Source Origin</h3>
             <p className="font-sans text-xs text-[#AAA49B] leading-relaxed font-light">
               We ship directly from our controlled maison facility. We do not distribute through third-party unverified channels, ensuring 100% genuine products.
             </p>

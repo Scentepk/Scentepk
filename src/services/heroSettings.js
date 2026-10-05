@@ -33,7 +33,7 @@ export const DEFAULT_HERO_SLIDES = [
   {
     id: "slide-2",
     product_id: null,
-    eyebrow: "ATELIER EXTRAIT DE PARFUM",
+    eyebrow: "EXTRAIT DE PARFUM",
     badge: "14+ HR LONGEVITY",
     headline_line1: "YOUR",
     headline_line2: "SIGNATURE.",

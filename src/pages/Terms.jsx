@@ -22,7 +22,7 @@ export default function Terms() {
           <ScrollReveal delay={0.05} className="bg-[#121110] p-8 sm:p-10 border border-[rgba(242,238,231,0.08)] space-y-3">
             <h3 className="font-serif text-xl font-light text-[#F2EEE7]">1. Orders & Pricing</h3>
             <p>
-              All orders placed on scente.pk are subject to product availability and atelier confirmation. All prices are listed in Pakistani Rupees (PKR) and include standard taxes.
+              All orders placed on scente.pk are subject to product availability and order confirmation. All prices are listed in Pakistani Rupees (PKR) and include standard taxes.
             </p>
           </ScrollReveal>
 

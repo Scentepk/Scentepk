@@ -30,7 +30,7 @@ function getLocalOrdersStore() {
       reference: "SC-951382",
       customer_full_name: "Farhan Al-Rashid",
       customer_phone: "0300 9513820",
-      customer_email: "farhan.rashid@atelier.pk",
+      customer_email: "farhan.rashid@scente.pk",
       shipping_address: "Villa 9, Street 8, Sector F-8/3",
       city: "Islamabad",
       province: "Islamabad Capital Territory",

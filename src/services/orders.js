@@ -38,7 +38,7 @@ export async function createCodOrder(customerData, cartItems, promoDetails = nul
       const clientUnitPrice = Math.max(0, Math.round(Number(item.price || 0)));
       if (verification.finalPrice !== clientUnitPrice) {
         throw new Error(
-          `Your custom fragrance pricing has been updated to PKR ${verification.finalPrice.toLocaleString()} due to recent atelier adjustments. Please review your order before continuing.`
+          `Your custom fragrance pricing has been updated to PKR ${verification.finalPrice.toLocaleString()} due to recent pricing updates. Please review your order before continuing.`
         );
       }
 

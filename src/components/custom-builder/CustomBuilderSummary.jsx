@@ -55,7 +55,7 @@ export default function CustomBuilderSummary({
         {/* Base Starting Price */}
         <div className="pt-2 first:pt-0 flex items-baseline justify-between text-xs">
           <div>
-            <span className="text-[#AAA49B] block font-light">Atelier Formulation Base</span>
+            <span className="text-[#AAA49B] block font-light">Formulation Base</span>
             <span className="text-[10px] text-[#777169]">Custom bottle & blending</span>
           </div>
           <span className="font-serif text-sm text-[#F2EEE7]">

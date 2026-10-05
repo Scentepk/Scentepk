@@ -117,7 +117,7 @@ export default function CustomBuilderReview({
         </span>
       </div>
 
-      {/* Main Review Card / Atelier Formulation Manifest */}
+      {/* Main Review Card / Formulation Manifest */}
       <div className="bg-[#121110] border border-[rgba(242,238,231,0.08)] rounded-sm p-6 sm:p-10 shadow-2xl relative overflow-hidden">
         {/* Subtle Ambient Background Accent */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#BFA27A]/5 blur-3xl pointer-events-none rounded-full" />
@@ -125,7 +125,7 @@ export default function CustomBuilderReview({
         {/* Header */}
         <div className="text-center pb-8 border-b border-[rgba(242,238,231,0.06)]">
           <span className="text-[10px] uppercase font-mono tracking-[0.28em] text-[#BFA27A] font-medium block mb-1">
-            ATELIER BESPOKE FORMULA
+            BESPOKE FORMULA
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal tracking-tight">
             Your Scent is Ready
@@ -153,7 +153,7 @@ export default function CustomBuilderReview({
           <div className="pt-4 first:pt-0 flex items-center justify-between text-sm">
             <div>
               <span className="font-serif text-base text-[#F2EEE7] block">
-                Atelier Formulation Base
+                Formulation Base
               </span>
               <span className="text-xs text-[#777169] font-light">
                 Custom bottle, extrait formulation & signature packaging

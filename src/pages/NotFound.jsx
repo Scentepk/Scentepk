@@ -9,7 +9,7 @@ export default function NotFound() {
     <div className="min-h-[85vh] bg-[#0D0D0C] text-[#F2EEE7] flex items-center justify-center px-4 sm:px-6 py-20 relative overflow-hidden">
       <SEO
         title="404 — The Essence Has Vanished | SCENTE"
-        description="The atelier destination or fragrance composition you are searching for does not exist or has returned to the private vault."
+        description="The page destination or fragrance composition you are searching for does not exist or has returned to the private vault."
         noindex={true}
       />
 
@@ -38,7 +38,7 @@ export default function NotFound() {
             The Essence Has Vanished
           </h1>
           <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light max-w-md mx-auto leading-relaxed">
-            The fragrance manifest or atelier destination you are searching for is no longer in active circulation or has moved to the private archive.
+            The fragrance manifest or page destination you are searching for is no longer in active circulation or has moved to the private archive.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default function NotFound() {
           </Link>
           <span>•</span>
           <Link to="/contact" className="hover:text-[#BFA27A] transition-colors">
-            Atelier Concierge
+            Private Concierge
           </Link>
         </div>
       </motion.div>

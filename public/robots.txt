@@ -1,4 +1,4 @@
-# SCENTE Atelier Parfums — Robots Configuration
+# SCENTE Parfums — Robots Configuration
 User-agent: *
 Allow: /
 Disallow: /admin

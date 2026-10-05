@@ -37,7 +37,7 @@ export const DEFAULT_SEED_PROMOS = [
     per_customer_limit: 1,
     usage_count: 0,
     is_active: true,
-    description: "Atelier privilege gift — PKR 500 fixed deduction on orders above PKR 4,000",
+    description: "Welcome privilege gift — PKR 500 fixed deduction on orders above PKR 4,000",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },

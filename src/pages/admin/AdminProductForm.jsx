@@ -1357,7 +1357,7 @@ export default function AdminProductForm() {
               className={variants.length > 0 ? "opacity-80 bg-[#161513] cursor-not-allowed" : ""}
             />
             <p className="text-[11px] text-[#777169] mt-1 font-light">
-              Total bottles available in atelier storage.
+              Total bottles available in inventory.
             </p>
           </div>
         </div>
@@ -1536,7 +1536,7 @@ export default function AdminProductForm() {
                 <div className="flex flex-col items-center gap-2 py-2">
                   <Loader2 className="w-6 h-6 text-[#BFA27A] animate-spin" />
                   <span className="text-xs uppercase tracking-wider font-medium text-[#F2EEE7]">
-                    Uploading images to Atelier Storage...
+                    Uploading images to Storage...
                   </span>
                   <span className="text-[11px] text-[#777169]">
                     Processing and generating unique storage paths...
@@ -1819,7 +1819,7 @@ export default function AdminProductForm() {
                 Permanently delete this fragrance
               </h4>
               <p className="text-xs text-[#AAA49B] max-w-xl leading-relaxed">
-                Once deleted, this fragrance formulation, all associated sizing variants, and gallery images will be removed from your atelier store. This action cannot be reversed.
+                Once deleted, this fragrance formulation, all associated sizing variants, and gallery images will be removed from your store. This action cannot be reversed.
               </p>
             </div>
 

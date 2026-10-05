@@ -391,7 +391,7 @@ Deno.serve(async (req: Request) => {
           adminFormulationHtml = `
             <div style="margin-top: 12px; padding: 14px; background-color: #171614; border: 1px solid #BFA27A; border-radius: 2px;">
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: #BFA27A; font-weight: 600; margin-bottom: 8px;">
-                ATELIER PREPARATION SPECIFICATION
+                FORMULATION SPECIFICATION
               </div>
               ${summaryText}
               ${groupsHtml}
@@ -407,7 +407,7 @@ Deno.serve(async (req: Request) => {
                 ${escapeHtml(name)}
               </div>
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #8E887F; margin-top: 5px;">
-                ${escapeHtml(size)} ${isCustom ? "• BESPOKE ATELIER CREATION" : ""}
+                ${escapeHtml(size)} ${isCustom ? "• BESPOKE CUSTOM CREATION" : ""}
               </div>
               ${adminFormulationHtml}
             </td>
@@ -440,7 +440,7 @@ Deno.serve(async (req: Request) => {
       : `
         <tr>
           <td colspan="4" align="center" style="padding: 24px 0; font-size: 13px; color: #8E887F; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            Order items details available in atelier manifest.
+            Order items details available in order manifest.
           </td>
         </tr>
       `;
@@ -450,7 +450,7 @@ Deno.serve(async (req: Request) => {
       : `
         <tr>
           <td colspan="4" align="center" style="padding: 24px 0; font-size: 13px; color: #8E887F; border-bottom: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            Order items details available in atelier manifest.
+            Order items details available in order manifest.
           </td>
         </tr>
       `;
@@ -468,7 +468,7 @@ Deno.serve(async (req: Request) => {
       `
       : "";
 
-    // 7. BUILD ADMIN NOTIFICATION HTML (SCENTE Dark Luxury Atelier Logistics)
+    // 7. BUILD ADMIN NOTIFICATION HTML (SCENTE Dark Luxury Logistics)
     const adminHtmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -529,7 +529,7 @@ Deno.serve(async (req: Request) => {
             <td style="background-color: #BFA27A; height: 1px; font-size: 0; line-height: 0;">&nbsp;</td>
           </tr>
 
-          <!-- Atelier Header -->
+          <!-- Brand Header -->
           <tr>
             <td align="center" style="padding: 40px 32px 28px 32px; border-bottom: 1px solid #1E1D1A;">
               <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 300; letter-spacing: 0.35em; color: #F2EEE7; text-transform: uppercase;">
@@ -782,7 +782,7 @@ Deno.serve(async (req: Request) => {
                 Your order is confirmed.
               </h1>
               <p style="margin: 14px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.65; color: #A39E95; font-weight: 300;">
-                Dear ${customerName}, thank you for choosing SCENTE. Your order has been received and our atelier has commenced preparation. You will receive real-time updates as your parcel progresses through dispatch.
+                Dear ${customerName}, thank you for choosing SCENTE. Your order has been received and our team has commenced preparation. You will receive real-time updates as your parcel progresses through dispatch.
               </p>
 
               <!-- Prominent Order Reference Card -->
@@ -917,7 +917,7 @@ Deno.serve(async (req: Request) => {
           <!-- Small Closing Message -->
           <tr>
             <td class="mobile-padding" style="padding: 24px 36px; background-color: #141311; border-top: 1px solid #1E1D1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; color: #8E887F; line-height: 1.6;">
-              If you have questions or wish to amend details prior to courier dispatch, our atelier concierge is at your service at <a href="mailto:scentepk@gmail.com" style="color: #BFA27A; text-decoration: none;">scentepk@gmail.com</a>.
+              If you have questions or wish to amend details prior to courier dispatch, our concierge is at your service at <a href="mailto:scentepk@gmail.com" style="color: #BFA27A; text-decoration: none;">scentepk@gmail.com</a>.
             </td>
           </tr>
 

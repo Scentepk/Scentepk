@@ -160,7 +160,7 @@ export const normalizeProduct = (dbRow) => {
   const isTesterProduct = rawFam === "testers" || rawFam === "tester";
 
   const defaultSubtitle = isWaxProduct ? "Artisan Scented Wax" : isTesterProduct ? "Discovery Tester" : "Extrait de Parfum";
-  const defaultConcentration = isWaxProduct ? "Pure Scented Wax" : isTesterProduct ? "Atelier Tester Vial" : "30% Pure Perfume Oil";
+  const defaultConcentration = isWaxProduct ? "Pure Scented Wax" : isTesterProduct ? "Discovery Tester Vial" : "30% Pure Perfume Oil";
   const defaultVolume = isWaxProduct ? "100g / 3.5 OZ." : isTesterProduct ? "5ml / 0.17 FL. OZ." : "50ml / 1.7 FL. OZ.";
 
   return {

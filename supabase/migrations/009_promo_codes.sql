@@ -539,6 +539,6 @@ INSERT INTO public.promo_codes (
     1,
     0,
     true,
-    'Atelier privilege gift — PKR 500 fixed deduction on orders above PKR 4,000'
+    'Welcome privilege gift — PKR 500 fixed deduction on orders above PKR 4,000'
 )
 ON CONFLICT (code) DO NOTHING;

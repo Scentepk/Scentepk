@@ -325,7 +325,7 @@ DECLARE
 BEGIN
     -- 1. Authorization: Verify administrator privileges
     IF NOT public.is_admin() THEN
-        RAISE EXCEPTION 'Unauthorized: Only SCENTE Atelier administrators can cancel orders.';
+        RAISE EXCEPTION 'Unauthorized: Only SCENTE administrators can cancel orders.';
     END IF;
 
     -- 2. Lock and fetch order

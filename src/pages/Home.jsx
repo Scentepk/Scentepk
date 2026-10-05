@@ -44,7 +44,7 @@ const HERO_SLIDES = [
   },
   {
     id: "slide-2",
-    eyebrow: "ATELIER EXTRAIT DE PARFUM",
+    eyebrow: "EXTRAIT DE PARFUM",
     headlineLine1: "YOUR",
     headlineLine2: "SIGNATURE.",
     headlineLine3: "YOUR PRESENCE.",
@@ -166,7 +166,7 @@ export default function Home() {
   );
 
   // ===========================================================================
-  // DYNAMIC HERO ATELIER SETTINGS & REAL-TIME BROADCAST SYNC
+  // DYNAMIC HERO SETTINGS & REAL-TIME BROADCAST SYNC
   // ===========================================================================
   const [customHero, setCustomHero] = useState(() => {
     try {
@@ -973,7 +973,7 @@ export default function Home() {
       </section>
 
       {/* =======================================================================
-          6. BUILD YOUR SCENT (Bespoke Atelier Experience)
+          6. BUILD YOUR SCENT (Bespoke Experience)
           ======================================================================= */}
       <section className="relative py-20 sm:py-28 lg:py-32 bg-[#090908] border-b border-white/[0.06] text-center overflow-hidden">
         {/* Atmospheric Champagne Ambient Light */}
@@ -998,7 +998,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Micro Atelier Pillars */}
+          {/* Micro Pillars */}
           <div className="pt-6 sm:pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[10px] sm:text-[11px] font-sans tracking-[0.16em] uppercase text-[#777169] font-light border-t border-white/[0.05] max-w-lg mx-auto">
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
@@ -1006,7 +1006,7 @@ export default function Home() {
             </span>
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
-              Dynamic Atelier Pricing
+              Dynamic Pricing
             </span>
             <span className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-[#BFA27A]" />
