@@ -8,6 +8,8 @@ export function notifyCatalogChange() {
   if (typeof window !== "undefined") {
     try {
       window.dispatchEvent(new CustomEvent("scente_catalog_updated"));
+      localStorage.removeItem("scente_verified_catalog_v1");
+      localStorage.setItem("scente_catalog_updated_at", String(Date.now()));
     } catch (e) {}
   }
 }

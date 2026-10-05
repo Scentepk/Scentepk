@@ -9,19 +9,19 @@ export const normalizeProduct = (dbRow) => {
   const isInactive = dbRow.status === "inactive" || dbRow.is_active === false;
 
   // Clean edge-artifact images or map high-fidelity clean versions
-  const sanitizeImageUrl = (url, id) => {
+  const sanitizeImageUrl = (url) => {
     if (!url || typeof url !== "string") return url;
-    if (url.includes("1790800904059-cn101wm.webp") || id === "luxury-perfume-testers-pack-of-5") {
+    if (url.includes("1790800904059-cn101wm.webp")) {
       return "/images/products/luxury-perfume-testers.webp";
     }
     return url;
   };
 
-  const rawImg = dbRow.primary_image || dbRow.image || "";
-  const rawSecImg = dbRow.secondary_image || dbRow.secondaryImage || null;
   const prodIdOrSlug = dbRow.id || dbRow.slug || "";
-  const img = sanitizeImageUrl(rawImg, prodIdOrSlug);
-  const secImg = sanitizeImageUrl(rawSecImg, prodIdOrSlug);
+  const rawImg = dbRow.primary_image || dbRow.image || (prodIdOrSlug === "luxury-perfume-testers-pack-of-5" ? "/images/products/luxury-perfume-testers.webp" : "");
+  const rawSecImg = dbRow.secondary_image || dbRow.secondaryImage || null;
+  const img = sanitizeImageUrl(rawImg);
+  const secImg = sanitizeImageUrl(rawSecImg);
 
   // Process raw images from database or local storage cache
   const rawImages = dbRow.product_images || dbRow.images || [];
@@ -30,7 +30,7 @@ export const normalizeProduct = (dbRow) => {
         .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
         .map((im, idx) => {
           const rawUrl = typeof im === "string" ? im : (im.public_url || im.url || "");
-          const public_url = sanitizeImageUrl(rawUrl, prodIdOrSlug);
+          const public_url = sanitizeImageUrl(rawUrl);
           const storage_path = typeof im === "object" ? (im.storage_path || im.path || null) : null;
           return {
             id: im.id || `img-${dbRow.id}-${idx}`,
@@ -294,7 +294,7 @@ export function invalidateProductCache() {
 if (typeof window !== "undefined") {
   window.addEventListener("scente_catalog_updated", invalidateProductCache);
   window.addEventListener("storage", (e) => {
-    if (e.key === "scente_admin_products_cache" || e.key === STOREFRONT_PRODUCTS_CACHE_KEY) {
+    if (e.key === "scente_admin_products_cache" || e.key === STOREFRONT_PRODUCTS_CACHE_KEY || e.key === "scente_catalog_updated_at") {
       invalidateProductCache();
     }
   });
