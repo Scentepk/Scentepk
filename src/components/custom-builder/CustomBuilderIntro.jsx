@@ -52,10 +52,10 @@ export default function CustomBuilderIntro({
           type="button"
           id="builder-begin-btn"
           onClick={onBegin}
-          className="inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 rounded-sm border border-[rgba(242,238,231,0.22)] bg-[#141311] hover:border-[#BFA27A] hover:bg-[#1A1916] hover:text-[#BFA27A] active:scale-[0.99] font-sans text-xs uppercase tracking-[0.2em] text-[#F2EEE7] font-medium transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.4)] group cursor-pointer focus-visible:ring-1 focus-visible:ring-[#BFA27A] outline-none"
+          className="inline-flex items-center justify-center px-9 sm:px-11 py-4 sm:py-4.5 rounded-full bg-[#BFA27A] text-[#090908] hover:bg-[#D4BA94] hover:shadow-[0_0_35px_rgba(191,162,122,0.3)] active:scale-[0.99] font-sans text-xs uppercase tracking-[0.18em] font-semibold transition-all duration-300 shadow-xl shadow-black/50 group cursor-pointer focus-visible:ring-2 focus-visible:ring-[#BFA27A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D0D0C] outline-none"
         >
           <span>Begin Your Creation</span>
-          <ArrowRight className="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-1.5 text-[#BFA27A]" />
+          <ArrowRight className="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-1.5 stroke-[2] text-[#090908]" />
         </button>
 
         {groupsCount > 0 && (
