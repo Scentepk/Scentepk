@@ -307,7 +307,6 @@ export default function Home() {
         description="SCENTEPK is a modern Pakistani artisanal fragrance house crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
         keywords={[
           "SCENTEPK",
-          "SCENTE",
           "niche perfume Pakistan",
           "luxury extrait de parfum",
           "haute parfumerie",

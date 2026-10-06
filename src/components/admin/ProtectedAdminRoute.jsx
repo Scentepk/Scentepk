@@ -41,7 +41,7 @@ export default function ProtectedAdminRoute({ children }) {
               Unauthorized
             </h1>
             <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light leading-relaxed">
-              Signed in as <strong className="text-[#F2EEE7]">{user.email}</strong>. This account does not possess administrator privileges for SCENTE.
+              Signed in as <strong className="text-[#F2EEE7]">{user.email}</strong>. This account does not possess administrator privileges for SCENTEPK.
             </p>
           </div>
 

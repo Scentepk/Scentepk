@@ -10,9 +10,9 @@ export default function About() {
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
         title="Brand Story — Heritage & Olfactive Ethos"
-        description="Learn the ethos behind SCENTE: pure, high-concentration Extraits de Parfum formulated with 30-40% perfume oils, meticulous cellar maceration, and enduring sillage."
+        description="Learn the ethos behind SCENTEPK: pure, high-concentration Extraits de Parfum formulated with 30-40% perfume oils, meticulous cellar maceration, and enduring sillage."
         canonicalUrl="https://scentepk.com/about"
-        keywords="SCENTE story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi fragrance"
+        keywords="SCENTEPK story, luxury perfumery Pakistan, artisanal extrait de parfum, perfume maceration, Karachi fragrance"
       />
       <div className="layout-container py-14 sm:py-20">
         {/* Header */}
@@ -61,7 +61,7 @@ export default function About() {
               Concentrated by Design
             </h2>
             <p className="text-sm sm:text-[15px] text-[#AAA49B] font-light leading-[1.8]">
-              SCENTE compositions are crafted with a high concentration of fine perfume oils and given time to mature, allowing each fragrance to develop depth, character, and lasting presence on skin.
+              SCENTEPK compositions are crafted with a high concentration of fine perfume oils and given time to mature, allowing each fragrance to develop depth, character, and lasting presence on skin.
             </p>
             <div className="pt-2">
               <Button to="/shop" variant="solid">

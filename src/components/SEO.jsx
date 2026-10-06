@@ -99,7 +99,7 @@ export default function SEO({
     setMetaTag("og:url", resolvedCanonical, true);
     setMetaTag("og:image", resolvedImage, true);
     setMetaTag("og:type", ogType, true);
-    setMetaTag("og:site_name", "SCENTE Parfums", true);
+    setMetaTag("og:site_name", "SCENTEPK Parfums", true);
     setMetaTag("og:locale", "en_US", true);
 
     // 6. Twitter Card Meta
@@ -132,10 +132,10 @@ export default function SEO({
           name: productData.name,
           image: resolvedImage,
           description: fullDescription,
-          sku: productData.sku || "SCENTE-PARFUM",
+          sku: productData.sku || "SCENTEPK-PARFUM",
           brand: {
             "@type": "Brand",
-            name: "SCENTE",
+            name: "SCENTEPK",
           },
           offers: {
             "@type": "Offer",

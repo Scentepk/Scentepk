@@ -320,7 +320,7 @@ export default function Cart() {
               "Discover a fragrance crafted to become your signature."
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#AAA49B] font-light leading-[1.6] mb-8 max-w-md mx-auto">
-              Each SCENTE composition is hand-macerated with pure perfume oil concentration for an enduring, magnetic aura.
+              Each SCENTEPK composition is hand-macerated with pure perfume oil concentration for an enduring, magnetic aura.
             </p>
             <Link
               to="/shop"
@@ -338,7 +338,7 @@ export default function Cart() {
               DISPATCH STANDARDS
             </span>
             <h2 className="font-serif font-light text-2xl sm:text-3xl text-[#F2EEE7] tracking-headline">
-              The Scente Guarantee
+              The SCENTEPK Guarantee
             </h2>
           </ScrollReveal>
 

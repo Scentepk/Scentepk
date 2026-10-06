@@ -215,7 +215,7 @@ export default function Navbar() {
   ];
 
   const moreNavLinks = [
-    { name: "ABOUT SCENTE", path: "/about" },
+    { name: "ABOUT SCENTEPK", path: "/about" },
     { name: "CONTACT", path: "/contact" },
     { name: "FAQ", path: "/delivery-returns" },
   ];

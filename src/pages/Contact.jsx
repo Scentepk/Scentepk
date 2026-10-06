@@ -64,7 +64,7 @@ export default function Contact() {
   return (
     <div className="bg-[#0D0D0C] text-[#F2EEE7] min-h-screen">
       <SEO
-        title="Private Concierge — SCENTE Client Services"
+        title="Private Concierge — SCENTEPK Client Services"
         description="Connect with the SCENTEPK private concierge for fragrance consultations, order inquiries, and bespoke corporate gifting across Pakistan."
         canonicalUrl="https://scente.pk/contact"
         keywords="contact SCENTEPK, perfume concierge Pakistan, bespoke fragrance gifting, luxury customer service"

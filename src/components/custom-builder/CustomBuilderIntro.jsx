@@ -13,7 +13,7 @@ export default function CustomBuilderIntro({
   groupsCount = 0,
   onBegin,
 }) {
-  const title = settings.title || "BUILD YOUR SCENTE";
+  const title = settings.title || "BUILD YOUR SCENTEPK";
   const subtitle = settings.subtitle || "Create a Fragrance That's Yours";
   const description =
     settings.description ||

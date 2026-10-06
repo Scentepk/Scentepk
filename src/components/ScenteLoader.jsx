@@ -11,7 +11,7 @@ export default function ScenteLoader() {
       className="w-full min-h-[70vh] bg-[#0D0D0C] flex flex-col items-center justify-center text-center px-4 select-none"
       role="status"
       aria-live="polite"
-      aria-label="Loading SCENTE"
+      aria-label="Loading SCENTEPK"
     >
       <div className="relative flex items-center justify-center mb-5">
         {/* Subtle pulsating gold aura */}
@@ -27,7 +27,7 @@ export default function ScenteLoader() {
 
       {/* Eyebrow Label */}
       <span className="text-[10px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block font-medium opacity-90 mb-1.5 animate-pulse">
-        SCENTE
+        SCENTEPK
       </span>
 
       {/* Subtext */}

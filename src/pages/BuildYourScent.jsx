@@ -343,13 +343,13 @@ export default function BuildYourScent() {
   return (
     <div className="bg-[#0D0D0C] min-h-screen text-[#F2EEE7] selection:bg-[#BFA27A]/30 selection:text-[#F2EEE7] pb-32 sm:pb-36 lg:pb-16">
       <SEO
-        title={`${settings.title || "Build Your SCENTE"} | Bespoke Fragrance Studio`}
+        title={`${settings.title || "Build Your SCENTEPK"} | Bespoke Fragrance Studio`}
         description={
           settings.description ||
-          "Create your own custom luxury fragrance with SCENTE. Choose your bottle, notes, and profile."
+          "Create your own custom luxury fragrance with SCENTEPK. Choose your bottle, notes, and profile."
         }
         canonicalUrl="https://scente.pk/build-your-scent"
-        keywords="custom perfume Pakistan, bespoke fragrance, create your scent, SCENTE custom builder"
+        keywords="custom perfume Pakistan, bespoke fragrance, create your scent, SCENTEPK custom builder"
       />
 
       <div className="layout-container pt-6 sm:pt-10 md:pt-12">

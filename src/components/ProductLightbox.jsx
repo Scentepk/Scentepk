@@ -226,7 +226,7 @@ export default function ProductLightbox({
             {/* Left: Counter & Title */}
             <div className="flex items-center space-x-3 sm:space-x-4">
               <span className="font-serif text-sm sm:text-base tracking-[0.2em] text-[#F2EEE7] font-medium hidden xs:inline-block">
-                SCENTE
+                SCENTEPK
               </span>
               {totalImages > 1 && (
                 <div className="bg-[#141312] border border-[rgba(242,238,231,0.1)] px-3 py-1 text-[11px] font-mono tracking-[0.18em] text-[#AAA49B] rounded-full">

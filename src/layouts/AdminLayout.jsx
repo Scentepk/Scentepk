@@ -144,8 +144,8 @@ export default function AdminLayout() {
             <Link
               to="/admin"
               className="block focus:outline-none group"
-              title="SCENTE Control Room"
-              aria-label="SCENTE Control Room"
+              title="SCENTEPK Control Room"
+              aria-label="SCENTEPK Control Room"
             >
               {isExpanded ? (
                 <div className="transition-opacity duration-200">
@@ -291,7 +291,7 @@ export default function AdminLayout() {
 
           <Link to="/admin" className="focus:outline-none">
             <span className="font-serif text-xl tracking-[0.2em] text-[#F2EEE7] block leading-none">
-              SCENTE
+              SCENTEPK
             </span>
             <span className="text-[7.5px] uppercase font-sans tracking-[0.28em] text-[#BFA27A] block mt-1 font-medium">
               CONTROL ROOM

@@ -8,7 +8,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
  */
 export default function ParallaxImage({
   src,
-  alt = "SCENTE Haute Parfumerie",
+  alt = "SCENTEPK Haute Parfumerie",
   className = "",
   imgClassName = "",
   aspectRatio = "aspect-[4/5]",

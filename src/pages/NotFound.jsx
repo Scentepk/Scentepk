@@ -8,7 +8,7 @@ export default function NotFound() {
   return (
     <div className="min-h-[85vh] bg-[#0D0D0C] text-[#F2EEE7] flex items-center justify-center px-4 sm:px-6 py-20 relative overflow-hidden">
       <SEO
-        title="404 — The Essence Has Vanished | SCENTE"
+        title="404 — The Essence Has Vanished | SCENTEPK"
         description="The page destination or fragrance composition you are searching for does not exist or has returned to the private vault."
         noindex={true}
       />

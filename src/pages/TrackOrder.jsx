@@ -845,7 +845,7 @@ export default function TrackOrder() {
                             <div>
                               <div className="flex items-center space-x-2">
                                 <p className="font-serif text-sm text-[#F2EEE7] font-normal">
-                                  {isCustom ? (item.product_name || "Custom SCENTE") : item.product_name}
+                                  {isCustom ? (item.product_name || "Custom SCENTEPK") : item.product_name}
                                 </p>
                                 {isCustom && (
                                   <span className="inline-flex items-center text-[8.5px] uppercase tracking-[0.16em] px-1.5 py-0.5 bg-[#BFA27A]/15 text-[#BFA27A] border border-[#BFA27A]/30 font-medium rounded-xs">

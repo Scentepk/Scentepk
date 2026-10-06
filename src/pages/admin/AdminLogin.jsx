@@ -45,7 +45,7 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-[#0D0D0C] text-[#F2EEE7] flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <SEO
-        title="SCENTE Admin Portal — Control Console"
+        title="SCENTEPK Admin Portal — Control Console"
         noindex={true}
       />
       {/* Top Back Link */}

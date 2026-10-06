@@ -637,7 +637,7 @@ export default function AdminCustomBuilder() {
             BUILDER CONFIGURATION
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#F2EEE7] font-normal tracking-tight">
-            Build Your SCENTE
+            Build Your SCENTEPK
           </h1>
           <p className="text-xs text-[#AAA49B] mt-1 font-light">
             Manage customization steps, options, price adjustments, and global perfume builder parameters.
@@ -792,7 +792,7 @@ export default function AdminCustomBuilder() {
                 required
                 value={settingsForm.title}
                 onChange={(e) => setSettingsForm((prev) => ({ ...prev, title: e.target.value }))}
-                placeholder="e.g. BUILD YOUR SCENTE"
+                placeholder="e.g. BUILD YOUR SCENTEPK"
                 className="w-full bg-[#0D0D0C] border border-[rgba(242,238,231,0.12)] focus:border-[#BFA27A] text-sm font-sans text-[#F2EEE7] px-3.5 py-2.5 outline-none transition-colors rounded-sm"
               />
             </div>
@@ -878,7 +878,7 @@ export default function AdminCustomBuilder() {
             <div>
               <h3 className="font-serif text-xl text-[#F2EEE7]">No Builder Groups Configured</h3>
               <p className="text-xs text-[#AAA49B] mt-1 font-light leading-relaxed">
-                Create your first customization step (such as Size, Fragrance Profile, or Notes) to begin configuring the Build Your SCENTE experience.
+                Create your first customization step (such as Size, Fragrance Profile, or Notes) to begin configuring the Build Your SCENTEPK experience.
               </p>
             </div>
             <button

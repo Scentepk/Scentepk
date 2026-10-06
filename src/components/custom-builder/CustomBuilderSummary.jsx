@@ -46,7 +46,7 @@ export default function CustomBuilderSummary({
           BESPOKE FORMULATION
         </span>
         <h2 className="font-serif text-xl sm:text-2xl text-[#F2EEE7] font-normal tracking-tight">
-          Your SCENTE
+          Your SCENTEPK
         </h2>
       </div>
 

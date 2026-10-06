@@ -190,7 +190,7 @@ export default function CodGuide() {
                   ORDER CHANGES
                 </h3>
                 <p className="font-sans text-xs sm:text-sm text-[#AAA49B] font-light leading-[1.75]">
-                  If you need to make changes to your order, contact SCENTE as soon as possible.
+                  If you need to make changes to your order, contact SCENTEPK as soon as possible.
                 </p>
               </ScrollReveal>
 
@@ -226,7 +226,7 @@ export default function CodGuide() {
               NEED ASSISTANCE?
             </h3>
             <p className="font-sans text-xs sm:text-[13px] text-[#AAA49B] font-light leading-[1.7] max-w-md mx-auto pt-1">
-              If you have a question about your order or delivery, contact the SCENTE team.
+              If you have a question about your order or delivery, contact the SCENTEPK team.
             </p>
             <div className="pt-4">
               <Link
