@@ -303,13 +303,14 @@ export default function Home() {
   return (
     <div className="w-full bg-[#090908] text-[#F2EEE7] selection:bg-[#BFA27A] selection:text-[#090908]">
       <SEO
-        title="SCENTEPK — Haute Parfumerie | Artisanal Extraits de Parfum"
-        description="SCENTEPK is a modern Pakistani artisanal fragrance house crafting rare Extraits de Parfum with 30%+ perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
+        title="SCENTÉPK by Mian Ishaq Hanif | Premium Fragrance"
+        description="SCENTÉPK by Mian Ishaq Hanif — Luxury artisanal fragrances crafted with pure perfume oils. Complimentary express courier delivery across Pakistan with Cash on Delivery."
         keywords={[
-          "SCENTEPK",
+          "SCENTÉPK",
+          "Mian Ishaq Hanif",
           "niche perfume Pakistan",
           "luxury extrait de parfum",
-          "haute parfumerie",
+          "premium fragrance",
           "cash on delivery perfume Pakistan",
           "Lahore fragrance",
           "Karachi luxury perfume",

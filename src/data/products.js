@@ -20,7 +20,7 @@ export const PRODUCTS = [
       heart: ["Tuscan Leather", "Dark Plum", "Black Iris"],
       base: ["Aged Oud", "Haitian Vetiver", "Smoky Amber Resins"],
     },
-    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
+    image: "/images/campaign/hero-campaign-main.jpg",
     secondaryImage: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1000&q=85",
     mood: "Smoky • Nocturnal • Magnetic",
     fragranceProfile: {
@@ -114,7 +114,7 @@ export const PRODUCTS = [
       base: ["Smoky Amber", "Cashmeran", "White Musk"],
     },
     image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
-    secondaryImage: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
+    secondaryImage: "/images/scente-hero.jpg",
     mood: "Velvet • Dramatic • Enchanting",
     fragranceProfile: {
       scentFamilies: [],

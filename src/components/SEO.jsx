@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const BASE_URL = "https://scentepk.com";
-const DEFAULT_TITLE = "SCENTEPK — Haute Parfumerie | Extraits de Parfum";
+const DEFAULT_TITLE = "SCENTÉPK by Mian Ishaq Hanif | Premium Fragrance";
 const DEFAULT_DESCRIPTION =
-  "SCENTEPK is a luxury niche fragrance brand crafting rare Extraits de Parfum with 30%+ pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
+  "SCENTÉPK by Mian Ishaq Hanif — Luxury artisanal fragrances crafted with pure perfume oils. Complimentary express delivery across Pakistan with Cash on Delivery.";
 const DEFAULT_IMAGE =
-  "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=85";
+  "https://scentepk.com/images/campaign/hero-campaign-main.jpg";
 
 /**
  * Helper to update or create an HTML head meta tag
@@ -58,9 +58,11 @@ export default function SEO({
   useEffect(() => {
     // 1. Resolve values
     const fullTitle = title
-      ? title.includes("SCENTE")
-        ? title.replace(/SCENTE(?!\w)/g, "SCENTEPK")
-        : `${title} | SCENTEPK — Haute Parfumerie`
+      ? title.includes("Mian Ishaq")
+        ? title
+        : title.includes("SCENTE")
+          ? title.replace(/SCENTE(?!\w)/g, "SCENTÉPK by Mian Ishaq Hanif")
+          : `${title} | SCENTÉPK by Mian Ishaq Hanif`
       : DEFAULT_TITLE;
 
     const fullDescription = description || DEFAULT_DESCRIPTION;
