@@ -4,7 +4,7 @@ const DEFAULT_BRAND_TITLE = "SCENTÉPK by Mian Ishaq Hanif | Premium Fragrance";
 const DEFAULT_BRAND_DESC =
   "SCENTÉPK by Mian Ishaq Hanif — Luxury artisanal fragrances crafted with pure perfume oils. Cash on Delivery across Pakistan.";
 const DEFAULT_BRAND_IMAGE =
-  "https://scentepk.com/images/campaign/hero-campaign-main.jpg";
+  "https://scentepk.com/images/brand-preview.jpg";
 const BASE_SITE_URL = "https://scentepk.com";
 
 const SUPABASE_URL =
